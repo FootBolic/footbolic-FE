@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Layout } from 'antd';
+import styles from './App.module.scss'
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
+import Sider from './components/sider/Sider';
+import Breadcrumb from './components/breadcrumb/Breadcrumb';
 
-function App() {
-  const [count, setCount] = useState(0)
+const { Content } = Layout;
 
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Layout className={styles.main_layout}>
+      <Sider />
+      <Layout>
+        <Header />
+        <Content className={styles.content}>
+          <Breadcrumb />
+          <div className={styles.content_div}>
+            Bill is a cat.
+          </div>
+        </Content>
+        <Footer />
+      </Layout>
+    </Layout>
+  );
+};
 
-export default App
+export default App;

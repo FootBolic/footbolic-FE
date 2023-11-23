@@ -1,0 +1,13 @@
+.main_layout {
+    min-height: 100vh;
+
+    .content {
+        margin: 0 16px;
+
+        .content_div {
+            padding: 24px;
+            min-height: 520px;
+            background: #ffffff;
+        }
+    }
+}
