@@ -1,12 +1,12 @@
 .main_layout {
     min-height: 100vh;
-
+    
     .content {
-        margin: 0 16px;
+        margin: 64px 16px 0px;
 
         .content_div {
             padding: 24px;
-            min-height: 520px;
+            min-height: 75vh;
             background: #ffffff;
         }
     }
