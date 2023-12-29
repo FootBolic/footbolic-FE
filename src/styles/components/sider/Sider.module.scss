@@ -1,35 +1,8 @@
-.sider_mobile_container {
-    position: fixed;
-    z-index: 5;
 
-    .sider_mobile {
-        overflow-y: scroll;
-        height: 100vh;
-    }
-}
-
-.collapse_button_container {
-    z-index: 2;
-    position: fixed;
-    
-    .collapse_button {
-        font-size: 16px;
-        width: 64px;
-        height: 64px;
-    }
-}
-
-.collapse_button_in {
-    transform: translateX(200px);
-    transition: transform 0.3s ease;
-}
-  
-.collapse_button_out {
-    transform: translateX(0px);
-    transition: transform 0.3s ease;
-}
-
-.sider_desktop {
-    z-index: 5;
-    overflow-y: scroll;
+.sider {
+    overflow: auto;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    bottom: 0;
 }

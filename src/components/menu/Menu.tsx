@@ -6,9 +6,10 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
+import type { MenuProps as AntMenuProps } from 'antd';
+import { MenuProps } from "../../types/components/menu/MenuProps";
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<AntMenuProps>['items'][number];
 
 function getItem(
   label: React.ReactNode,
@@ -36,9 +37,9 @@ const items: MenuItem[] = [
   getItem('Files', '9', <FileOutlined />),
 ];
 
-const Menu = () => {
+function Menu ({ theme }: MenuProps) {
     return (
-        <AntMenu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <AntMenu theme={theme} mode="inline" defaultSelectedKeys={['1']} items={items} />
     )
 }
 

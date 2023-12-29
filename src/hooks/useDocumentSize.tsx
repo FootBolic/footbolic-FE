@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
-
-interface ComponentSize {
-  width: number;
-  height: number;
-};
+import { ComponentSize } from '../types/common/ComponentSizeInterface';
 
 function useDocumentSize(): ComponentSize {
     const [windowSize, setWindowSize] = useState({
@@ -13,7 +9,6 @@ function useDocumentSize(): ComponentSize {
     });
      
     // handleResize 함수를 debounce로 감싸고, 시간을 설정한다
-    // 1000ms = 1sec
     const handleResize = debounce(() => {
         setWindowSize({
             width: window.innerWidth,

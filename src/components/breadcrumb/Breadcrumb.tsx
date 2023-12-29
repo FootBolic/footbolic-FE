@@ -1,12 +1,19 @@
 import { Breadcrumb as AntBreadCrumb } from 'antd';
-import styles from './Breadcrumb.module.scss'
+import styles from '../../styles/components/breadcrumb/Breadcrumb.module.scss'
 
-const Breadcrumb = () => {
+function Breadcrumb () {
     return (
-        <AntBreadCrumb className={styles.breadcrumb}>
-            <AntBreadCrumb.Item>User</AntBreadCrumb.Item>
-            <AntBreadCrumb.Item>Bill</AntBreadCrumb.Item>
-        </AntBreadCrumb>
+        <AntBreadCrumb 
+            className={styles.breadcrumb} 
+            items={[
+                {
+                    title: "Home"
+                },
+                {
+                    title: "Bill"
+                }
+            ]}
+        />
     )
 }
 

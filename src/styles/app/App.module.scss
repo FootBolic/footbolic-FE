@@ -2,12 +2,18 @@
     min-height: 100vh;
     
     .content {
-        margin: 64px 16px 0px;
+        margin: 8px 16px 0;
+        overflow: initial;
+    }
 
-        .content_div {
-            padding: 24px;
-            min-height: 75vh;
-            background: #ffffff;
-        }
+    .mobile_layout {
+        margin: 68px 16px 0;
+        overflow: initial;
+    }
+
+    .content_div {
+        padding: 24px;
+        min-height: 75vh;
+        background: #ffffff;
     }
 }
