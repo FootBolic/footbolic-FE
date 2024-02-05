@@ -62,15 +62,15 @@ function MainView () {
     const {} = useQuery({
         queryKey: ['getMembers'],
         queryFn: () => MemberAPI.getMembers(),
-        onSuccess: (data) => console.log(data)
+        onSuccess: (members) => console.log(members)
     });
 
     const { mutate: createMember } = useMutation(
         () => MemberAPI.createMember(),
         {
-            onSuccess: (data) => {
-                console.log(data);
-                setMemberId(data.data.data.id);
+            onSuccess: (createdMember) => {
+                console.log(createdMember);
+                setMemberId(createdMember.id);
                 queryClient.invalidateQueries('getMembers');
             }
         }
@@ -79,8 +79,8 @@ function MainView () {
     const { mutate: updateMember } = useMutation(
         (id: string) => MemberAPI.updateMember(id),
         {
-            onSuccess: (data) => {
-                console.log(data);
+            onSuccess: (updatedMember) => {
+                console.log(updatedMember);
                 queryClient.invalidateQueries('getMembers');
             }
         }
