@@ -16,12 +16,13 @@ export class MenuAPI {
      * @param {MenuInterface} 생성할 메뉴 객체
      * @returns {Promise<MenuInterface>} 생성된 메뉴 Promise 객체
      */
-    static async createMenu({ parentId, title, path, iconCodeId, createMemberId }: MenuInterface): Promise<MenuInterface> {
+    static async createMenu({ parentId, title, path, iconCodeId, isUsed, createMemberId }: MenuInterface): Promise<MenuInterface> {
         const createdMenu = await api.post('/menus', {
             parentId,
             title,
             path,
             iconCodeId,
+            isUsed,
             createMemberId,
         });
 
@@ -30,7 +31,7 @@ export class MenuAPI {
 
     /**
      * 메뉴 단건 조회 API
-     * @param id {string} 조회할 메뉴 식별번호
+     * @param {string} id 조회할 메뉴 식별번호
      * @returns {Promise<MenuInterface>} 조회된 메뉴 Promise 객체
      */
     static async getMenuById(id: string): Promise<MenuInterface> {
@@ -39,17 +40,18 @@ export class MenuAPI {
     }
     
     /**
-     * 회원 수정 API
-     * @param id {string} 회원식별번호
-     * @returns {Promise<MenuInterface>} 수정된 회원 Promise 객체
+     * 메뉴 수정 API
+     * @param {MenuInterface} 수정될 메뉴 객체
+     * @returns {Promise<MenuInterface>} 수정된 메뉴 Promise 객체
      */
-    static async updateMember({ id, parentId, title, path, iconCodeId, updateMemberId }: MenuInterface): Promise<MenuInterface> {
-        const updatedMenu = await api.patch('/members', {
+    static async updateMenu({ id, parentId, title, path, iconCodeId, isUsed, updateMemberId }: MenuInterface): Promise<MenuInterface> {
+        const updatedMenu = await api.patch('/menus', {
             id,
             parentId,
             title,
             path,
             iconCodeId,
+            isUsed,
             updateMemberId
         });
 
@@ -57,12 +59,12 @@ export class MenuAPI {
     }
 
     /**
-     * 회원 삭제 API
-     * @param id {string} 회원식별번호
+     * 메뉴 삭제 API
+     * @param {string} id 메뉴식별번호
      * @returns {Promise<boolean>} 삭제 요청 결과
      */
-    static async deleteMember(id: string): Promise<boolean> {
-        const result = await api.delete(`/members/${id}`);
+    static async deleteMenu(id: string): Promise<boolean> {
+        const result = await api.delete(`/menus/${id}`);
         return result.data.success;
     }
 }
