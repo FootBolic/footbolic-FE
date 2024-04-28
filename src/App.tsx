@@ -38,6 +38,8 @@ const App = () => {
             <Routes>
               {/* 메인페이지 */}
               <Route path={ROUTES.MAIN_VIEW.path} element={<ROUTES.MAIN_VIEW.element />} />
+              {/* 메뉴관리 목록 */}
+              <Route path={ROUTES.MENU_MANAGEMENT_LIST.path} element={<ROUTES.MENU_MANAGEMENT_LIST.element />} />
             </Routes>
           </div>
         </Content>

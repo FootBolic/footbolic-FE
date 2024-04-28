@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+
+    .buttons_container {
+        .button {
+            top: calc(50% - 15px);
+            margin-inline: 3px;
+        }
+    }
+}
