@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
 import useMenuManagement from "../../../hooks/useMenuManagement";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
-import { MUTATION_TYPES } from "../../../constants/common/DataConstants";
+import { API_QUERY_KEYS, MUTATION_TYPES } from "../../../constants/common/DataConstants";
 
 const { Text } = Typography;
 
@@ -36,7 +36,7 @@ function MenuManagementList () {
     } = useMenuManagement();
 
     const { isFetching, isError } = useQuery({
-        queryKey: ["GET_MENUS"],
+        queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
         onSuccess: (result) => setAllMenus(result),
     })
@@ -61,7 +61,7 @@ function MenuManagementList () {
     }, [targetMenu])
 
     const handleMutateCompleted = (type: string) => {
-        queryClient.invalidateQueries('GET_MENUS');
+        queryClient.invalidateQueries(API_QUERY_KEYS.MENU.GET_MENUS);
         setTargetMenu(null);
         if (type === MUTATION_TYPES.DELETE) {
             setIsDeleteModalOpen(false);
