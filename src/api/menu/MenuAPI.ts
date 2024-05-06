@@ -8,7 +8,7 @@ export class MenuAPI {
      */
     static async getMenus(): Promise<MenuInterface[]> {
         const menus = await api.get('/menus');
-        return menus.data.success ? menus.data.data : [];
+        return menus.data.isSuccess ? menus.data.data : [];
     }
 
     /**
@@ -26,7 +26,7 @@ export class MenuAPI {
             createMemberId,
         });
 
-        return createdMenu.data.success ? createdMenu.data.data : [];
+        return createdMenu.data.isSuccess ? createdMenu.data.data : [];
     }
 
     /**
@@ -36,7 +36,7 @@ export class MenuAPI {
      */
     static async getMenuById(id: string): Promise<MenuInterface> {
         const menu = await api.get(`/menus/${id}`);
-        return menu.data.success ? menu.data.data : {};
+        return menu.data.isSuccess ? menu.data.data : {};
     }
     
     /**
@@ -55,7 +55,7 @@ export class MenuAPI {
             updateMemberId
         });
 
-        return updatedMenu.data.success ? updatedMenu.data.data : {};
+        return updatedMenu.data.isSuccess ? updatedMenu.data.data : {};
     }
 
     /**
@@ -65,6 +65,6 @@ export class MenuAPI {
      */
     static async deleteMenu(id: string): Promise<boolean> {
         const result = await api.delete(`/menus/${id}`);
-        return result.data.success;
+        return result.data.isSuccess;
     }
 }

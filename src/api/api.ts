@@ -7,3 +7,25 @@ export const api = axios.create({
         accept: 'application/json'
     }
 })
+
+export const kakaoAuthApi = axios.create({
+    baseURL: 'https://kauth.kakao.com',
+    headers: {
+        'Content-Type' : 'application/x-www-form-urlencoded;charset=utf-8'
+    }
+})
+
+export const kakaoApi = axios.create({
+    baseURL: 'https://kapi.kakao.com',
+    headers: {
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    }
+})
+
+export const naverAuthApi = axios.create({
+    baseURL: 'https://nid.naver.com'
+})
+
+export const naverApi = axios.create({
+    baseURL: 'https://openapi.naver.com'
+})

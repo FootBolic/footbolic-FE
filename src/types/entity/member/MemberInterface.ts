@@ -2,10 +2,17 @@ export interface MemberInterface {
     id: string;
     roleId?: string;
     // role?: Role;
-    fullName?: string;
     nickname?: string;
+    idAtProvider?: string;
+    platform?: string;
     refreshToken?: string;
+    refreshTokenExpiresAt?: number[] | Date;
+    accessToken?: string;
+    accessTokenExpiresAt?: number[] | Date;
+    idToken?: string;
+    scope?: string;
+    tokenType?: string;
     // notifications?: [NotificationInterface];
-    createdAt: number[];
-    updatedAt: number[];
+    createdAt?: number[];
+    updatedAt?: number[];
 }

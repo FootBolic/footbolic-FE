@@ -40,6 +40,12 @@ const App = () => {
               <Route path={ROUTES.MAIN_VIEW.path} element={<ROUTES.MAIN_VIEW.element />} />
               {/* 메뉴관리 목록 */}
               <Route path={ROUTES.MENU_MANAGEMENT_LIST.path} element={<ROUTES.MENU_MANAGEMENT_LIST.element />} />
+              {/* 카카오 API 회원가입 및 로그인 */}
+              <Route path={ROUTES.KAKAO_AUTH.path} element={<ROUTES.KAKAO_AUTH.element />} />
+              {/* 네이버 API 회원가입 및 로그인 */}
+              <Route path={ROUTES.NAVER_AUTH.path} element={<ROUTES.NAVER_AUTH.element />} />
+              {/* 회원가입 - 회원 정보 입력 */}
+              <Route path={ROUTES.MEMBER_CREATE.path} element={<ROUTES.MEMBER_CREATE.element />} />
             </Routes>
           </div>
         </Content>
