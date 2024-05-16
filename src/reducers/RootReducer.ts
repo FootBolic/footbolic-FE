@@ -2,6 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import PlatformReducer from './PlatformReducer';
 import MobileMenuReducer from './MobileMenuReducer';
 import CsrfTokenReducer from './CsrfTokenReducer';
+import AccessTokenReducer from './AccessTokenReducer';
+import ApiErrorReducer from './ApiErrorReducer';
 
 /**
  * redux reducers 관리 store
@@ -9,5 +11,7 @@ import CsrfTokenReducer from './CsrfTokenReducer';
 export default combineReducers({
     platform: PlatformReducer,
     mobileMenu: MobileMenuReducer,
-    csrfToken: CsrfTokenReducer
+    csrfToken: CsrfTokenReducer,
+    accessToken: AccessTokenReducer,
+    apiError: ApiErrorReducer,
 });

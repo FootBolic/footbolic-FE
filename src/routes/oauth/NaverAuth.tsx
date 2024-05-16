@@ -1,20 +1,24 @@
 import { Button, Result } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
-import { API_QUERY_KEYS, AUTH_PLATFORM, DATE_FORMAT } from "../../constants/common/DataConstants";
+import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
 import { useMutation, useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
-import dayjs from "dayjs";
 import useCsrfCheck from "../../hooks/useCsrfCheck";
 import { NaverAuthApi } from "../../api/oauth/NaverAuthApi";
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
+import { SignAPI } from "../../api/sign/SignAPI";
+import { useDispatch } from "react-redux";
+import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
+import { toDate } from "../../util/DateUtil";
 
 
 function NaverAuth () {
-    const { code, state, error, error_description } = useURLParam();
+    const { code, state, error } = useURLParam();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { compare, reset } = useCsrfCheck();
 
     const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -26,23 +30,7 @@ function NaverAuth () {
     const {} = useQuery({
         queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBER_BY_ID_AT_PLATFORM],
         queryFn: () => MemberAPI.getMemberByIdAtPlatform(member?.idAtProvider ?? '', AUTH_PLATFORM.NAVER),
-        onSuccess: (result) => {
-            if (result.memberExists) {
-                console.log('로그인 처리')
-            } else {
-                tokenInfo && navigate('/member/create', {
-                    state: {
-                        member: {
-                            ...member,
-                            refreshToken: tokenInfo.refresh_token,
-                            accessToken: tokenInfo.access_token,
-                            accessTokenExpiresAt: dayjs(new Date().getTime() + (Number(tokenInfo.expires_in) * 1000)).format(DATE_FORMAT),
-                            tokenType: tokenInfo.token_type
-                        }
-                    }
-                })
-            }
-        },
+        onSuccess: (result) => result.memberExists ? signIn(member) : tokenInfo && navigate('/member/create', { state: { member } }),
         onError: (e: Error) => {
             setIsError(true);
             setErrorTitle(e.message);
@@ -51,7 +39,7 @@ function NaverAuth () {
     })
 
     const handleGetTokenSuccess = (data: NaverTokenInterface) => {
-        setTokenInfo(data); 
+        setTokenInfo(data);
         setTimeout(() => getUserInfo({ token_type: data.token_type, access_token: data.access_token}), 500);
     }
 
@@ -71,13 +59,15 @@ function NaverAuth () {
         }
     )
 
+    const handleGetUserInfoSuccess = (data: MemberInterface) => {
+        setMember({ ...member, idAtProvider: data.id } as MemberInterface);
+        setIsFetching(true);
+    }
+
     const { mutate: getUserInfo } = useMutation(
         ({ token_type, access_token }: { token_type: string, access_token: string }) => NaverAuthApi.getUserInfo(token_type, access_token),
         {
-            onSuccess: (data) => {
-                setMember({ ...member, idAtProvider: data.id } as MemberInterface);
-                setIsFetching(true);
-            },
+            onSuccess: handleGetUserInfoSuccess,
             onError: () => getUserInfoFromServer({ token_type: tokenInfo?.token_type ?? '', access_token: tokenInfo?.access_token ?? '' })
         }
     )
@@ -85,22 +75,37 @@ function NaverAuth () {
     const { mutate: getUserInfoFromServer } = useMutation(
         ({ token_type, access_token }: { token_type: string, access_token: string }) => MemberAPI.getUserInfoFromServer(token_type, access_token),
         {
-            onSuccess: (data) => {
-                setMember({ ...member, idAtProvider: data.id } as MemberInterface);
-                setIsFetching(true);
-            },
+            onSuccess: handleGetUserInfoSuccess,
             onError: () => setIsError(true)
         }
     )
 
+    const { mutate: signIn } = useMutation(
+        (member: MemberInterface) => SignAPI.signIn(member),
+        {
+            onSuccess: (data) => {
+                dispatch(setAccessTokenState({
+                    accessToken: data.access_token,
+                    accessTokenExpiresAt: toDate(data.expires_at).getTime(),
+                    nickname: data.nickname
+                }))
+                navigate('/');
+            },
+            onError: (e: Error) => {
+                setIsError(true);
+                setErrorTitle(e.message);
+            }
+        }
+    )
+
     useEffect(() => {
-        if (compare(state)) {
+        if (compare(state) && code && !isError) {
             reset();
-            code ? getToken(code) : setIsError(true);
+            getToken(code);
         } else {
             setIsError(true);
         }
-    }, [code, state, error, error_description])
+    }, [code, state, error])
 
     return (
         <>

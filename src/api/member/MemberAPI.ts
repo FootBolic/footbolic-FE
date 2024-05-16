@@ -1,6 +1,6 @@
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
-import { api } from "../api";
+import api from "../api";
 
 /**
  * 회원 API 관리 클래스
@@ -23,7 +23,7 @@ export class MemberAPI {
      * @returns {Promise<{ memberExists: boolean } | string>} 회원가입 여부
      */
     static async getMemberByIdAtPlatform(idAtPlatform: string, platform: string): Promise<{ memberExists: boolean }> {
-        const memberExists = await api.get(`/members/${idAtPlatform}?platform=${platform}`);
+        const memberExists = await api.get(`/members/public/${idAtPlatform}?platform=${platform}`);
 
         if (memberExists.data.isSuccess) {
             return memberExists.data.data;
@@ -72,10 +72,10 @@ export class MemberAPI {
     /**
      * API 서버로 네이버 Auth 요청을 요청
      * @param {string} code 네이버 로그인 인증 요청 API에서 리턴받은 인증코드 (발급 요청일 때 필수)
-     * @returns 
+     * @returns {Promise<NaverTokenInterface>} 네이버에서 발급한 토큰정보
      */
     static async getTokenFromServer(code: string): Promise<NaverTokenInterface> {
-        const result = await api.post(`/members/oauth/naver?code=${code}`)
+        const result = await api.post(`/members/public/oauth/naver?code=${code}`)
 
         return result.data.isSuccess ? JSON.parse(result.data.data) : {}
     }
@@ -84,10 +84,10 @@ export class MemberAPI {
      * API 서버로 네이버 Auth 요청을 요청
      * @param {string} tokenType 네이버 로그인 인증 요청 API에서 리턴받은 토큰의 타입
      * @param {string} accessToken 네이버 로그인 인증 요청 API에서 리턴받은 토큰
-     * @returns 
+     * @returns {Promise<MemberInterface>} 조회된 회원정보
      */
     static async getUserInfoFromServer(tokenType: string, accessToken: string): Promise<MemberInterface> {
-        const result = await api.post(`/members/oauth/naver/user-info?token_type=${tokenType}&access_token=${accessToken}`);
+        const result = await api.post(`/members/public/oauth/naver/user-info?token_type=${tokenType}&access_token=${accessToken}`);
 
         return result.data.isSuccess ? JSON.parse(result.data.data).response : {}
     }
