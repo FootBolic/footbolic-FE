@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetAccessTokenState, setAccessTokenState } from "../reducers/AccessTokenReducer";
 import { getTime, toDate } from "../util/DateUtil";
-import { resetApiError } from "../reducers/ApiErrorReducer";
+import { setAuthError } from "../reducers/AuthErrorReducer";
 import store from "../reducers/Store";
 import { TOKEN_RENEWAL_TIME } from "../constants/common/DataConstants";
+import { ROUTES } from "../constants/common/RouteConstants";
 
 /**
  * API 서버에 Refresh Token 존재 여부 확인을 요청한다.
@@ -21,7 +22,7 @@ function useToken() {
     const { mutate: checkRefreshToken, isError: isCheckRefreshTokenError } = useMutation(
         () => SignAPI.checkRefreshToken(),
         {
-            onSuccess: (result) => result ? renew() : handleFinish('로그인이 만료되었습니다.'),
+            onSuccess: (result) => result ? renew() : handleFinish('로그인이 필요한 서비스입니다.'),
             onError: () => signOut()
         }
     )
@@ -63,9 +64,9 @@ function useToken() {
 
     const handleFinish = (msg: string) => {
         message.error(msg);
-        dispatch(resetApiError());
+        dispatch(setAuthError({ isError: false }));
         dispatch(resetAccessTokenState());
-        navigate('/');
+        navigate(ROUTES.MAIN_VIEW.path);
     }
 
     return { checkRefreshToken, isCheckRefreshTokenError, checkAccessToken };

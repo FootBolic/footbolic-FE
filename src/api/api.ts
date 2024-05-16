@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import store from '../reducers/Store';
-import { resetApiError, setApiError } from '../reducers/ApiErrorReducer';
+import { setAuthError } from '../reducers/AuthErrorReducer';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL_DEV,
@@ -21,18 +21,17 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     (res) => {
-        store.getState().apiError.isError && store.dispatch(resetApiError());
+        store.getState().authError.isError && store.dispatch(setAuthError({ isError: false }));
+        if (!res.data.isSuccess) return Promise.reject(res.data.message);
         return res;
     },
     (error: AxiosError) => {
         switch (error.response?.status) {
             case 403:
-                store.dispatch(setApiError({
-                    isError: true,
-                    status: 403,
-                    title: '회원정보가 존재하지 않습니다.'
-                }))
+                store.dispatch(setAuthError({ isError: true }))
                 break;
+            case 400:
+                return Promise.reject((error.response.data as any).message);
         }
     }
 )

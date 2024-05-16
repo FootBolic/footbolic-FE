@@ -1,9 +1,9 @@
 import MainView from "../../routes/main/MainView";
-import MenuManagementList from "../../routes/management/menu/MenuManagementList";
+import MenuManagement from "../../routes/management/menu/MenuManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
+import MemberInfo from "../../routes/member/MemberInfo";
 import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
-
 
 export const ROUTES = {
     // 메인페이지
@@ -12,9 +12,9 @@ export const ROUTES = {
         element: MainView
     },
     // 메뉴관리 목록
-    MENU_MANAGEMENT_LIST: {
-        path: '/management/menu/list',
-        element: MenuManagementList
+    MENU_MANAGEMENT: {
+        path: '/menu/management',
+        element: MenuManagement
     },
     // 카카오 API 회원가입 및 로그인
     KAKAO_AUTH: {
@@ -30,5 +30,10 @@ export const ROUTES = {
     MEMBER_CREATE: {
         path: '/member/create',
         element: MemberCreate
+    },
+    // 회원 마이페이지
+    MEMBER_INFO: {
+        path: '/member/me',
+        element: MemberInfo
     }
 }

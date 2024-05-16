@@ -8,6 +8,7 @@ import { useState } from "react";
 import SignInCard from "../sign/SignInCard";
 import SignOutCard from "../sign/SignOutCard";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/common/RouteConstants";
 
 const { Header: AntHeader } = Layout;
 
@@ -36,16 +37,16 @@ function Header () {
                     />
                 </div>
             </>}
-            <div className={styles.logo_container} onClick={() => navigate('/')}>
+            <div className={styles.logo_container} onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>
                 FootBolic
             </div>
             <div className={styles.user_info_button_container}>
-            <Popover
-                content={accessToken ? <SignOutCard /> : <SignInCard />}
-                title={accessToken ? `${nickname}님 반갑습니다.` : "로그인"}
-                trigger="click"
-                open={isUserInfoOpen}
-                onOpenChange={() => setIsUserInfoOpen(!isUserInfoOpen)}
+                <Popover
+                    content={accessToken ? <SignOutCard /> : <SignInCard />}
+                    title={accessToken ? `${nickname}님 반갑습니다.` : "로그인"}
+                    trigger="click"
+                    open={isUserInfoOpen}
+                    onOpenChange={() => setIsUserInfoOpen(!isUserInfoOpen)}
                 >
                     <Button
                         className={styles.user_info_button}

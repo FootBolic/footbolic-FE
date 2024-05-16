@@ -6,6 +6,7 @@ import dayjs from "dayjs"
  * @returns {Date} Date 타입으로 변환된 날짜 객체
  */
 export const toDate = (ldt: number[]): Date => {
+    while (ldt.length < 7) ldt.push(0);
     return dayjs(`${ldt[0]}-${ldt[1]}-${ldt[2]}T${ldt[3]}:${ldt[4]}:${ldt[5]}:${ldt[6]}`).toDate()
 }
 

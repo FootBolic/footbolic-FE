@@ -4,15 +4,15 @@ import styles from "../../styles/components/title/Title.module.scss";
 
 const { Title: AntTitle } = Typography;
 
-function Title ({ title, buttons }: TitleProps) {
+function Title ({ title, buttons, centered }: TitleProps) {
     return (
-        <div className={styles.container}>
+        <div className={centered ? styles.container_center : styles.container}>
             <AntTitle level={2}>
                 {title}
             </AntTitle>
             <div className={styles.buttons_container}>
                 {   
-                    buttons && buttons.map((each, index) => {
+                    buttons && !centered && buttons.map((each, index) => {
                         return (
                             <Button 
                                 key={index}

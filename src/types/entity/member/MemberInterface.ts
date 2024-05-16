@@ -9,9 +9,7 @@ export interface MemberInterface {
     refreshTokenExpiresAt?: number[] | Date | string;
     accessToken?: string;
     accessTokenExpiresAt?: number[] | Date | string;
-    idToken?: string;
-    scope?: string;
-    tokenType?: string;
+    nicknameLastUpdatedAt?: number[] | Date | string;
     // notifications?: [NotificationInterface];
     createdAt?: number[];
     updatedAt?: number[];

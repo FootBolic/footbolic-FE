@@ -13,7 +13,7 @@ export class SignAPI {
      */
     static async signIn(member: MemberInterface): Promise<AccessTokenInfoInterface> {
         const result = await api.post('/sign/in', member);
-        return result.data.isSuccess ? result.data.data : {};
+        return result.data.data;
     }
 
     /**
@@ -29,12 +29,12 @@ export class SignAPI {
      * @returns {Promise<boolean>} 쿠키에 refresh Token 존재 여부
      */
     static async checkRefreshToken():Promise<boolean> {
-        const result = await api.post('/sign/check');
-        return result.data.data.check_result;
+        const response = await api.post('/sign/check');
+        return response.data.data.check_result;
     }
 
     static async renew():Promise<AccessTokenInfoInterface> {
-        const result = await api.post('/sign/renew');
-        return result.data.isSuccess ? result.data.data : null;
+        const response = await api.post('/sign/renew');
+        return response.data.data;
     }
 }
