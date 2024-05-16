@@ -12,6 +12,7 @@ import { SignAPI } from "../../api/sign/SignAPI";
 import { useDispatch } from "react-redux";
 import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
 import { toDate } from "../../util/DateUtil";
+import { ROUTES } from "../../constants/common/RouteConstants";
 
 
 function KakaoAuth () {
@@ -48,7 +49,8 @@ function KakaoAuth () {
         onSuccess: (data) => {
             setMember({ ...member, idAtProvider: `${data.id}` } as MemberInterface);
             setIsFetching(true);
-        }
+        },
+        onError: () => setIsError(true),
     })
 
     const { mutate: signIn } = useMutation(
@@ -61,7 +63,7 @@ function KakaoAuth () {
                     nickname: data.nickname
                 }))
                 tokenInfo?.access_token && invalidateKakaoToken(tokenInfo?.access_token);
-                navigate('/');
+                navigate(ROUTES.MAIN_VIEW.path);
             },
             onError: (e: Error) => {
                 setIsError(true);
@@ -76,7 +78,7 @@ function KakaoAuth () {
 
     const handleMemberNotExists = () => {
         tokenInfo?.access_token && invalidateKakaoToken(tokenInfo.access_token);
-        navigate('/member/create', { state: { member } });
+        navigate(ROUTES.MEMBER_CREATE.path, { state: { member } });
     }
 
     useEffect(() => {
@@ -91,7 +93,7 @@ function KakaoAuth () {
                         status="500"
                         title={errorTitle || '에러가 발생하였습니다.'}
                         subTitle="다시 시도해주세요."
-                        extra={<Button type="primary" onClick={() => navigate('/')}>홈으로</Button>}
+                        extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
                     />
                 </>
             }

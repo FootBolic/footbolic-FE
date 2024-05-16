@@ -11,10 +11,11 @@ import useMenuManagement from "../../../hooks/useMenuManagement";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
 import { API_QUERY_KEYS, MUTATION_TYPES } from "../../../constants/common/DataConstants";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../constants/common/RouteConstants";
 
 const { Text } = Typography;
 
-function MenuManagementList () {
+function MenuManagement () {
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -42,27 +43,30 @@ function MenuManagementList () {
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
         onSuccess: (result) => setAllMenus(result),
-        onError: () => setIsEnabled(false),
+        onError: (e: string) => {
+            message.error(e);
+            setIsEnabled(false);
+        },
         enabled: isEnabled
     })
 
     const { mutate: createMenu } = useMutation((data : MenuInterface) => MenuAPI.createMenu(data), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.CREATE)
+        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.CREATE),
+        onError: (e: string) => {message.error(e)}
     })
 
     const { mutate: updateMenu } = useMutation((data : MenuInterface) => MenuAPI.updateMenu(data), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.UPDATE)
+        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.UPDATE),
+        onError: (e: string) => {message.error(e)}
     })
 
     const { mutate: deleteMenu } = useMutation((id: string) => MenuAPI.deleteMenu(id), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.DELETE)
+        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.DELETE),
+        onError: (e: string) => {message.error(e)}
     })
 
     useEffect(() => {
-        form.setFieldValue("title", targetMenu?.title);
-        form.setFieldValue("parentId", targetMenu?.parentId);
-        form.setFieldValue("path", targetMenu?.path);
-        form.setFieldValue("isUsed", targetMenu?.isUsed);
+        targetMenu ? form.setFieldsValue(targetMenu) : form.resetFields();
     }, [targetMenu])
 
     const handleMutateCompleted = (type: string) => {
@@ -102,7 +106,7 @@ function MenuManagementList () {
                             status="500"
                             title={'에러가 발생하였습니다.'}
                             subTitle="다시 시도해주세요."
-                            extra={<Button type="primary" onClick={() => navigate('/')}>홈으로</Button>}
+                            extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
                         />
                     </> : (
                         <div className={isMobile ? styles.mobile_container : styles.container}>
@@ -225,4 +229,4 @@ function MenuManagementList () {
     )
 }
 
-export default MenuManagementList;
+export default MenuManagement;

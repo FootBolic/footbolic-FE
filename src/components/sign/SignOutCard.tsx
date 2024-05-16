@@ -5,6 +5,7 @@ import { useMutation } from "react-query";
 import { SignAPI } from "../../api/sign/SignAPI";
 import { useNavigate } from "react-router-dom";
 import { resetAccessTokenState } from "../../reducers/AccessTokenReducer";
+import { ROUTES } from "../../constants/common/RouteConstants";
 
 function SignOutCard() {
     const dispatch = useDispatch();
@@ -17,7 +18,7 @@ function SignOutCard() {
                 if (result) {
                     message.success('로그아웃에 성공하였습니다.');
                     dispatch(resetAccessTokenState());
-                    navigate('/');
+                    navigate(ROUTES.MAIN_VIEW.path);
                 } else {
                     message.error('에러가 발생하였습니다.');
                 }
@@ -27,7 +28,7 @@ function SignOutCard() {
 
     return (
         <div className={styles.container}>
-            <Button>
+            <Button onClick={() => navigate(ROUTES.MEMBER_INFO.path)}>
                 마이페이지
             </Button>
             <Button onClick={() => signOut()}>

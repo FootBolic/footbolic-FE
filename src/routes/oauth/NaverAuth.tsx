@@ -13,6 +13,7 @@ import { SignAPI } from "../../api/sign/SignAPI";
 import { useDispatch } from "react-redux";
 import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
 import { toDate } from "../../util/DateUtil";
+import { ROUTES } from "../../constants/common/RouteConstants";
 
 
 function NaverAuth () {
@@ -30,7 +31,7 @@ function NaverAuth () {
     const {} = useQuery({
         queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBER_BY_ID_AT_PLATFORM],
         queryFn: () => MemberAPI.getMemberByIdAtPlatform(member?.idAtProvider ?? '', AUTH_PLATFORM.NAVER),
-        onSuccess: (result) => result.memberExists ? signIn(member) : tokenInfo && navigate('/member/create', { state: { member } }),
+        onSuccess: (result) => result.memberExists ? signIn(member) : tokenInfo && navigate(ROUTES.MEMBER_CREATE.path, { state: { member } }),
         onError: (e: Error) => {
             setIsError(true);
             setErrorTitle(e.message);
@@ -89,7 +90,7 @@ function NaverAuth () {
                     accessTokenExpiresAt: toDate(data.expires_at).getTime(),
                     nickname: data.nickname
                 }))
-                navigate('/');
+                navigate(ROUTES.MAIN_VIEW.path);
             },
             onError: (e: Error) => {
                 setIsError(true);
@@ -115,7 +116,7 @@ function NaverAuth () {
                         status="500"
                         title={errorTitle || '에러가 발생하였습니다.'}
                         subTitle="다시 시도해주세요."
-                        extra={<Button type="primary" onClick={() => navigate('/')}>홈으로</Button>}
+                        extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
                     />
                 </>
             }

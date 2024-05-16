@@ -3,7 +3,7 @@ import PlatformReducer from './PlatformReducer';
 import MobileMenuReducer from './MobileMenuReducer';
 import CsrfTokenReducer from './CsrfTokenReducer';
 import AccessTokenReducer from './AccessTokenReducer';
-import ApiErrorReducer from './ApiErrorReducer';
+import AuthErrorReducer from './AuthErrorReducer';
 
 /**
  * redux reducers 관리 store
@@ -13,5 +13,5 @@ export default combineReducers({
     mobileMenu: MobileMenuReducer,
     csrfToken: CsrfTokenReducer,
     accessToken: AccessTokenReducer,
-    apiError: ApiErrorReducer,
+    authError: AuthErrorReducer,
 });

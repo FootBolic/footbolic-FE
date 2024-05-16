@@ -40,6 +40,7 @@ export const API_QUERY_KEYS = {
         GET_MENUS: 'GET_MENUS'
     },
     MEMBER: {
+        GET_MEMBER: 'GET_MEMBER',
         GET_MEMBER_BY_ID_AT_PLATFORM: 'GET_MEMBER_BY_ID_AT_PLATFORM'
     }
 }

@@ -11,9 +11,17 @@ export class MemberAPI {
      * @returns {Promise<MemberInterface[]>} 회원 목록 Promise 객체
      */
     static async getMembers(): Promise<MemberInterface[]> {
-        const members = await api.get('/members');
+        const response = await api.get('/members');
+        return response.data.data;
+    }
 
-        return members.data.isSuccess ? members.data.data : [];
+    /**
+     * Access Token으로 회원 정보 조회
+     * @returns {Promise<MemberInterface>} 조회된 회원 정보
+     */
+    static async getMember(): Promise<MemberInterface> {
+        const response = await api.post('/members/me');
+        return response.data.data;
     }
 
     /**
@@ -23,13 +31,8 @@ export class MemberAPI {
      * @returns {Promise<{ memberExists: boolean } | string>} 회원가입 여부
      */
     static async getMemberByIdAtPlatform(idAtPlatform: string, platform: string): Promise<{ memberExists: boolean }> {
-        const memberExists = await api.get(`/members/public/${idAtPlatform}?platform=${platform}`);
-
-        if (memberExists.data.isSuccess) {
-            return memberExists.data.data;
-        } else {
-            throw new Error(memberExists.data.message);
-        }
+        const response = await api.get(`/members/public/${idAtPlatform}?platform=${platform}`);
+        return response.data.data;
     }
 
     /**
@@ -38,9 +41,13 @@ export class MemberAPI {
      * @returns {Promise<MemberInterface>} 생성된 회원 Promise 객체
      */
     static async createMember(member: MemberInterface): Promise<MemberInterface> {
-        const createdMember = await api.post('/members', member);
+        const response = await api.post('/members', member);
+        return response.data.data;
+    }
 
-        return createdMember.data.isSuccess ? createdMember.data.data : {};
+    static async updateTokenMember(member: MemberInterface): Promise<MemberInterface> {
+        const response = await api.patch('/members/me', member);
+        return response.data.data;
     }
     
     /**
@@ -65,8 +72,8 @@ export class MemberAPI {
      * @returns {Promise<boolean>} 삭제 요청 결과
      */
     static async deleteMember(id: string): Promise<boolean> {
-        const result = await api.delete(`/members/${id}`);
-        return result.data.isSuccess;
+        await api.delete(`/members/${id}`);
+        return true;
     }
 
     /**
@@ -75,9 +82,8 @@ export class MemberAPI {
      * @returns {Promise<NaverTokenInterface>} 네이버에서 발급한 토큰정보
      */
     static async getTokenFromServer(code: string): Promise<NaverTokenInterface> {
-        const result = await api.post(`/members/public/oauth/naver?code=${code}`)
-
-        return result.data.isSuccess ? JSON.parse(result.data.data) : {}
+        const response = await api.post(`/members/public/oauth/naver?code=${code}`);
+        return JSON.parse(response.data.data);
     }
 
     /**
@@ -87,8 +93,7 @@ export class MemberAPI {
      * @returns {Promise<MemberInterface>} 조회된 회원정보
      */
     static async getUserInfoFromServer(tokenType: string, accessToken: string): Promise<MemberInterface> {
-        const result = await api.post(`/members/public/oauth/naver/user-info?token_type=${tokenType}&access_token=${accessToken}`);
-
-        return result.data.isSuccess ? JSON.parse(result.data.data).response : {}
+        const response = await api.post(`/members/public/oauth/naver/user-info?token_type=${tokenType}&access_token=${accessToken}`);
+        return JSON.parse(response.data.data).response;
     }
 }
