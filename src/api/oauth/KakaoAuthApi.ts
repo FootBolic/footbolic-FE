@@ -8,7 +8,7 @@ export class KakaoAuthApi {
      * @param {string} code 카카오 API로 부터 받은 코드
      * @returns {Promise<KakaoTokenInterface>} 카카오 API로 부터 받은 토큰 정보
      */
-    static async getToken (code: string): Promise<KakaoTokenInterface> {
+    static async requestToken (code: string): Promise<KakaoTokenInterface> {
         const result = await kakaoAuthApi.post('/oauth/token', {
             code,
             grant_type: 'authorization_code',
@@ -22,7 +22,7 @@ export class KakaoAuthApi {
 
     /**
      * 카카오 API 회원정보 조회
-     * @param accessToken 카카오 API로 부터 받은 액세스 토큰
+     * @param {string} accessToken 카카오 API로 부터 받은 액세스 토큰
      * @returns {Promise<KakaoUserInfoInterface>} 카카오 API로 부터 받은 사용자 정보
      */
     static async getUserInfo (accessToken: string): Promise<KakaoUserInfoInterface> {
@@ -33,5 +33,17 @@ export class KakaoAuthApi {
         })
 
         return result.data
+    }
+
+    /**
+     * 카카오 API에 로그아웃 요청
+     * @param {string} accessToken 카카오 API로 부터 받은 액세스 토큰
+     */
+    static async invalidateToken(accessToken: string): Promise<void> {
+        kakaoApi.post('/v1/user/logout', null, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
     }
 }

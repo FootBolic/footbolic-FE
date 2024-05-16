@@ -1,5 +1,5 @@
 import { MenuInterface } from "../../types/entity/menu/MenuInterface";
-import { api } from "../api";
+import api from "../api";
 
 export class MenuAPI {
     /**

@@ -6,9 +6,9 @@ export interface MemberInterface {
     idAtProvider?: string;
     platform?: string;
     refreshToken?: string;
-    refreshTokenExpiresAt?: number[] | Date;
+    refreshTokenExpiresAt?: number[] | Date | string;
     accessToken?: string;
-    accessTokenExpiresAt?: number[] | Date;
+    accessTokenExpiresAt?: number[] | Date | string;
     idToken?: string;
     scope?: string;
     tokenType?: string;

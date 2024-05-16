@@ -3,19 +3,21 @@ import Title from "../../../components/title/Title";
 import { MenuAPI } from "../../../api/menu/MenuAPI";
 import { Key, useEffect, useState } from "react";
 import Tree from "../../../components/tree/Tree";
-import { Card, Form, Input, TreeSelect, Button, Modal, Typography, message, Switch } from "antd";
+import { Card, Form, Input, TreeSelect, Button, Modal, Typography, message, Switch, Result, Skeleton } from "antd";
 import styles from "../../../styles/routes/management/menu/MenuManagementList.module.scss";
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
 import useMenuManagement from "../../../hooks/useMenuManagement";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
 import { API_QUERY_KEYS, MUTATION_TYPES } from "../../../constants/common/DataConstants";
+import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
 function MenuManagementList () {
 
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const [form] = Form.useForm();
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
 
@@ -23,6 +25,7 @@ function MenuManagementList () {
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+    const [isEnabled, setIsEnabled] = useState<boolean>(true);
     
     const { 
         targetMenu,
@@ -39,6 +42,8 @@ function MenuManagementList () {
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
         onSuccess: (result) => setAllMenus(result),
+        onError: () => setIsEnabled(false),
+        enabled: isEnabled
     })
 
     const { mutate: createMenu } = useMutation((data : MenuInterface) => MenuAPI.createMenu(data), {
@@ -68,7 +73,7 @@ function MenuManagementList () {
             message.success('메뉴가 삭제되었습니다.');
         } else {
             setIsSaveModalOpen(false);
-            type === 'CREATE' ? message.success('메뉴가 생성되었습니다.') : message.success('메뉴가 수정되었습니다.');
+            message.success(`메뉴가 ${type === MUTATION_TYPES.CREATE ?  '생성' : '수정'}되었습니다.`);
         }
     }
 
@@ -91,8 +96,15 @@ function MenuManagementList () {
         <>
             <Title title="메뉴관리" buttons={[{text: '메뉴추가', onClick: handleInsertMenu}]} />
             {
-                isFetching ? <></> : (
-                    isError ? <></> : (
+                isFetching ? <Skeleton active /> : (
+                    isError ? <>
+                        <Result
+                            status="500"
+                            title={'에러가 발생하였습니다.'}
+                            subTitle="다시 시도해주세요."
+                            extra={<Button type="primary" onClick={() => navigate('/')}>홈으로</Button>}
+                        />
+                    </> : (
                         <div className={isMobile ? styles.mobile_container : styles.container}>
                             <div className={styles.card_container}>
                                 <Card className={styles.card}>

@@ -1,19 +1,23 @@
 import { Button, Result } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
-import { API_QUERY_KEYS, AUTH_PLATFORM, DATE_FORMAT, KAKAO_AUTH_ERROR_DESCRIPTIONS } from "../../constants/common/DataConstants";
+import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
 import { KakaoAuthApi } from "../../api/oauth/KakaoAuthApi";
 import { useMutation, useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
 import { KakaoTokenInterface } from "../../types/common/KakaoApiInterface";
-import dayjs from "dayjs";
+import { SignAPI } from "../../api/sign/SignAPI";
+import { useDispatch } from "react-redux";
+import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
+import { toDate } from "../../util/DateUtil";
 
 
 function KakaoAuth () {
-    const { code, error, error_description } = useURLParam();
+    const { code, error } = useURLParam();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
@@ -24,26 +28,7 @@ function KakaoAuth () {
     const {} = useQuery({
         queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBER_BY_ID_AT_PLATFORM],
         queryFn: () => MemberAPI.getMemberByIdAtPlatform(member?.idAtProvider ?? '', AUTH_PLATFORM.KAKAO),
-        onSuccess: (result) => {
-            if (result.memberExists) {
-                console.log('로그인 처리')
-            } else {
-                tokenInfo && navigate('/member/create', {
-                    state: {
-                        member: {
-                            ...member,
-                            refreshToken: tokenInfo.refresh_token,
-                            refreshTokenExpiresAt: dayjs(new Date().getTime() + (Number(tokenInfo.refresh_token_expires_in) * 1000)).format(DATE_FORMAT),
-                            accessToken: tokenInfo.access_token,
-                            idToken: tokenInfo.id_token,
-                            accessTokenExpiresAt: dayjs(new Date().getTime() + (Number(tokenInfo.expires_in) * 1000)).format(DATE_FORMAT),
-                            scope: tokenInfo.scope,
-                            tokenType: tokenInfo.token_type
-                        }
-                    }
-                })
-            }
-        },
+        onSuccess: (result) => result.memberExists ? signIn(member) : tokenInfo && handleMemberNotExists(),
         onError: (e: Error) => {
             setIsError(true);
             setErrorTitle(e.message);
@@ -51,7 +36,7 @@ function KakaoAuth () {
         enabled: isFetching
     })
 
-    const { mutate: getToken } = useMutation((code: string) => KakaoAuthApi.getToken(code), {
+    const { mutate: getToken } = useMutation((code: string) => KakaoAuthApi.requestToken(code), {
         onSuccess: (data) => {
             setTokenInfo(data);
             getUserInfo(data.access_token);
@@ -66,14 +51,37 @@ function KakaoAuth () {
         }
     })
 
-    useEffect(() => {
-        if (code) {
-            getToken(code);
-        } else if (error) {
-            setIsError(true);
-            error_description === KAKAO_AUTH_ERROR_DESCRIPTIONS.CANCELLATION && setErrorTitle('로그인이 취소되었습니다');
+    const { mutate: signIn } = useMutation(
+        (member: MemberInterface) => SignAPI.signIn(member),
+        {
+            onSuccess: (data) => {
+                dispatch(setAccessTokenState({
+                    accessToken: data.access_token,
+                    accessTokenExpiresAt: toDate(data.expires_at).getTime(),
+                    nickname: data.nickname
+                }))
+                tokenInfo?.access_token && invalidateKakaoToken(tokenInfo?.access_token);
+                navigate('/');
+            },
+            onError: (e: Error) => {
+                setIsError(true);
+                setErrorTitle(e.message);
+            }
         }
-    }, [code, error, error_description])
+    )
+
+    const { mutate: invalidateKakaoToken } = useMutation(
+        (accessToken: string) => KakaoAuthApi.invalidateToken(accessToken)
+    )
+
+    const handleMemberNotExists = () => {
+        tokenInfo?.access_token && invalidateKakaoToken(tokenInfo.access_token);
+        navigate('/member/create', { state: { member } });
+    }
+
+    useEffect(() => {
+        code && !isError ? getToken(code) : setIsError(true);
+    }, [code, error])
 
     return (
         <>

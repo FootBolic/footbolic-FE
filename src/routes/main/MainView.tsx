@@ -13,9 +13,6 @@ import {
 } from '@ant-design/icons';
 import SimpleTable from "../../components/table/SimpleTable";
 import { RESPONSIVE_GRID } from "../../constants/common/ViewConstants";
-import { MemberAPI } from "../../api/member/MemberAPI";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useState } from "react";
 
 const listData:any[] = [];
 const tabData:any[] = [];
@@ -55,63 +52,8 @@ for (let i=0; i< boards.length; i++) {
 
 function MainView () {
 
-    const queryClient = useQueryClient();
-
-    const [memberId, setMemberId] = useState<string>('');
-
-    const {} = useQuery({
-        queryKey: ['getMembers'],
-        queryFn: () => MemberAPI.getMembers(),
-        onSuccess: (members) => console.log(members)
-    });
-
-    const { mutate: createMember } = useMutation(
-        () => MemberAPI.createMember(),
-        {
-            onSuccess: (createdMember) => {
-                console.log(createdMember);
-                setMemberId(createdMember.id);
-                queryClient.invalidateQueries('getMembers');
-            }
-        }
-    );
-
-    const { mutate: updateMember } = useMutation(
-        (id: string) => MemberAPI.updateMember(id),
-        {
-            onSuccess: (updatedMember) => {
-                console.log(updatedMember);
-                queryClient.invalidateQueries('getMembers');
-            }
-        }
-    )
-
-    const { mutate: deleteMember } = useMutation(
-        (id: string) => MemberAPI.deleteMember(id),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('getMembers');
-            }
-        }
-    )
-
-    const handleCreate = () => {
-        createMember();
-    }
-
-    const handleUpdate = () => {
-        updateMember(memberId);
-    }
-
-    const handleDelete = () => {
-        deleteMember(memberId);
-    }
-
     return (
         <>
-            <button onClick={handleCreate}>create</button>
-            <button onClick={handleUpdate}>update</button>
-            <button onClick={handleDelete}>delete</button>
             <div className={styles.main_el}>
                 <Banner />
             </div>
