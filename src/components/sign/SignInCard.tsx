@@ -10,18 +10,16 @@ function SignInCard () {
     const { issue } = useCsrfCheck();
 
     const handleKakaoSignIn = () => {
-        const kakaoApiUrl = 'https://kauth.kakao.com/oauth/authorize?response_type=code'
+        location.href = 'https://kauth.kakao.com/oauth/authorize?response_type=code'
                                 + `&client_id=${import.meta.env.VITE_KAKAO_API_KEY}`
                                 + `&redirect_uri=${import.meta.env.VITE_KAKAO_RET_URI}`;
-        location.href = kakaoApiUrl;
     }
 
     const handleNaverSignIn = () => {
         const authCsrfState = issue(30);
-        const naverApiUrl = 'https://nid.naver.com/oauth2.0/authorize?response_type=code'
+        location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code'
                                 + `&client_id=${import.meta.env.VITE_NAVER_CLIENT_ID}&state=${authCsrfState}`
                                 + `&redirect_uri=${import.meta.env.VITE_NAVER_RET_URI}`;
-        location.href = naverApiUrl;   
     }
 
     return (

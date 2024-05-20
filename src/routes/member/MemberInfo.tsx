@@ -4,18 +4,20 @@ import styles from "../../styles/routes/member/MemberInfo.module.scss"
 import { useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
+import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
 import { MemberAPI } from "../../api/member/MemberAPI";
 import { getTime, toDate } from "../../util/DateUtil";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetAccessTokenState } from "../../reducers/AccessTokenReducer";
+import { resetAccessTokenState, updateNickname } from "../../reducers/AccessTokenReducer";
 import { ROUTES } from "../../constants/common/RouteConstants";
+import useCsrfCheck from "../../hooks/useCsrfCheck";
 
 const { Text } = Typography;
 
 function MemberInfo() {
     const [form] = Form.useForm();
+    const { issue } = useCsrfCheck();
     const queryClient = useQueryClient();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -35,7 +37,7 @@ function MemberInfo() {
                 form.setFieldsValue(result);
             }
         },
-        onError: (e: string) => {console.log(123,e)
+        onError: (e: string) => {
             message.error(e);
             dispatch(resetAccessTokenState());
             navigate(ROUTES.MAIN_VIEW.path);
@@ -48,11 +50,37 @@ function MemberInfo() {
             onSuccess: () => {
                 setIsSaveModalOpen(false);
                 queryClient.invalidateQueries(API_QUERY_KEYS.MEMBER.GET_MEMBER);
+                dispatch(updateNickname({ nickname: form.getFieldValue('nickname') }))
                 message.success("회원정보가 수정되었습니다.");
             },
             onError: (e: string) => {
                 message.error(e);
                 setIsSaveModalOpen(false)
+            }
+        }
+    )
+
+    const { mutate: checkPlatform } = useMutation(
+        () => MemberAPI.checkPlatform(),
+        {
+            onSuccess: (platform) => {
+                if (platform === AUTH_PLATFORM.KAKAO) {
+                    location.href = 'https://kauth.kakao.com/oauth/authorize?response_type=code'
+                                            + `&client_id=${import.meta.env.VITE_KAKAO_API_KEY}`
+                                            + `&redirect_uri=${import.meta.env.VITE_KAKAO_WITHDRAW_RET_URI}`;
+                } else if (platform === AUTH_PLATFORM.NAVER) {
+                    const authCsrfState = issue(30);
+                    location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code'
+                                            + `&client_id=${import.meta.env.VITE_NAVER_CLIENT_ID}&state=${authCsrfState}`
+                                            + `&redirect_uri=${import.meta.env.VITE_NAVER_WITHDRAW_RET_URI}`;
+                } else {
+                    message.error('알 수 없는 에러가 발생하였습니다.');
+                    setIsDeleteModalOpen(false);
+                }
+            },
+            onError: (e:string) => {
+                message.error(e);
+                setIsDeleteModalOpen(false);
             }
         }
     )
@@ -89,7 +117,7 @@ function MemberInfo() {
                     >
                         <Form.Item
                             name="nickname"
-                            label='닉네임'
+                            label={isUpdatable ? '닉네임' : '닉네임 ()'}
                             rules={[
                                 {
                                     required: true,
@@ -127,7 +155,7 @@ function MemberInfo() {
                             <Modal
                                 title='회원 탈퇴'
                                 open={isDeleteModalOpen}
-                                onOk={() => form.submit()}
+                                onOk={() => checkPlatform()}
                                 onCancel={() => setIsDeleteModalOpen(false)}
                                 okButtonProps={{ danger: true }}
                                 okText='확인'

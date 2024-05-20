@@ -106,7 +106,8 @@ function MemberCreate () {
                             okText='확인'
                             cancelText='취소'
                         >
-                            <Text>회원가입을 진행하시겠습니까?\n닉네임은 3개월동안 수정이 불가합니다.</Text>
+                            <Text>회원가입을 진행하시겠습니까?</Text><br/>
+                            <Text>닉네임은 3개월동안 수정이 불가합니다.</Text>
                         </Modal>
                     </Form.Item>
                 </Form>
