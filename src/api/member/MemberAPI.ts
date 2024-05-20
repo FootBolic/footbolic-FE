@@ -96,4 +96,23 @@ export class MemberAPI {
         const response = await api.post(`/members/public/oauth/naver/user-info?token_type=${tokenType}&access_token=${accessToken}`);
         return JSON.parse(response.data.data).response;
     }
+
+    /**
+     * 회원의 회원가입 플랫폼 조회
+     * @returns {Promise<string>} 회원의 회원가입 플랫폼
+     */
+    static async checkPlatform(): Promise<string> {
+        const response = await api.post('/members/me/platform');
+        return response.data.data.platform;
+    }
+    
+    /**
+     * 회원 탈퇴 API
+     * @param {string} accessToken 로그인 API에서 받은 Access Token
+     * @returns {Promise<{ id: string }>} 회원 탈퇴 성공한 회원의 식별번호
+     */
+    static async withdrawTokenMember(accessToken: string): Promise<{ id: string }> {
+        const response = await api.delete(`/members/me?access_token=${accessToken}`);
+        return response.data.data;
+    }
 }

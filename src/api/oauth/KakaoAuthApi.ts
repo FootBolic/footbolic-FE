@@ -6,15 +6,16 @@ export class KakaoAuthApi {
     /**
      * 카카오 API 로그인/회원가입 시 토큰 받아오기
      * @param {string} code 카카오 API로 부터 받은 코드
+     * @param {boolean} isWithdraw 탈퇴시 요청 여부
      * @returns {Promise<KakaoTokenInterface>} 카카오 API로 부터 받은 토큰 정보
      */
-    static async requestToken (code: string): Promise<KakaoTokenInterface> {
+    static async requestToken (code: string, isWithdraw: boolean): Promise<KakaoTokenInterface> {
         const result = await kakaoAuthApi.post('/oauth/token', {
             code,
             grant_type: 'authorization_code',
             client_id: import.meta.env.VITE_KAKAO_API_KEY,
             client_secret: import.meta.env.VITE_KAKAO_CLIENT_SECRET,
-            redirect_uri: import.meta.env.VITE_KAKAO_RET_URI
+            redirect_uri: isWithdraw ? import.meta.env.VITE_KAKAO_WITHDRAW_RET_URI : import.meta.env.VITE_KAKAO_RET_URI
         });
 
         return result.data;

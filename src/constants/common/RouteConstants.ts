@@ -2,6 +2,7 @@ import MainView from "../../routes/main/MainView";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
 import MemberInfo from "../../routes/member/MemberInfo";
+import MemberWithdraw from "../../routes/member/MemberWithdraw";
 import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
 
@@ -35,5 +36,10 @@ export const ROUTES = {
     MEMBER_INFO: {
         path: '/member/me',
         element: MemberInfo
+    },
+    // 회원 탈퇴 페이지
+    MEMBER_WITHDRAW: {
+        path: '/member/withdraw/:platform',
+        element: MemberWithdraw
     }
 }

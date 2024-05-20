@@ -9,8 +9,7 @@ export const accessTokenSlice = createSlice({
     initialState: {
         accessToken: undefined,
         accessTokenExpiresAt: undefined,
-        nickname: undefined,
-        isFetchingRenewal: false
+        nickname: undefined
     },
     reducers: {
         setAccessTokenState: (state: AccessTokenStateInterface, action: PayloadAction<AccessTokenStateInterface>) => {
@@ -23,10 +22,12 @@ export const accessTokenSlice = createSlice({
             state.accessTokenExpiresAt = undefined;
             state.nickname = undefined;
         },
-
+        updateNickname: (state: AccessTokenStateInterface, action: PayloadAction<AccessTokenStateInterface>) => {
+            state.nickname = action.payload.nickname;
+        }
     }
 })
 
-export const { setAccessTokenState, resetAccessTokenState } = accessTokenSlice.actions;
+export const { setAccessTokenState, resetAccessTokenState, updateNickname } = accessTokenSlice.actions;
 
 export default accessTokenSlice.reducer;

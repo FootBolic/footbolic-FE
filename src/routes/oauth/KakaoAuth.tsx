@@ -37,21 +37,27 @@ function KakaoAuth () {
         enabled: isFetching
     })
 
-    const { mutate: getToken } = useMutation((code: string) => KakaoAuthApi.requestToken(code), {
-        onSuccess: (data) => {
-            setTokenInfo(data);
-            getUserInfo(data.access_token);
-        },
-        onError: () => setIsError(true),
-    })
+    const { mutate: getToken } = useMutation(
+        (code: string) => KakaoAuthApi.requestToken(code, false), 
+        {
+            onSuccess: (data) => {
+                setTokenInfo(data);
+                getUserInfo(data.access_token);
+            },
+            onError: () => setIsError(true),
+        }
+    )
 
-    const { mutate: getUserInfo } = useMutation((data: string) => KakaoAuthApi.getUserInfo(data), {
-        onSuccess: (data) => {
-            setMember({ ...member, idAtProvider: `${data.id}` } as MemberInterface);
-            setIsFetching(true);
-        },
-        onError: () => setIsError(true),
-    })
+    const { mutate: getUserInfo } = useMutation(
+        (data: string) => KakaoAuthApi.getUserInfo(data),
+        {
+            onSuccess: (data) => {
+                setMember({ ...member, idAtProvider: `${data.id}` } as MemberInterface);
+                setIsFetching(true);
+            },
+            onError: () => setIsError(true),
+        }
+    )
 
     const { mutate: signIn } = useMutation(
         (member: MemberInterface) => SignAPI.signIn(member),
