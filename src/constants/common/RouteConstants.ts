@@ -1,4 +1,5 @@
 import MainView from "../../routes/main/MainView";
+import MemberManagement from "../../routes/management/member/MemberManagement";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
 import MemberInfo from "../../routes/member/MemberInfo";
@@ -41,5 +42,10 @@ export const ROUTES = {
     MEMBER_WITHDRAW: {
         path: '/member/withdraw/:platform',
         element: MemberWithdraw
+    },
+    // 회원 관리 페이지
+    MEMBER_MANAGEMENT: {
+        path: '/member/management',
+        element: MemberManagement
     }
 }

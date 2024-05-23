@@ -14,6 +14,25 @@ export const toDate = (ldt: number[]): Date => {
  * 현재시간을 milliseconds로 리턴한다
  * @returns {number} 현재시간 milliseconds
  */
-export const getTime = () => {
+export const getTime = (): number => {
     return new Date().getTime();
+}
+
+/**
+ * number[] 타입의 날짜를 'YYYY-MM-DD' 형태의 문자열로 변환
+ * @param {number[]} date 변환 대상 날짜
+ * @returns 'YYYY-MM-DD' 형태의 문자열
+ */
+export const toDateString = (date: number[]): string => {
+    return `${String(date[0])}-${String(date[1]).padStart(2, '0')}-${String(date[2]).padStart(2, '0')}`
+}
+
+/**
+ * number[] 타입의 날짜를 'YYYY-MM-DD HH:mm:ss' 형태의 문자열로 변환
+ * @param {number[]} date 변환 대상 날짜
+ * @returns 'YYYY-MM-DD' 형태의 문자열
+ */
+export const toDatetimeString = (date: number[]): string => {
+    return `${String(date[0])}-${String(date[1]).padStart(2, '0')}-${String(date[2]).padStart(2, '0')} `
+        +`${String(date[3]).padStart(2, '0')}:${String(date[4]).padStart(2, '0')}:${String(date[5]).padStart(2, '0')}`;
 }

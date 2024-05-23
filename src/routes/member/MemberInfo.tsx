@@ -27,8 +27,8 @@ function MemberInfo() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
     const { isFetching } = useQuery({
-        queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBER],
-        queryFn: () => MemberAPI.getMember(),
+        queryKey: [API_QUERY_KEYS.MEMBER.GET_TOKEN_MEMBER],
+        queryFn: () => MemberAPI.getTokenMember(),
         onSuccess: (result) => {
             if (result) {
                 const nicknameLastUpdatedAt = toDate(result.nicknameLastUpdatedAt as number[]);
@@ -49,7 +49,7 @@ function MemberInfo() {
         {
             onSuccess: () => {
                 setIsSaveModalOpen(false);
-                queryClient.invalidateQueries(API_QUERY_KEYS.MEMBER.GET_MEMBER);
+                queryClient.invalidateQueries(API_QUERY_KEYS.MEMBER.GET_TOKEN_MEMBER);
                 dispatch(updateNickname({ nickname: form.getFieldValue('nickname') }))
                 message.success("회원정보가 수정되었습니다.");
             },

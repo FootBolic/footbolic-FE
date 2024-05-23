@@ -3,22 +3,20 @@ import Title from "../../../components/title/Title";
 import { MenuAPI } from "../../../api/menu/MenuAPI";
 import { Key, useEffect, useState } from "react";
 import Tree from "../../../components/tree/Tree";
-import { Card, Form, Input, TreeSelect, Button, Modal, Typography, message, Switch, Result, Skeleton } from "antd";
-import styles from "../../../styles/routes/management/menu/MenuManagementList.module.scss";
+import { Card, Form, Input, TreeSelect, Button, Modal, Typography, message, Switch, Skeleton } from "antd";
+import styles from "../../../styles/routes/management/menu/MenuManagement.module.scss";
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
 import useMenuManagement from "../../../hooks/useMenuManagement";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
 import { API_QUERY_KEYS, MUTATION_TYPES } from "../../../constants/common/DataConstants";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../constants/common/RouteConstants";
+import Error from "../../../components/error/Error";
 
 const { Text } = Typography;
 
 function MenuManagement () {
 
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
 
@@ -101,14 +99,7 @@ function MenuManagement () {
             <Title title="메뉴관리" buttons={[{text: '메뉴추가', onClick: handleInsertMenu}]} />
             {
                 isFetching ? <Skeleton active /> : (
-                    isError ? <>
-                        <Result
-                            status="500"
-                            title={'에러가 발생하였습니다.'}
-                            subTitle="다시 시도해주세요."
-                            extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
-                        />
-                    </> : (
+                    isError ? <Error /> : (
                         <div className={isMobile ? styles.mobile_container : styles.container}>
                             <div className={styles.card_container}>
                                 <Card className={styles.card}>

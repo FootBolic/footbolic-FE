@@ -8,10 +8,17 @@ import api from "../api";
 export class MemberAPI {
     /**
      * 회원 목록 조회 API
+     * @param {number} page 현재 페이지
+     * @param {number} size 페이지당 결과 수
      * @returns {Promise<MemberInterface[]>} 회원 목록 Promise 객체
      */
-    static async getMembers(): Promise<MemberInterface[]> {
-        const response = await api.get('/members');
+    static async getMembers(page: number, size: number): Promise<{ members: MemberInterface[], size: number }> {
+        const response = await api.get(`/members?page=${page}&size=${size}`);
+        return response.data.data;
+    }
+
+    static async getMember(id: string): Promise<MemberInterface> {
+        const response = await api.get(`/members/${id}`);
         return response.data.data;
     }
 
@@ -19,7 +26,7 @@ export class MemberAPI {
      * Access Token으로 회원 정보 조회
      * @returns {Promise<MemberInterface>} 조회된 회원 정보
      */
-    static async getMember(): Promise<MemberInterface> {
+    static async getTokenMember(): Promise<MemberInterface> {
         const response = await api.post('/members/me');
         return response.data.data;
     }
@@ -52,18 +59,12 @@ export class MemberAPI {
     
     /**
      * 회원 수정 API
-     * @param {string} id 회원식별번호
+     * @param {MemberInterface} member 수정된 회원
      * @returns {Promise<MemberInterface>} 수정된 회원 Promise 객체
      */
-    static async updateMember(id: string): Promise<MemberInterface> {
-        const updatedMember = await api.patch('/members', {
-            id,
-            roleId: '202401211053010000000000000023',
-            fullName: 'new_test_name',
-            nickname: 'new_test_nickname',
-        });
-
-        return updatedMember.data.isSuccess ? updatedMember.data.data : {};
+    static async updateMember(member: MemberInterface): Promise<MemberInterface> {
+        const updatedMember = await api.patch('/members', member);
+        return updatedMember.data.data;
     }
 
     /**
