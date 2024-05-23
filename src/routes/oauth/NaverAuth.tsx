@@ -25,7 +25,7 @@ function NaverAuth () {
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
     const [errorTitle, setErrorTitle] = useState<string>("");
-    const [member, setMember] = useState<MemberInterface>({ id: '', roleId: import.meta.env.VITE_DEFAULT_ROLE_ID, platform: AUTH_PLATFORM.NAVER });
+    const [member, setMember] = useState<MemberInterface>({ id: '', platform: AUTH_PLATFORM.NAVER });
     const [tokenInfo, setTokenInfo] = useState<NaverTokenInterface>();
 
     const {} = useQuery({

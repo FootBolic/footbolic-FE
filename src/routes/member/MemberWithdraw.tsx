@@ -14,6 +14,7 @@ import { NaverAuthApi } from "../../api/oauth/NaverAuthApi";
 import styles from "../../styles/routes/member/MemberWithdraw.module.scss"
 import { useDispatch } from "react-redux";
 import { resetAccessTokenState } from "../../reducers/AccessTokenReducer";
+import Error from "../../components/error/Error";
 
 function MemberWithdraw() {
     const navigate = useNavigate();
@@ -83,25 +84,20 @@ function MemberWithdraw() {
     return (
         <>
             {
-                isError ? <>
-                    <Result
-                        status="500"
-                        title='에러가 발생하였습니다.'
-                        subTitle="다시 시도해주세요."
-                        extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
-                    />
-                </> : <>{isCompleted ? (
-                    <div className={styles.completion_container}>
-                        <Result
-                            status="success"
-                            title="회원 탈퇴가 완료되었습니다."
-                            subTitle="그 동안 FOOTBOLIC을 이용해주셔서 감사합니다."
-                            extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
-                        />
-                    </div>
-                ) : (
-                    <Skeleton active />
-                )}</>
+                isError ? <Error /> : <>
+                    {
+                        isCompleted ? (
+                            <div className={styles.completion_container}>
+                                <Result
+                                    status="success"
+                                    title="회원 탈퇴가 완료되었습니다."
+                                    subTitle="그 동안 FOOTBOLIC을 이용해주셔서 감사합니다."
+                                    extra={<Button type="primary" onClick={() => navigate(ROUTES.MAIN_VIEW.path)}>홈으로</Button>}
+                                />
+                            </div>
+                        ) : <Skeleton active />
+                    }
+                </>
             }
         </>
     )

@@ -8,13 +8,6 @@ export const MUTATION_TYPES = {
 }
 
 /**
- * 카카오 인증 에러 텍스트
- */
-export const KAKAO_AUTH_ERROR_DESCRIPTIONS = {
-    CANCELLATION: 'User denied access'
-}
-
-/**
  * 인증 API 플랫폼
  */
 export const AUTH_PLATFORM = {
@@ -23,14 +16,27 @@ export const AUTH_PLATFORM = {
 }
 
 /**
+ * 인증 API 플랫폼 한국어
+ */
+export const AUTH_PLATFORM_KR = {
+    KAKAO: '카카오',
+    NAVER: '네이버'
+}
+
+/**
  * Dayjs 전달용 datetime 형식
  */
 export const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
+/**
+ * Access Token 만료 전 갱신할 시간
+ */
 export const TOKEN_RENEWAL_TIME = {
     CHECK_PERIOD: 30 * 1000,
     FETCH_REM_TIME: 20 * 1000
 }
+
+export const BOARD_PAGE_SIZE = 20;
 
 /**
  * React Query의 queryKey
@@ -40,7 +46,10 @@ export const API_QUERY_KEYS = {
         GET_MENUS: 'GET_MENUS'
     },
     MEMBER: {
+        GET_MEMBERS: 'GET_MEMBERS',
+        COUNT_MEMBERS: 'COUNT_MEMBERS',
         GET_MEMBER: 'GET_MEMBER',
+        GET_TOKEN_MEMBER: 'GET_TOKEN_MEMBER',
         GET_MEMBER_BY_ID_AT_PLATFORM: 'GET_MEMBER_BY_ID_AT_PLATFORM'
     }
 }
