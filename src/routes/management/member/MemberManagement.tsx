@@ -4,13 +4,15 @@ import styles from "../../../styles/routes/management/member/MemberManagement.mo
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
 import { MemberAPI } from "../../../api/member/MemberAPI";
-import { MemberInterface } from "../../../types/entity/member/MemberInterface";
+import { MemberInterface, MemberSearchInterface } from "../../../types/entity/member/MemberInterface";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import Error from "../../../components/error/Error";
-import { API_QUERY_KEYS, BOARD_PAGE_SIZE } from "../../../constants/common/DataConstants";
+import { API_QUERY_KEYS, AUTH_PLATFORM, AUTH_PLATFORM_KR, BOARD_PAGE_SIZE } from "../../../constants/common/DataConstants";
 import { addKey, translatePlatform } from "../../../util/DataUtil";
 import { toDateString, toDatetimeString } from "../../../util/DateUtil";
+import SearchBar from "../../../components/search/SearchBar";
+import { SEARCH_TYPES } from "../../../constants/components/SearchBarConstants";
 
 const { Text } = Typography;
 
@@ -21,14 +23,15 @@ function MemberManagement() {
     const [member, setMember] = useState<MemberInterface>();
     const [allMembers, setAllMembers] = useState<MemberInterface[]>([]);
     const [memberId, setMemberId] = useState<string>("");
-    const [page, setPage] = useState<number>(0);
+    const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+    const [search, setSearch] = useState<MemberSearchInterface>();
 
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBERS],
-        queryFn: () => MemberAPI.getMembers(page-1, BOARD_PAGE_SIZE),
+        queryFn: () => MemberAPI.getMembers(page-1, BOARD_PAGE_SIZE, search),
         onSuccess: (result) => {
             setAllMembers(result.members);
             setSize(result.size);
@@ -72,6 +75,11 @@ function MemberManagement() {
     }, [memberId])
 
     useEffect(() => {
+        refetchAll();
+        setMemberId("");
+    }, [search])
+
+    useEffect(() => {
         if (member) {
             form.setFieldsValue(member);
             member.platform && form.setFieldValue("platform", translatePlatform(member.platform));
@@ -91,17 +99,29 @@ function MemberManagement() {
         updateMember({ ...member, nickname: form.getFieldValue("nickname") })
     }
 
-    const handleSuccess = (isCreate: boolean) => {
-        message.success(`회원이 성공적으로 ${isCreate ? '수정' : '삭제'}되었습니다.`);
+    const handleSuccess = (isUpdate: boolean) => {
+        message.success(`회원이 성공적으로 ${isUpdate ? '수정' : '삭제'}되었습니다.`);
         refetchAll();
-        isCreate ? refetchMember() : setMemberId("");
+        isUpdate ? refetchMember() : setMemberId("");
     }
 
     return (
         <>
             <Title title="회원 관리" />
             {isFetchingAll ? <Skeleton active /> : <>
-                {isErrorAll ? <Error /> : (
+                {isErrorAll ? <Error /> : <>
+                    <SearchBar 
+                        defaultValues={search}
+                        elements={[
+                            { label: '닉네임', name: 'nickname', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '제목을 입력해주세요.' },
+                            { label: '플랫폼', name: 'platform', type: SEARCH_TYPES.SELECT, placeholder: '플랫폼을 선택해주세요.', options: [
+                                { label: AUTH_PLATFORM_KR.KAKAO, value: AUTH_PLATFORM.KAKAO },
+                                { label: AUTH_PLATFORM_KR.NAVER, value: AUTH_PLATFORM.NAVER }
+                            ] }
+                        ]}
+                        onSearch={(result) => setSearch(result)}
+                        onReset={() => setSearch(undefined)}
+                    />
                     <div className={isMobile ? styles.mobile_container : styles.container}>
                         <div className={styles.card_container}>
                             <Card className={styles.card} bodyStyle={{ height: '100%' }}>
@@ -172,39 +192,39 @@ function MemberManagement() {
                                 <Form.Item name='nicknameLastUpdatedAt' label='닉네임변경일자'>
                                     <Input disabled />
                                 </Form.Item>
-                                    <Form.Item className={styles.button_container}>
-                                        <Button type='primary' onClick={() => setIsSaveModalOpen(true)}>
-                                            수정
-                                        </Button>
-                                        <Modal
-                                            title='회원 수정'
-                                            open={isSaveModalOpen}
-                                            onOk={() => form.submit()}
-                                            onCancel={() => setIsSaveModalOpen(false)}
-                                            okText='확인'
-                                            cancelText='취소'
-                                        >
-                                            <Text>회원을 수정하시겠습니까?</Text>
-                                        </Modal>
-                                        <Button danger type='primary' onClick={() => setIsDeleteModalOpen(true)}>
-                                            삭제
-                                        </Button>
-                                        <Modal
-                                            title='회원 삭제'
-                                            open={isDeleteModalOpen}
-                                            onOk={() => member && deleteMember(member.id)}
-                                            onCancel={() => setIsDeleteModalOpen(false)}
-                                            okText='삭제'
-                                            cancelText='취소'
-                                            okButtonProps={{ danger: true }}
-                                        >
-                                            <Text>회원을 삭제하시겠습니까?</Text>
-                                        </Modal>
-                                    </Form.Item>
+                                <Form.Item className={styles.button_container}>
+                                    <Button type='primary' onClick={() => setIsSaveModalOpen(true)}>
+                                        수정
+                                    </Button>
+                                    <Modal
+                                        title='회원 수정'
+                                        open={isSaveModalOpen}
+                                        onOk={() => form.submit()}
+                                        onCancel={() => setIsSaveModalOpen(false)}
+                                        okText='확인'
+                                        cancelText='취소'
+                                    >
+                                        <Text>회원을 수정하시겠습니까?</Text>
+                                    </Modal>
+                                    <Button danger type='primary' onClick={() => setIsDeleteModalOpen(true)}>
+                                        삭제
+                                    </Button>
+                                    <Modal
+                                        title='회원 삭제'
+                                        open={isDeleteModalOpen}
+                                        onOk={() => member && deleteMember(member.id)}
+                                        onCancel={() => setIsDeleteModalOpen(false)}
+                                        okText='삭제'
+                                        cancelText='취소'
+                                        okButtonProps={{ danger: true }}
+                                    >
+                                        <Text>회원을 삭제하시겠습니까?</Text>
+                                    </Modal>
+                                </Form.Item>
                             </Form>
                         </div>
                     </div>
-                )}
+                </>}
             </>}
         </>
     )

@@ -43,7 +43,7 @@ function useMenuManagement() {
         targetMenu && setOptionMenus(getOptionMenus(allMenus, targetMenu));
     }, [targetMenu])
 
-    return { targetMenu, setTargetMenu, optionMenus, treeNodeMenus, allMenus, setAllMenus, handleSelectionChange, handleInsertMenu, isIdenticalMenus }
+    return { targetMenu, setTargetMenu, getOptionMenus, optionMenus, treeNodeMenus, allMenus, setAllMenus, handleSelectionChange, handleInsertMenu, isIdenticalMenus }
 }
 
 export default useMenuManagement;

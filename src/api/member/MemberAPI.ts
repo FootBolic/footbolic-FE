@@ -1,5 +1,5 @@
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
-import { MemberInterface } from "../../types/entity/member/MemberInterface";
+import { MemberInterface, MemberSearchInterface } from "../../types/entity/member/MemberInterface";
 import api from "../api";
 
 /**
@@ -10,13 +10,26 @@ export class MemberAPI {
      * 회원 목록 조회 API
      * @param {number} page 현재 페이지
      * @param {number} size 페이지당 결과 수
-     * @returns {Promise<MemberInterface[]>} 회원 목록 Promise 객체
+     * @param {MemberSearchInterface} search 검색 파라미터
+     * @returns {Promise<{ members: MemberInterface[], size: number }>} 회원 목록 및 전체 회원 수 Promise 객체
      */
-    static async getMembers(page: number, size: number): Promise<{ members: MemberInterface[], size: number }> {
-        const response = await api.get(`/members?page=${page}&size=${size}`);
+    static async getMembers(
+        page: number,
+        size: number,
+        search: MemberSearchInterface | undefined
+    ): Promise<{ members: MemberInterface[], size: number }> {
+        let url = `/members?page=${page}&size=${size}`;
+        url += search?.nickname ? `&searchNickname=${search.nickname}` : '';
+        url += search?.platform ? `&searchPlatform=${search.platform}` : '';
+        const response = await api.get(url);
         return response.data.data;
     }
 
+    /**
+     * 회원 식별번호로 회원 정보 조회
+     * @param {string} id 조회할 대상 회원 식별번호
+     * @returns {Promise<MemberInterface>} 조회된 회원 정보
+     */
     static async getMember(id: string): Promise<MemberInterface> {
         const response = await api.get(`/members/${id}`);
         return response.data.data;
