@@ -23,7 +23,7 @@ function useToken() {
         () => SignAPI.checkRefreshToken(),
         {
             onSuccess: (result) => result ? renew() : handleFinish('로그인이 필요한 서비스입니다.'),
-            onError: () => signOut()
+            onError: () => handleFinish('에러가 발생하였습니다.')
         }
     )
 
@@ -58,7 +58,7 @@ function useToken() {
                     nickname: result.nickname
                 })) : signOut();
             },
-            onError: () => signOut()
+            onError: () => handleFinish('에러가 발생하였습니다.')
         }
     )
 

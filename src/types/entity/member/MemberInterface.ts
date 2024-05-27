@@ -14,3 +14,9 @@ export interface MemberInterface {
     createdAt?: number[];
     updatedAt?: number[];
 }
+
+export interface MemberSearchInterface {
+    nickname?: string;
+    platform?: string;
+    roleId?: string;
+}

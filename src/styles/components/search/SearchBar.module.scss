@@ -1,0 +1,61 @@
+.container {
+    width: 100%;
+    margin-bottom: 20px;
+
+    .flex {
+        display: flex;
+        justify-content: center;
+        overflow-x: auto;
+
+        .form_container {
+            min-width: calc(100% - 150px);
+            overflow-x: auto;
+
+            .form_item {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                min-width: 150px;
+            }
+        }
+
+        .button_container {
+            min-width: 150px;
+
+            button {
+                margin-inline: 5px;
+            }
+        }
+    }
+}
+
+.mobile_container {
+    width: 100%;
+    margin-bottom: 20px;
+
+    .flex {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow-x: scroll;
+        min-width: 200px;
+
+        .form_container {
+            flex-basis: calc(100% - 150px);
+
+            .form_item {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        }
+
+        .button_container {
+            min-width: 150px;
+            text-align: center;
+
+            button {
+                margin-inline: 5px;
+            }
+        }
+    }
+}

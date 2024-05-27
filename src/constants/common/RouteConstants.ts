@@ -1,4 +1,5 @@
 import MainView from "../../routes/main/MainView";
+import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import MemberManagement from "../../routes/management/member/MemberManagement";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
@@ -15,7 +16,7 @@ export const ROUTES = {
     },
     // 메뉴관리 목록
     MENU_MANAGEMENT: {
-        path: '/menu/management',
+        path: '/management/menu',
         element: MenuManagement
     },
     // 카카오 API 회원가입 및 로그인
@@ -45,7 +46,12 @@ export const ROUTES = {
     },
     // 회원 관리 페이지
     MEMBER_MANAGEMENT: {
-        path: '/member/management',
+        path: '/management/member',
         element: MemberManagement
+    },
+    // 권한 관리 페이지
+    AUTHORIZATION_MANAGEMENT: {
+        path: '/management/authorization',
+        element: AuthorizationManagement
     }
 }

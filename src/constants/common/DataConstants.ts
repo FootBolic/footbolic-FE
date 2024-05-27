@@ -42,14 +42,17 @@ export const BOARD_PAGE_SIZE = 20;
  * React Query의 queryKey
  */
 export const API_QUERY_KEYS = {
-    MENU: {
-        GET_MENUS: 'GET_MENUS'
+    AUTHORIZATION: {
+        GET_AUTHORIZATIONS: 'GET_AUTHORIZATIONS',
+        GET_AUTHORIZATION: 'GET_AUTHORIZATION',
     },
     MEMBER: {
         GET_MEMBERS: 'GET_MEMBERS',
-        COUNT_MEMBERS: 'COUNT_MEMBERS',
         GET_MEMBER: 'GET_MEMBER',
         GET_TOKEN_MEMBER: 'GET_TOKEN_MEMBER',
         GET_MEMBER_BY_ID_AT_PLATFORM: 'GET_MEMBER_BY_ID_AT_PLATFORM'
-    }
+    },
+    MENU: {
+        GET_MENUS: 'GET_MENUS'
+    },
 }

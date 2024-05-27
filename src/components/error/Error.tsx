@@ -1,9 +1,9 @@
 import { Button, Result } from "antd"
 import { useNavigate } from "react-router-dom"
 import { ROUTES } from "../../constants/common/RouteConstants";
-import { ErrorInterface } from "../../types/components/error/ErrorInterface";
+import { ErrorProps } from "../../types/components/error/ErrorProps";
 
-function Error({title, subTitle, to}: ErrorInterface) {
+function Error({title, subTitle, to}: ErrorProps) {
     const navigate = useNavigate();
 
     return (
