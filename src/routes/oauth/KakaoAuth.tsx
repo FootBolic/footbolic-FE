@@ -2,7 +2,7 @@ import { Button, Result } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
 import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
-import { KakaoAuthApi } from "../../api/oauth/KakaoAuthApi";
+import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthAPI";
 import { useMutation, useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
@@ -38,7 +38,7 @@ function KakaoAuth () {
     })
 
     const { mutate: getToken } = useMutation(
-        (code: string) => KakaoAuthApi.requestToken(code, false), 
+        (code: string) => KakaoAuthAPI.requestToken(code, false), 
         {
             onSuccess: (data) => {
                 setTokenInfo(data);
@@ -49,7 +49,7 @@ function KakaoAuth () {
     )
 
     const { mutate: getUserInfo } = useMutation(
-        (data: string) => KakaoAuthApi.getUserInfo(data),
+        (data: string) => KakaoAuthAPI.getUserInfo(data),
         {
             onSuccess: (data) => {
                 setMember({ ...member, idAtProvider: `${data.id}` } as MemberInterface);
@@ -79,7 +79,7 @@ function KakaoAuth () {
     )
 
     const { mutate: invalidateKakaoToken } = useMutation(
-        (accessToken: string) => KakaoAuthApi.invalidateToken(accessToken)
+        (accessToken: string) => KakaoAuthAPI.invalidateToken(accessToken)
     )
 
     const handleMemberNotExists = () => {

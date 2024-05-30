@@ -44,6 +44,7 @@ export const BOARD_PAGE_SIZE = 20;
 export const API_QUERY_KEYS = {
     AUTHORIZATION: {
         GET_AUTHORIZATIONS: 'GET_AUTHORIZATIONS',
+        GET_ALL_AUTHORIZATIONS: 'GET_ALL_AUTHORIZATIONS',
         GET_AUTHORIZATION: 'GET_AUTHORIZATION',
     },
     MEMBER: {
@@ -54,5 +55,9 @@ export const API_QUERY_KEYS = {
     },
     MENU: {
         GET_MENUS: 'GET_MENUS'
+    },
+    ROLE: {
+        GET_ROLES: 'GET_ROLES',
+        GET_ROLE: 'GET_ROLE',
     },
 }

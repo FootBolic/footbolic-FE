@@ -106,17 +106,15 @@ function AuthorizationManagement() {
 
     const handleInsertAuth = () => {
         setAuthorizationId("");
-        setTimeout(() => setAuthorization({ title: "신규 권한" } as AuthorizationInterface), 5);
+        (authorization && !authorization.id) ? setAuthorization(undefined) 
+            : setTimeout(() => setAuthorization({ title: "신규 권한" } as AuthorizationInterface), 5);
     }
 
     const handleFinish = () => {
-        if (!authorization) {
-            message.error('선택된 권한이 없습니다.');
-            return;
+        if (authorization) {
+            const auth: AuthorizationInterface = { ...authorization, title: form.getFieldValue("title"), menuId: form.getFieldValue("menuId") };
+            authorization.id ? updateAuth(auth) : createAuth(auth);
         }
-
-        const auth: AuthorizationInterface = { ...authorization, title: form.getFieldValue("title"), menuId: form.getFieldValue("menuId") };
-        authorization.id ? updateAuth(auth) : createAuth(auth);
     }
 
     const handleSuccess = (isSave: boolean, result: AuthorizationInterface) => {
@@ -155,7 +153,6 @@ function AuthorizationManagement() {
                                             }}
                                         />
                                         <Table.Column
-                                            className={styles.menu}
                                             title="메뉴"
                                             dataIndex="menu"
                                             key="menu"

@@ -23,9 +23,17 @@ export class AuthorizationAPI {
         const response = await api.get(url);
         return response.data.data;
     }
+    /**
+     * 권한 전체 목록 조회 API
+     * @returns {Promise<{ authorizations: AuthorizationInterface[] }>} 권한 목록 및 전체 권한 수 Promise 객체
+     */
+    static async getAllAuthorizations(): Promise<{ authorizations: AuthorizationInterface[] }> {
+        const response = await api.get('/authorizations/all');
+        return response.data.data;
+    }
 
     /**
-     * 회원 식별번호로 권한 정보 조회
+     * 권한 식별번호로 권한 정보 조회
      * @param {string} id 조회할 대상 권한 식별번호
      * @returns {Promise<AuthorizationInterface>} 조회된 권한 정보
      */
@@ -37,7 +45,7 @@ export class AuthorizationAPI {
     /**
      * 권한 생성 API
      * @param {AuthorizationInterface} authorization 생성할 권한 정보
-     * @returns {AuthorizationInterface} 생성된 권한 정보
+     * @returns {Promise<AuthorizationInterface>} 생성된 권한 정보
      */
     static async createAuthorization(authorization: AuthorizationInterface): Promise<AuthorizationInterface> {
         const response = await api.post('/authorizations', authorization);
@@ -47,7 +55,7 @@ export class AuthorizationAPI {
     /**
      * 권한 수정 API
      * @param {AuthorizationInterface} authorization 수정할 권한 정보
-     * @returns {AuthorizationInterface} 수정된 권한 정보
+     * @returns {Promise<AuthorizationInterface>} 수정된 권한 정보
      */
     static async updateAuthorization(authorization: AuthorizationInterface): Promise<AuthorizationInterface> {
         const response = await api.patch('/authorizations', authorization);

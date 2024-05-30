@@ -1,6 +1,9 @@
 import { MenuInterface } from "../../types/entity/menu/MenuInterface";
 import api from "../api";
 
+/**
+ * 메뉴 API 관리 클래스
+ */
 export class MenuAPI {
     /**
      * 메뉴 목록 조회 API
