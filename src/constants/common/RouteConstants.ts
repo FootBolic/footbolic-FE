@@ -2,6 +2,7 @@ import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import MemberManagement from "../../routes/management/member/MemberManagement";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
+import RoleManagement from "../../routes/management/role/RoleManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
 import MemberInfo from "../../routes/member/MemberInfo";
 import MemberWithdraw from "../../routes/member/MemberWithdraw";
@@ -53,5 +54,10 @@ export const ROUTES = {
     AUTHORIZATION_MANAGEMENT: {
         path: '/management/authorization',
         element: AuthorizationManagement
+    },
+    // 역할 관리 페이지
+    ROLE_MANAGEMENT: {
+        path: '/management/role',
+        element: RoleManagement
     }
 }

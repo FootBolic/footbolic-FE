@@ -2,7 +2,7 @@ import { KakaoTokenInterface, KakaoUserInfoInterface } from "../../types/common/
 import { kakaoApi, kakaoAuthApi } from "../api";
 
 
-export class KakaoAuthApi {
+export class KakaoAuthAPI {
     /**
      * 카카오 API 로그인/회원가입 시 토큰 받아오기
      * @param {string} code 카카오 API로 부터 받은 코드

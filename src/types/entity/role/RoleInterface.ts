@@ -1,22 +1,21 @@
+import { AuthorizationInterface } from "../authorizations/AuthorizationInterface";
 import { MemberInterface } from "../member/MemberInterface";
-import { MenuInterface } from "../menu/MenuInterface";
 
-export interface AuthorizationInterface {
+export interface RoleInterface {
     id: string;
     title?: string;
-    menuId?: string;
-    menu?: MenuInterface;
+    isDefault?: boolean;
+    members?: MemberInterface[];
+    authorizations?: AuthorizationInterface[];
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;
     updateMemberId?: string;
     updatedAt?: number[];
     updatedBy?: MemberInterface;
-    isNew?: boolean;
-    isDeleted?: boolean;
 }
 
-export interface AuthorizationSearchInterface {
+export interface RoleSearchInterface {
     title?: string;
-    menuId?: string;
+    authorizationId?: string;
 }

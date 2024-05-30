@@ -28,7 +28,10 @@ function SearchBar({ defaultValues, elements, onSearch, onReset} : SearchBarProp
                                                 <Input maxLength={e.maxLength} placeholder={e.placeholder} /> :
                                             (e.type === SEARCH_TYPES.SELECT && <>
                                                 <TreeSelect
-                                                    placeholder={e.placeholder} treeDefaultExpandAll treeData={e.options} style={{ overflowX: 'scroll' }}
+                                                    placeholder={e.placeholder}
+                                                    treeDefaultExpandAll
+                                                    treeData={e.options}
+                                                    allowClear
                                                 />
                                             </>)
                                         }

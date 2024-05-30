@@ -2,7 +2,7 @@ import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
 import { naverApi, naverAuthApi } from "../api";
 
 
-export class NaverAuthApi {
+export class NaverAuthAPI {
     /**
      * 내이버 API에 토큰을 발급, 갱신, 삭제 요청한다.
      * @param {'authorization_code' | 'refresh_token' | 'delete'} requestType 요청 타입 (authorization_code: 발급, refresh_token: 갱신, delete: 삭제)

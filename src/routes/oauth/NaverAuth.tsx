@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
 import useCsrfCheck from "../../hooks/useCsrfCheck";
-import { NaverAuthApi } from "../../api/oauth/NaverAuthApi";
+import { NaverAuthAPI } from "../../api/oauth/NaverAuthAPI";
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
 import { SignAPI } from "../../api/sign/SignAPI";
 import { useDispatch } from "react-redux";
@@ -45,7 +45,7 @@ function NaverAuth () {
     }
 
     const { mutate: getToken } = useMutation(
-        (code: string) => NaverAuthApi.requestToken('authorization_code', code), 
+        (code: string) => NaverAuthAPI.requestToken('authorization_code', code), 
         {
             onSuccess: handleGetTokenSuccess,
             onError: () => getTokenFromServer(code)
@@ -66,7 +66,7 @@ function NaverAuth () {
     }
 
     const { mutate: getUserInfo } = useMutation(
-        ({ token_type, access_token }: { token_type: string, access_token: string }) => NaverAuthApi.getUserInfo(token_type, access_token),
+        ({ token_type, access_token }: { token_type: string, access_token: string }) => NaverAuthAPI.getUserInfo(token_type, access_token),
         {
             onSuccess: handleGetUserInfoSuccess,
             onError: () => getUserInfoFromServer({ token_type: tokenInfo?.token_type ?? '', access_token: tokenInfo?.access_token ?? '' })
