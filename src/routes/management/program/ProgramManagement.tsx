@@ -13,17 +13,21 @@ function ProgramManagement() {
     return (
         <>
             <Title title="프로그램 관리" buttons={[{ text: "프로그램추가", onClick: () => {} }]} />
-            <ManagementLayout isFetching={false} isError={false}>
-                <SearchBar 
-                    defaultValues={search}
-                    elements={[
-                        { label: '제목', name: 'title', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '제목을 입력해주세요.' },
-                        { label: '코드', name: 'code', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '코드를 입력해주세요.' }
-                    ]}
-                    onSearch={(result) => setSearch(result)}
-                    onReset={() => setSearch(undefined)}
-                />
-            </ManagementLayout>
+            <ManagementLayout 
+                isFetching={false} 
+                isError={false} 
+                searchBar={
+                    <SearchBar 
+                        defaultValues={search}
+                        elements={[
+                            { label: '제목', name: 'title', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '제목을 입력해주세요.' },
+                            { label: '코드', name: 'code', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '코드를 입력해주세요.' }
+                        ]}
+                        onSearch={(result) => setSearch(result)}
+                        onReset={() => setSearch(undefined)}
+                    />
+                }
+            />
         </>
     )
 }

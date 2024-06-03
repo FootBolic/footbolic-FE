@@ -1,0 +1,89 @@
+.container {
+    display: flex;
+    justify-content: center;
+
+    .card_container {
+        flex-basis: 40%;
+        height: 100%;
+        min-width: 40vw;
+
+        .card {
+            height: 60vh;
+            overflow-y: scroll;
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: column;
+
+            .board_container {
+                margin-bottom: 2vh;
+
+                .board {
+                    height: 48vh;
+                    overflow-y: scroll;
+                }
+            }
+
+            .pagination_container {
+                text-align: center;
+            }
+        }
+    }
+
+    .form_container {
+        flex-basis: 60%;
+        padding-inline: 50px;
+        height: 60vh;
+        overflow-y: scroll;
+
+        .form {
+            overflow-x: scroll;
+            min-width: 300px;
+
+            .button_container {
+                display: flex;
+                justify-content: right;
+
+                button {
+                    margin-inline: 3px;
+                }
+            }
+        }
+    }
+}
+
+.mobile_container {
+    width: 100%;
+
+    .card_container {
+
+        .board_container {
+            margin-bottom: 2vh;
+
+            .board {
+                max-height: 48vh;
+                overflow-y: scroll;
+
+                .title {
+                    min-width: 150px;
+                }
+            }
+        }
+
+        .pagination_container {
+            text-align: center;
+        }
+    }
+
+    .form_container {
+        margin: 15px 0 0;
+
+        .button_container {
+            display: flex;
+            justify-content: center;
+
+            button {
+                margin-inline: 3px;
+            }
+        }
+    }
+}
