@@ -25,6 +25,15 @@ export class RoleAPI {
     }
 
     /**
+     * 전체 역할 목록 조회 API
+     * @returns {Promise<{ roles: RoleInterface[] }>} 전체 역할 목록 Promise 객체
+     */
+    static async getAllRoles(): Promise<{ roles: RoleInterface[] }> {
+        const response = await api.get('/roles/all');
+        return response.data.data;
+    }
+
+    /**
      * 역할 식별번호로 역할 정보 조회
      * @param {string} id 조회할 역할 식별번호
      * @returns {Promise<RoleInterface>} 조회한 역할 정보

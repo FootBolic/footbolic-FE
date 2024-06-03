@@ -65,7 +65,12 @@ export class MemberAPI {
         return response.data.data;
     }
 
-    static async updateTokenMember(member: MemberInterface): Promise<MemberInterface> {
+    /**
+     * 로그인 된 회원 수정 API
+     * @param {MemberInterface} member 수정된 회원
+     * @returns {Promise<{ updatedMember: MemberInterface }>} 수정된 회원 Promise 객체
+     */
+    static async updateTokenMember(member: MemberInterface): Promise<{ updatedMember: MemberInterface }> {
         const response = await api.patch('/members/me', member);
         return response.data.data;
     }
@@ -73,9 +78,9 @@ export class MemberAPI {
     /**
      * 회원 수정 API
      * @param {MemberInterface} member 수정된 회원
-     * @returns {Promise<MemberInterface>} 수정된 회원 Promise 객체
+     * @returns {Promise<{ updatedMember: MemberInterface }>} 수정된 회원 Promise 객체
      */
-    static async updateMember(member: MemberInterface): Promise<MemberInterface> {
+    static async updateMember(member: MemberInterface): Promise<{ updatedMember: MemberInterface }> {
         const updatedMember = await api.patch('/members', member);
         return updatedMember.data.data;
     }

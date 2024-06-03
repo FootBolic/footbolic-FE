@@ -4,11 +4,11 @@ import styles from "../../styles/components/title/Title.module.scss";
 
 const { Title: AntTitle } = Typography;
 
-function Title ({ title, buttons, centered }: TitleProps) {
+function Title ({ title, buttons, centered, Icon }: TitleProps) {
     return (
         <div className={centered ? styles.container_center : styles.container}>
             <AntTitle level={2}>
-                {title}
+                {Icon} {title}
             </AntTitle>
             <div className={styles.buttons_container}>
                 {   

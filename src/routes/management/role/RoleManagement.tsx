@@ -2,10 +2,9 @@ import { useMutation, useQuery } from "react-query";
 import Title from "../../../components/title/Title";
 import { API_QUERY_KEYS, BOARD_PAGE_SIZE } from "../../../constants/common/DataConstants";
 import { RoleAPI } from "../../../api/role/RoleAPI";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RoleInterface, RoleSearchInterface } from "../../../types/entity/role/RoleInterface";
-import { AutoComplete, Button, Card, Form, Input, Modal, Pagination, Popconfirm, Skeleton, Switch, Table, Typography, message } from "antd";
-import Error from "../../../components/error/Error";
+import { AutoComplete, Button, Card, Form, Input, Modal, Pagination, Switch, Table, Typography, message } from "antd";
 import SearchBar from "../../../components/search/SearchBar";
 import { SEARCH_TYPES } from "../../../constants/components/SearchBarConstants";
 import { useSelector } from "react-redux";
@@ -14,6 +13,8 @@ import styles from "../../../styles/routes/management/role/RoleManagement.module
 import { addKey, toOption } from "../../../util/DataUtil";
 import { AuthorizationInterface } from "../../../types/entity/authorizations/AuthorizationInterface";
 import { AuthorizationAPI } from "../../../api/authorization/AuthorizationAPI";
+import ConfirmButton from "../../../components/confirm_button/ConfirmButton";
+import ManagementLayout from "../../../components/layout/ManagementLayout";
 
 const { Text } = Typography;
 
@@ -144,7 +145,12 @@ function RoleManagement() {
 
     const handleFinish = () => {
         if (role) {
-            const target: RoleInterface = { ...role, title: form.getFieldValue('title'), isDefault: form.getFieldValue('isDefault') };
+            const target: RoleInterface = { 
+                ...role,
+                title: form.getFieldValue('title'), 
+                code: form.getFieldValue('code'),
+                isDefault: form.getFieldValue('isDefault') 
+            };
             role.id ? updateRole(target) : createRole(target);
         }
     }
@@ -152,146 +158,154 @@ function RoleManagement() {
     return (
         <>
             <Title title="역할 관리" buttons={[{ text: '역할추가', onClick: handleInsertRole }]} />
-            {isFetchingAll ? <Skeleton active /> : <>
-                {isErrorAll ? <Error /> : <>
-                    <SearchBar
-                        defaultValues={search}
-                        elements={[
-                            { label: '제목', name: 'title', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '제목을 입력해주세요.' },
-                            { label: '권한', name: 'authorizationId', type: SEARCH_TYPES.SELECT, placeholder:'권한을 선택해주세요.', options: auths }
-                        ]}
-                        onSearch={(result) => setSearch(result)}
-                        onReset={() => setSearch(undefined)}
-                    />
-                    <div className={isMobile ? styles.mobile_container : styles.container}>
-                        <div className={styles.card_container}>
-                            <Card className={styles.card} bodyStyle={{ height: '100%' }}>
-                                <div className={styles.board_container}>
-                                    <Table className={styles.board} pagination={false} dataSource={addKey(allRoles)}>
-                                        <Table.Column
-                                            title="제목"
-                                            dataIndex="title"
-                                            key="title"
-                                            width="auto"
-                                            render={(t, r: RoleInterface) => <a onClick={() => setRoleId(roleId === r.id ? "" : r.id)}>{t}</a>}
-                                        />
-                                        <Table.Column
-                                            title="기본여부"
-                                            dataIndex="isDefault"
-                                            key="isDefault"
-                                            width="100px"
-                                            align="center"
-                                            render={(t) => t ? "예" : "아니오"}
-                                        />
-                                    </Table>
-                                </div>
-                                <div className={styles.pagination_container}>
-                                    <Pagination 
-                                        showSizeChanger={false}
-                                        pageSize={BOARD_PAGE_SIZE}
-                                        size="small"
-                                        defaultCurrent={page}
-                                        total={size}
-                                        onChange={(val) => setPage(val)}
+            <ManagementLayout isFetching={isFetchingAll} isError={isErrorAll}>
+                <SearchBar
+                    defaultValues={search}
+                    elements={[
+                        { label: '제목', name: 'title', type: SEARCH_TYPES.INPUT, maxLength: 20, placeholder: '제목을 입력해주세요.' },
+                        { label: '권한', name: 'authorizationId', type: SEARCH_TYPES.SELECT, placeholder:'권한을 선택해주세요.', options: auths }
+                    ]}
+                    onSearch={(result) => setSearch(result)}
+                    onReset={() => setSearch(undefined)}
+                />
+                <div className={isMobile ? styles.mobile_container : styles.container}>
+                    <div className={styles.card_container}>
+                        <Card className={styles.card} bodyStyle={{ height: '100%' }}>
+                            <div className={styles.board_container}>
+                                <Table scroll={{ x: true }} className={styles.board} pagination={false} dataSource={addKey(allRoles)}>
+                                    <Table.Column
+                                        title="제목"
+                                        dataIndex="title"
+                                        key="title"
+                                        width="auto"
+                                        render={(t, r: RoleInterface) => <a onClick={() => setRoleId(roleId === r.id ? "" : r.id)}>{t}</a>}
                                     />
-                                </div>
-                            </Card>
-                        </div>
-                        <div className={styles.form_container}>
-                            <Form 
-                                form={form}
-                                disabled={!role || isFetchingRole || isErrorRole}
-                                layout="vertical"
-                                onFinish={() => setIsSaveModalOpen(true)}
-                                className={styles.form}
-                            >
-                                <Form.Item
-                                    name='title'
-                                    label='제목'
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "제목은 필수입력 항목입니다."
-                                        }
-                                    ]}
-                                    validateTrigger={['onBlur']}
-                                >
-                                    <Input placeholder='제목을 입력해주세요.' maxLength={20} />
-                                </Form.Item>
-                                <Form.Item name='authorizations' label='권한'>
-                                    <AutoComplete
-                                        options={auths}
-                                        onSelect={handleSelectAuth}
-                                        placeholder="권한을 선택해주세요."
-                                        filterOption={(v, o) => o!.label.toUpperCase().indexOf(v.toUpperCase()) !== -1}
+                                    <Table.Column
+                                        title="코드"
+                                        dataIndex="code"
+                                        key="code"
+                                        ellipsis
+                                        width="auto"
                                     />
-                                </Form.Item>
-                                <div className={styles.auth_button_container}>
-                                    {role?.authorizations?.map(e => {
-                                        return e.isDeleted ? <Fragment key={e.id}></Fragment> : (
-                                            <Popconfirm 
-                                                key={e.id}
-                                                open={popOpen === e.id}
-                                                title="권한을 삭제하시겠습니까?"
-                                                okText="확인"
-                                                cancelText="취소"
-                                                onCancel={() => setPopOpen("")}
-                                                onConfirm={() => {
-                                                    role.authorizations && setRole({
-                                                        ...role,
-                                                        ...form.getFieldsValue(),
-                                                        authorizations: [
-                                                            ...role.authorizations?.filter(a => a.id !== e.id),
-                                                            { ...e, isDeleted: true }
-                                                        ]
-                                                    });
-                                                    setPopOpen("");
-                                                }}
-                                            >
-                                                <Button type="dashed" value={e.id} className={styles.auth_button} onClick={() => setPopOpen(e.id)}>
-                                                    {e.title}
-                                                </Button>
-                                            </Popconfirm>
-                                        )
-                                    })}
-                                </div>
-                                <Form.Item name='isDefault' label='기본여부'>
-                                    <Switch />
-                                </Form.Item>
-                                <Form.Item className={styles.button_container}>
-                                    <Button type='primary' onClick={() => form.submit()}>
-                                        저장
-                                    </Button>
-                                    <Modal
-                                        title='역할 저장'
-                                        open={isSaveModalOpen}
-                                        onOk={handleFinish}
-                                        onCancel={() => setIsSaveModalOpen(false)}
-                                        okText='확인'
-                                        cancelText='취소'
-                                    >
-                                        <Text>역할을 저장하시겠습니까?</Text>
-                                    </Modal>
-                                    <Button danger disabled={!roleId} type='primary' onClick={() => setIsDeleteModalOpen(true)}>
-                                        삭제
-                                    </Button>
-                                    <Modal
-                                        title='역할 삭제'
-                                        open={isDeleteModalOpen}
-                                        onOk={() => role && deleteRole(role.id)}
-                                        onCancel={() => setIsDeleteModalOpen(false)}
-                                        okText='삭제'
-                                        cancelText='취소'
-                                        okButtonProps={{ danger: true }}
-                                    >
-                                        <Text>역할을 삭제하시겠습니까?</Text>
-                                    </Modal>
-                                </Form.Item>
-                            </Form>
-                        </div>
+                                    <Table.Column
+                                        title="기본여부"
+                                        dataIndex="isDefault"
+                                        key="isDefault"
+                                        width="100px"
+                                        align="center"
+                                        ellipsis
+                                        render={(t) => t ? "예" : "아니오"}
+                                    />
+                                </Table>
+                            </div>
+                            <div className={styles.pagination_container}>
+                                <Pagination 
+                                    showSizeChanger={false}
+                                    pageSize={BOARD_PAGE_SIZE}
+                                    size="small"
+                                    defaultCurrent={page}
+                                    total={size}
+                                    onChange={(val) => setPage(val)}
+                                />
+                            </div>
+                        </Card>
                     </div>
-                </>}
-            </>}
+                    <div className={styles.form_container}>
+                        <Form 
+                            form={form}
+                            disabled={!role || isFetchingRole || isErrorRole}
+                            layout="vertical"
+                            onFinish={() => setIsSaveModalOpen(true)}
+                            className={styles.form}
+                        >
+                            <Form.Item
+                                name='title'
+                                label='제목'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "제목은 필수입력 항목입니다."
+                                    }
+                                ]}
+                                validateTrigger={['onBlur']}
+                            >
+                                <Input placeholder='제목을 입력해주세요.' maxLength={20} />
+                            </Form.Item>
+                            <Form.Item
+                                name='code'
+                                label='코드'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "코드는 필수입력 항목입니다."
+                                    }
+                                ]}
+                                validateTrigger={['onBlur']}
+                            >
+                                <Input placeholder='코드를 입력해주세요.' maxLength={20} />
+                            </Form.Item>
+                            <Form.Item name='authorizations' label='권한'>
+                                <AutoComplete
+                                    options={auths}
+                                    onSelect={handleSelectAuth}
+                                    placeholder="권한을 선택해주세요."
+                                    filterOption={(v, o) => o!.label.toUpperCase().indexOf(v.toUpperCase()) !== -1}
+                                />
+                            </Form.Item>
+                            <>
+                                {role?.authorizations && <ConfirmButton 
+                                    data={role?.authorizations} 
+                                    confirmText="권한을 삭제하시겠습니까?"
+                                    popOpen={popOpen}
+                                    setPopOpen={setPopOpen}
+                                    onConfirm={(e: AuthorizationInterface) => {
+                                        role.authorizations && setRole({
+                                            ...role,
+                                            ...form.getFieldsValue(),
+                                            authorizations: [
+                                                ...role.authorizations?.filter(a => a.id !== e.id),
+                                                { ...e, isDeleted: true }
+                                            ]
+                                        });
+                                    }}
+                                />}
+                            </>
+                            <Form.Item name='isDefault' label='기본여부'>
+                                <Switch />
+                            </Form.Item>
+                            <Form.Item className={styles.button_container}>
+                                <Button type='primary' onClick={() => form.submit()}>
+                                    저장
+                                </Button>
+                                <Modal
+                                    title='역할 저장'
+                                    open={isSaveModalOpen}
+                                    onOk={handleFinish}
+                                    onCancel={() => setIsSaveModalOpen(false)}
+                                    okText='확인'
+                                    cancelText='취소'
+                                >
+                                    <Text>역할을 저장하시겠습니까?</Text>
+                                </Modal>
+                                <Button danger disabled={!roleId} type='primary' onClick={() => setIsDeleteModalOpen(true)}>
+                                    삭제
+                                </Button>
+                                <Modal
+                                    title='역할 삭제'
+                                    open={isDeleteModalOpen}
+                                    onOk={() => deleteRole(role!.id)}
+                                    onCancel={() => setIsDeleteModalOpen(false)}
+                                    okText='삭제'
+                                    cancelText='취소'
+                                    okButtonProps={{ danger: true }}
+                                >
+                                    <Text>역할을 삭제하시겠습니까?</Text>
+                                </Modal>
+                            </Form.Item>
+                        </Form>
+                    </div>
+                </div>
+            </ManagementLayout>
         </>
     )
 }

@@ -4,8 +4,7 @@ import { API_QUERY_KEYS, BOARD_PAGE_SIZE } from "../../../constants/common/DataC
 import { AuthorizationAPI } from "../../../api/authorization/AuthorizationAPI";
 import { useEffect, useState } from "react";
 import { AuthorizationInterface, AuthorizationSearchInterface } from "../../../types/entity/authorizations/AuthorizationInterface";
-import { Button, Card, Form, Input, Modal, Pagination, Skeleton, Table, TreeSelect, Typography, message } from "antd";
-import Error from "../../../components/error/Error";
+import { Button, Card, Form, Input, Modal, Pagination, Table, TreeSelect, Typography, message } from "antd";
 import styles from "../../../styles/routes/management/authorization/AuthorizationManagement.module.scss";
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
@@ -15,6 +14,7 @@ import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
 import useMenuManagement from "../../../hooks/useMenuManagement";
 import SearchBar from "../../../components/search/SearchBar";
 import { SEARCH_TYPES } from "../../../constants/components/SearchBarConstants";
+import ManagementLayout from "../../../components/layout/ManagementLayout";
 
 const { Text } = Typography;
 
@@ -54,7 +54,7 @@ function AuthorizationManagement() {
     const {} = useQuery({
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
-        onSuccess: (result) => setMenus(result),
+        onSuccess: (result) => setMenus(result.menus),
         onError: (e: string) => message.error(e)
     })
 
@@ -126,8 +126,8 @@ function AuthorizationManagement() {
     return (
         <>
             <Title title="권한관리" buttons={[{ text: '권한추가', onClick: handleInsertAuth }]} />
-            {isFetchingAll ? <Skeleton active /> : <>
-                {isErrorAll ? <Error /> : <>
+            <ManagementLayout isFetching={isFetchingAll} isError={isErrorAll}>
+                <>
                     <SearchBar 
                         defaultValues={search}
                         elements={[
@@ -141,7 +141,7 @@ function AuthorizationManagement() {
                         <div className={styles.card_container}>
                             <Card className={styles.card} bodyStyle={{ height: '100%' }}>
                                 <div className={styles.board_container}>
-                                    <Table className={styles.board} pagination={false} dataSource={addKey(allAuthorizations)}>
+                                    <Table scroll={{ x: true }} className={styles.board} pagination={false} dataSource={addKey(allAuthorizations)}>
                                         <Table.Column
                                             className={styles.title}
                                             title="제목"
@@ -157,6 +157,7 @@ function AuthorizationManagement() {
                                             dataIndex="menu"
                                             key="menu"
                                             width="auto"
+                                            ellipsis
                                             render={(t) => t.title}
                                         />
                                     </Table>
@@ -235,8 +236,8 @@ function AuthorizationManagement() {
                             </Form>
                         </div>
                     </div>
-                </>}
-            </>}
+                </>
+            </ManagementLayout>
         </>
     )
 }

@@ -54,10 +54,13 @@ export const API_QUERY_KEYS = {
         GET_MEMBER_BY_ID_AT_PLATFORM: 'GET_MEMBER_BY_ID_AT_PLATFORM'
     },
     MENU: {
-        GET_MENUS: 'GET_MENUS'
+        GET_MENUS: 'GET_MENUS',
+        GET_MENU: 'GET_MENU',
+        GET_MENUS_BY_AUTH: 'GET_MENUS_BY_AUTH'
     },
     ROLE: {
         GET_ROLES: 'GET_ROLES',
+        GET_ALL_ROLES: 'GET_ALL_ROLES',
         GET_ROLE: 'GET_ROLE',
     },
 }

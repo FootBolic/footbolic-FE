@@ -1,7 +1,9 @@
+import { RoleInterface } from "../role/RoleInterface";
+
 export interface MemberInterface {
     id: string;
     roleId?: string;
-    // role?: Role;
+    roles?: RoleInterface[];
     nickname?: string;
     idAtProvider?: string;
     platform?: string;

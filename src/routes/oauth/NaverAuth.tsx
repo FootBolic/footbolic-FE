@@ -1,8 +1,8 @@
-import { Button, Result } from "antd";
+import { Button, Result, message } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
 import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
@@ -21,6 +21,7 @@ function NaverAuth () {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { compare, reset } = useCsrfCheck();
+    const queryClient = useQueryClient();
 
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
@@ -89,7 +90,9 @@ function NaverAuth () {
                     accessToken: data.access_token,
                     accessTokenExpiresAt: toDate(data.expires_at).getTime(),
                     nickname: data.nickname
-                }))
+                }));
+                queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
+                message.success(`${data.nickname} 님 반갑습니다!`);
                 navigate(ROUTES.MAIN_VIEW.path);
             },
             onError: (e: Error) => {
