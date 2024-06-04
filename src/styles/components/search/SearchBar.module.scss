@@ -37,7 +37,6 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        overflow-x: scroll;
         min-width: 200px;
 
         .form_container {
@@ -56,6 +55,7 @@
 
             button {
                 margin-inline: 5px;
+                margin: 10px 5px 10px;
             }
         }
     }
