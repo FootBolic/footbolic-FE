@@ -20,6 +20,18 @@
                 .board {
                     height: 48vh;
                     overflow-y: scroll;
+
+                    .nickname {
+                        min-width: 200px;
+                    }
+    
+                    .platform {
+                        min-width: 80px;
+                    }
+    
+                    .created_at {
+                        min-width: 120px;
+                    }
                 }
             }
 
@@ -59,7 +71,7 @@
                 overflow-y: scroll;
 
                 .nickname {
-                    min-width: 150px;
+                    min-width: 200px;
                 }
 
                 .platform {

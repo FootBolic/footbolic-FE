@@ -1,9 +1,9 @@
-import { Button, Result } from "antd";
+import { Button, Result, message } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
 import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
 import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthAPI";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
@@ -19,6 +19,7 @@ function KakaoAuth () {
     const { code, error } = useURLParam();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
@@ -69,6 +70,8 @@ function KakaoAuth () {
                     nickname: data.nickname
                 }))
                 tokenInfo?.access_token && invalidateKakaoToken(tokenInfo?.access_token);
+                queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
+                message.success(`${data.nickname} 님 반갑습니다!`);
                 navigate(ROUTES.MAIN_VIEW.path);
             },
             onError: (e: Error) => {

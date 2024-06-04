@@ -1,46 +1,66 @@
-import { Menu as AntMenu } from "antd";
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { Menu as AntMenu, Skeleton, message } from "antd";
+import { UserOutlined, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps as AntMenuProps } from 'antd';
 import { MenuProps } from "../../types/components/menu/MenuProps";
+import { useQuery } from "react-query";
+import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
+import { MenuAPI } from "../../api/menu/MenuAPI";
+import { useState } from "react";
+import { MenuInterface } from "../../types/entity/menu/MenuInterface";
+import Error from "../error/Error";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setIsMobileMenuOpen } from "../../reducers/MobileMenuReducer";
+import { ROUTES } from "../../constants/common/RouteConstants";
 
 type MenuItem = Required<AntMenuProps>['items'][number];
 
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
-
-const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
-  ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
-];
-
 function Menu ({ theme }: MenuProps) {
-    return (
-        <AntMenu theme={theme} mode="inline" defaultSelectedKeys={['1']} items={items} />
+  const [menus, setMenus] = useState<MenuInterface[]>([]);
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  const { isFetching, isError } = useQuery({
+    queryKey: [API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH],
+    queryFn: () => MenuAPI.getMenusByAuth(),
+    onSuccess: (result) => setMenus(result.menus),
+    onError: (e: string) => message.error(e)
+  })
+
+  const homeMenu: MenuItem = {
+    key: '/',
+    icon: <HomeOutlined />,
+    label: (
+      <Link to={ROUTES.MAIN_VIEW.path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+        메인페이지
+      </Link>
     )
+  }
+
+  const toMenuItem = (menus: MenuInterface[]): MenuItem[] => {
+    return [
+      ...menus.map(menu => {
+        return {
+          key: menu.program?.path || menu.id,
+          icon: <UserOutlined />,
+          children: menu.children?.length && toMenuItem(menu.children),
+          label: menu.program?.path && !menu.children?.length ? (
+            <Link to={menu.program.path || ""} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+              {menu.title}
+            </Link>
+          ) : menu.title,
+        } as MenuItem;
+      })
+    ]
+  }
+
+  return <>
+    { isFetching ? <Skeleton active /> : <>
+      { isError ? <Error /> : <>
+        <AntMenu theme={theme} mode="inline" selectedKeys={[location.pathname]} items={[homeMenu, ...toMenuItem(menus)]} />
+      </>}
+    </>}
+  </>
 }
 
 export default Menu;

@@ -1,13 +1,4 @@
 /**
- * mutation 타입 파라미터 전달용
- */
-export const MUTATION_TYPES = {
-    CREATE: 'CREATE',
-    UPDATE: 'UPDATE',
-    DELETE: 'DELETE'
-}
-
-/**
  * 인증 API 플랫폼
  */
 export const AUTH_PLATFORM = {
@@ -54,10 +45,19 @@ export const API_QUERY_KEYS = {
         GET_MEMBER_BY_ID_AT_PLATFORM: 'GET_MEMBER_BY_ID_AT_PLATFORM'
     },
     MENU: {
-        GET_MENUS: 'GET_MENUS'
+        GET_MENUS: 'GET_MENUS',
+        GET_MENU: 'GET_MENU',
+        GET_MENU_BY_ID: 'GET_MENU_BY_ID',
+        GET_MENUS_BY_AUTH: 'GET_MENUS_BY_AUTH'
+    },
+    PROGRAM: {
+        GET_PROGRAMS: 'GET_PROGRAMS',
+        GET_ALL_PROGRAMS: 'GET_ALL_PROGRAMS',
+        GET_PROGRAM: 'GET_PROGRAM'
     },
     ROLE: {
         GET_ROLES: 'GET_ROLES',
+        GET_ALL_ROLES: 'GET_ALL_ROLES',
         GET_ROLE: 'GET_ROLE',
     },
 }

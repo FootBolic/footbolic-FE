@@ -8,21 +8,22 @@
         overflow-x: auto;
 
         .form_container {
-            min-width: calc(100% - 150px);
+            min-width: calc(100% - 180px);
             overflow-x: auto;
 
             .form_item {
                 margin-top: 5px;
                 margin-bottom: 5px;
-                min-width: 200px;
+                min-width: 180px;
             }
         }
 
         .button_container {
-            min-width: 150px;
+            min-width: 20px;
 
             button {
                 margin-inline: 5px;
+                margin: 10px 5px 10px;
             }
         }
     }

@@ -2,6 +2,7 @@ import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import MemberManagement from "../../routes/management/member/MemberManagement";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
+import ProgramManagement from "../../routes/management/program/ProgramManagement";
 import RoleManagement from "../../routes/management/role/RoleManagement";
 import MemberCreate from "../../routes/member/MemberCreate";
 import MemberInfo from "../../routes/member/MemberInfo";
@@ -59,5 +60,10 @@ export const ROUTES = {
     ROLE_MANAGEMENT: {
         path: '/management/role',
         element: RoleManagement
+    },
+    // 프로그램 관리 페이지
+    PROGRAM_MANAGEMENT: {
+        path: '/management/program',
+        element: ProgramManagement
     }
 }

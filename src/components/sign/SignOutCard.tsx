@@ -1,30 +1,32 @@
 import { Button, message } from "antd";
 import styles from '../../styles/components/sign/SignOutCard.module.scss'
 import { useDispatch } from "react-redux";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { SignAPI } from "../../api/sign/SignAPI";
 import { useNavigate } from "react-router-dom";
 import { resetAccessTokenState } from "../../reducers/AccessTokenReducer";
 import { ROUTES } from "../../constants/common/RouteConstants";
+import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
 
 function SignOutCard() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { mutate: signOut } = useMutation(
         () => SignAPI.signOut(),
         {
-            onSuccess: (result) => {
-                if (result) {
-                    message.success('로그아웃에 성공하였습니다.');
-                    dispatch(resetAccessTokenState());
-                    navigate(ROUTES.MAIN_VIEW.path);
-                } else {
-                    message.error('에러가 발생하였습니다.');
-                }
-            }
+            onSuccess: () => handleFinish(true, '로그아웃에 성공하였습니다.'),
+            onError: (e: string) => handleFinish(false, e)
         }
     )
+
+    const handleFinish = (isSuccess: boolean, msg: string) => {
+        isSuccess ? message.success(msg) : message.error(msg);
+        dispatch(resetAccessTokenState());
+        queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
+        navigate(ROUTES.MAIN_VIEW.path);
+    }
 
     return (
         <div className={styles.container}>
