@@ -1,5 +1,5 @@
 
 export const SEARCH_TYPES = {
-    INPUT: 'INPUT',
-    SELECT: 'SELECT'
+    INPUT: 'input',
+    SELECT: 'select'
 }

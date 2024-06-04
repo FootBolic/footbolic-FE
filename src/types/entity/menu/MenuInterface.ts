@@ -10,7 +10,6 @@ export interface MenuInterface {
     title: string;
     programId?: string;
     program?: ProgramInterface;
-    path?: string;
     iconCodeId?: string;
     isUsed?: boolean;
     order? : number;

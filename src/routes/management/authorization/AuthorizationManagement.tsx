@@ -1,21 +1,19 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Title from "../../../components/title/Title";
 import { API_QUERY_KEYS, BOARD_PAGE_SIZE } from "../../../constants/common/DataConstants";
 import { AuthorizationAPI } from "../../../api/authorization/AuthorizationAPI";
 import { useEffect, useState } from "react";
 import { AuthorizationInterface, AuthorizationSearchInterface } from "../../../types/entity/authorizations/AuthorizationInterface";
 import { Form, Input, TreeSelect, message } from "antd";
-import styles from "../../../styles/routes/management/authorization/AuthorizationManagement.module.scss";
 import { MenuAPI } from "../../../api/menu/MenuAPI";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
-import useMenuManagement from "../../../hooks/useMenuManagement";
 import SearchBar from "../../../components/search/SearchBar";
-import { SEARCH_TYPES } from "../../../constants/components/SearchBarConstants";
 import ManagementLayout from "../../../components/layout/ManagementLayout";
+import { getOptionMenus } from "../../../util/DataUtil";
 
 function AuthorizationManagement() {
     const [form] = Form.useForm();
-    const { getOptionMenus } = useMenuManagement();
+    const queryClient = useQueryClient();
 
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
@@ -100,16 +98,15 @@ function AuthorizationManagement() {
     }
 
     const handleFinish = () => {
-        if (authorization) {
-            const auth: AuthorizationInterface = { ...authorization, title: form.getFieldValue("title"), menuId: form.getFieldValue("menuId") };
-            authorization.id ? updateAuth(auth) : createAuth(auth);
-        }
+        const auth: AuthorizationInterface = { ...authorization!, title: form.getFieldValue("title"), menuId: form.getFieldValue("menuId") };
+        authorization!.id ? updateAuth(auth) : createAuth(auth);
     }
 
     const handleSuccess = (isSave: boolean, result: AuthorizationInterface) => {
-        message.success(`권한이 성공적으로 ${isSave ? '저장' : '삭제'}되었습니다.`);
+        message.success(`권한이 ${isSave ? '저장' : '삭제'}되었습니다.`);
         refetchAll();
         setAuthorizationId(isSave ? result.id : '');
+        queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
     }
 
     return (
@@ -125,14 +122,14 @@ function AuthorizationManagement() {
                             { 
                                 label: '제목',
                                 name: 'title',
-                                type: SEARCH_TYPES.INPUT,
+                                type: 'input',
                                 maxLength: 20,
                                 placeholder: '제목을 입력해주세요.' 
                             },
                             {
                                 label: '메뉴',
                                 name: 'menuId',
-                                type: SEARCH_TYPES.SELECT,
+                                type: 'select',
                                 options: getOptionMenus(menus, { id: "" } as MenuInterface),
                                 placeholder: '메뉴를 선택해주세요.' 
                             }
@@ -146,7 +143,6 @@ function AuthorizationManagement() {
                 cardTableColumns={
                     [
                         {
-                            className: styles.title,
                             title: '제목',
                             dataIndex: 'title',
                             key: 'title',
@@ -156,7 +152,6 @@ function AuthorizationManagement() {
                             }
                         },
                         {
-                            
                             title: "메뉴",
                             dataIndex: "menu",
                             key: "menu",
@@ -200,7 +195,7 @@ function AuthorizationManagement() {
                     </>
                 }
                 onSave={handleFinish}
-                onDelete={() => authorization && deleteAuth(authorization.id)}
+                onDelete={() => deleteAuth(authorization!.id)}
             />
         </>
     )

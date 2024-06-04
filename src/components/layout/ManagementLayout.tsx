@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../types/reducers/RootStateInterface";
 import { BOARD_PAGE_SIZE } from "../../constants/common/DataConstants";
 import { addKey } from "../../util/DataUtil";
+import { DataNode } from "antd/es/tree";
+import Tree from "../tree/Tree";
 
 const { Text } = Typography;
 
@@ -20,6 +22,9 @@ function ManagementLayout({
     cardTablePage,
     cardTableSize,
     onCardPageChange,
+    cardTreeDefaultExpandAll,
+    cardTreeSelectedKeys,
+    onTreeSelect,
     isDeletable,
     formInstance,
     formDisabled,
@@ -29,7 +34,6 @@ function ManagementLayout({
     onDelete 
 }: ManagementLayoutProps) {
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
-    
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
@@ -46,7 +50,7 @@ function ManagementLayout({
                                         <Card className={styles.card} bodyStyle={{ height: '100%' }}>
                                             {cardContentType === 'table' ? <>
                                                 <div className={styles.board_container}>
-                                                    <Table scroll={{ x: true }} className={styles.board} pagination={false} dataSource={addKey(cardData ?? [])}>
+                                                    <Table scroll={{ x: true }} className={styles.board} pagination={false} dataSource={addKey(cardData)}>
                                                         {cardTableColumns?.map((e) => {
                                                             return (
                                                                 <Table.Column
@@ -55,6 +59,7 @@ function ManagementLayout({
                                                                     dataIndex={e.dataIndex}
                                                                     key={e.key}
                                                                     width={e.width}
+                                                                    align={e.align}
                                                                     render={e.render}
                                                                 />
                                                             )
@@ -71,7 +76,17 @@ function ManagementLayout({
                                                         onChange={onCardPageChange}
                                                     />
                                                 </div>
-                                            </> : <></>}
+                                            </> : <>
+                                                {cardContentType === 'tree' ? <>
+                                                    <Tree 
+                                                        showLine={true}
+                                                        data={cardData as DataNode[]}
+                                                        onSelect={onTreeSelect}
+                                                        defaultExpandAll={cardTreeDefaultExpandAll}
+                                                        selectedKeys={cardTreeSelectedKeys}
+                                                    />
+                                                </> : <></>}
+                                            </>}
                                         </Card>
                                     </div>
                                     <div className={styles.form_container}>

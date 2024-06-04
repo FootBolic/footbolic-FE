@@ -41,11 +41,11 @@ function Menu ({ theme }: MenuProps) {
     return [
       ...menus.map(menu => {
         return {
-          key: menu.path || menu.id,
+          key: menu.program?.path || menu.id,
           icon: <UserOutlined />,
           children: menu.children?.length && toMenuItem(menu.children),
-          label: menu.path && !menu.children?.length ? (
-            <Link to={menu.path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+          label: menu.program?.path && !menu.children?.length ? (
+            <Link to={menu.program.path || ""} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
               {menu.title}
             </Link>
           ) : menu.title,

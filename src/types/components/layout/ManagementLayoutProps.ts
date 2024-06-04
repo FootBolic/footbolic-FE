@@ -11,6 +11,9 @@ export type ManagementLayoutProps = {
     cardTablePage?: number;
     cardTableSize?: number;
     onCardPageChange?: (val: number) => any;
+    cardTreeDefaultExpandAll?: boolean;
+    cardTreeSelectedKeys?: React.Key[];
+    onTreeSelect?: (keys: React.Key[]) => void
     formInstance: FormInstance<any>;
     formDisabled?: boolean;
     formElements?: ReactNode;
@@ -27,5 +30,6 @@ export type ColumnProps = {
     key: string;
     width: string;
     ellipsis?: boolean | false;
+    align?: "center" | "start" | "end" | "left" | "right";
     render: (val: any, record: any) => ReactNode;
 }

@@ -1,230 +1,176 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Title from "../../../components/title/Title";
 import { MenuAPI } from "../../../api/menu/MenuAPI";
-import { Key, useEffect, useState } from "react";
-import Tree from "../../../components/tree/Tree";
-import { Card, Form, Input, TreeSelect, Button, Modal, Typography, message, Switch } from "antd";
-import styles from "../../../styles/routes/management/menu/MenuManagement.module.scss";
-import { useSelector } from "react-redux";
-import { RootStateInterface } from "../../../types/reducers/RootStateInterface";
-import useMenuManagement from "../../../hooks/useMenuManagement";
+import { useEffect, useState } from "react";
+import { Form, Input, TreeSelect, message, Switch, Select } from "antd";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
-import { API_QUERY_KEYS, MUTATION_TYPES } from "../../../constants/common/DataConstants";
+import { API_QUERY_KEYS } from "../../../constants/common/DataConstants";
 import ManagementLayout from "../../../components/layout/ManagementLayout";
-
-const { Text } = Typography;
+import { getOptionMenus, getTreeNodeMenus, toOption } from "../../../util/DataUtil";
+import { ProgramAPI } from "../../../api/program/ProgramAPI";
 
 function MenuManagement () {
-
-    const queryClient = useQueryClient();
     const [form] = Form.useForm();
-    const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
+    const queryClient = useQueryClient();
 
-    const [selectionKeys, setSelectionKeys] = useState<Key[]>([]);
-    const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-    const [isEnabled, setIsEnabled] = useState<boolean>(true);
-    
-    const { 
-        targetMenu,
-        setTargetMenu,
-        optionMenus,
-        treeNodeMenus,
-        setAllMenus,
-        handleSelectionChange,
-        handleInsertMenu,
-        isIdenticalMenus
-    } = useMenuManagement();
+    const [allMenus, setAllMenus] = useState<MenuInterface[]>([]);
+    const [menuId, setMenuId] = useState<string>("");
+    const [menu, setMenu] = useState<MenuInterface>();
+    const [selectedKey, setSelectedKey] = useState<React.Key[]>([]);
 
-    const { isFetching, isError } = useQuery({
+    const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
         onSuccess: (result) => setAllMenus(result.menus),
-        onError: (e: string) => {
-            message.error(e);
-            setIsEnabled(false);
-        },
-        enabled: isEnabled
+        onError: (e: string) => message.error(e)
     })
 
-    const { mutate: createMenu } = useMutation((data : MenuInterface) => MenuAPI.createMenu(data), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.CREATE),
-        onError: (e: string) => {message.error(e)}
+    const { isFetching: isFetchingMenu, isError: isErrorMenu, refetch: refetchMenu } = useQuery({
+        queryKey: [API_QUERY_KEYS.MENU.GET_MENU_BY_ID],
+        queryFn: () => MenuAPI.getMenuById(menuId),
+        onSuccess: (result) => setMenu(result.menu),
+        onError: (e: string) => message.error(e),
+        enabled: false
     })
 
-    const { mutate: updateMenu } = useMutation((data : MenuInterface) => MenuAPI.updateMenu(data), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.UPDATE),
-        onError: (e: string) => {message.error(e)}
+    const { data: programs } = useQuery({
+        queryKey: [API_QUERY_KEYS.PROGRAM.GET_ALL_PROGRAMS],
+        queryFn: () => ProgramAPI.getAllprograms(),
+        onError: (e: string) => message.error(e)
     })
 
-    const { mutate: deleteMenu } = useMutation((id: string) => MenuAPI.deleteMenu(id), {
-        onSuccess: () => handleMutateCompleted(MUTATION_TYPES.DELETE),
-        onError: (e: string) => {message.error(e)}
-    })
+    const { mutate: createMenu } = useMutation(
+        (data : MenuInterface) => MenuAPI.createMenu(data), 
+        {
+            onSuccess: (result) => handleSuccess(true, result.createdMenu),
+            onError: (e: string) => {message.error(e)}
+        }
+    )
+
+    const { mutate: updateMenu } = useMutation(
+        (data : MenuInterface) => MenuAPI.updateMenu(data),
+        {
+            onSuccess: (result) => handleSuccess(true, result.updatedMenu),
+            onError: (e: string) => {message.error(e)}
+        }
+    )
+
+    const { mutate: deleteMenu } = useMutation(
+        (id: string) => MenuAPI.deleteMenu(id), 
+        {
+            onSuccess: () => handleSuccess(false, { id: '' } as MenuInterface),
+            onError: (e: string) => {message.error(e)}
+        }
+    )
 
     useEffect(() => {
-        targetMenu ? form.setFieldsValue(targetMenu) : form.resetFields();
-    }, [targetMenu])
+        menuId ? refetchMenu() : setMenu(undefined);
+    }, [menuId])
 
-    const handleMutateCompleted = (type: string) => {
-        queryClient.invalidateQueries(API_QUERY_KEYS.MENU.GET_MENUS);
-        setTargetMenu(null);
-        if (type === MUTATION_TYPES.DELETE) {
-            setIsDeleteModalOpen(false);
-            message.success('메뉴가 삭제되었습니다.');
-        } else {
-            setIsSaveModalOpen(false);
-            message.success(`메뉴가 ${type === MUTATION_TYPES.CREATE ?  '생성' : '수정'}되었습니다.`);
-        }
+    useEffect(() => {
+        menu ? form.setFieldsValue(menu) : form.resetFields();
+    }, [menu])
+
+    const handleInsertMenu = () => {
+        setMenuId("");
+        (menu && !menu.id) ? setMenu(undefined) 
+            : setTimeout(() => setMenu({ title: "신규 메뉴" } as MenuInterface), 5);
     }
 
-    /**
-     * 현재 select된 메뉴에 form 데이터를 입력한 후 id가 있으면 메뉴수정, 없으면 메뉴생성 API 실행
-     * @param {MenuInterface} menu form에 입력된 데이터
-     */
-    const handleSaveMenu = (menu: MenuInterface) => {
-        const currentMenu: MenuInterface = { 
-            ...targetMenu,
-            title: menu.title,
-            parentId: menu.parentId,
-            order: menu.order,
-            path: menu.path,
-            isUsed: menu.isUsed
-        } as MenuInterface;
-        currentMenu.id ? updateMenu(currentMenu) : createMenu(currentMenu);
+    const handleFinish = () => {
+        const target: MenuInterface = { 
+            ...menu!,
+            ...form.getFieldsValue()
+        };
+        menu!.id ? updateMenu(target) : createMenu(target);
+    }
+
+    const handleSuccess = (isSave: boolean, result: MenuInterface) => {
+        message.success(`메뉴가 ${isSave ?  '저장' : '삭제'}되었습니다.`);
+        refetchAll();
+        setMenuId(isSave ? result.id : '');
+        queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
     }
 
     return (
         <>
             <Title title="메뉴관리" buttons={[{text: '메뉴추가', onClick: handleInsertMenu}]} />
-            <ManagementLayout isFetching={isFetching} isError={isError}>
-                <div className={isMobile ? styles.mobile_container : styles.container}>
-                    <div className={styles.card_container}>
-                        <Card className={styles.card}>
-                            <Tree showLine={true} data={treeNodeMenus} onSelect={(keys) => {
-                                setSelectionKeys(keys);
-                                (targetMenu && !isIdenticalMenus(targetMenu, {
-                                    ...targetMenu,
-                                    title: form.getFieldValue('title'),
-                                    parentId: form.getFieldValue('parentId'),
-                                    order: form.getFieldValue('order'),
-                                    path: form.getFieldValue('path'),
-                                    isUsed: form.getFieldValue('isUsed')
-                                } as MenuInterface)) ? setIsConfirmModalOpen(true) : handleSelectionChange(keys);
-                            }} />
-                        </Card>
-                    </div>
-                    <div className={styles.form_container}>
-                        <Form form={form} layout="vertical" disabled={!targetMenu} onFinish={handleSaveMenu} >
-                            <Form.Item
-                                name='title'
-                                label='제목'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "제목은 필수입력 항목입니다."
-                                    }
-                                ]}
-                                validateTrigger={['onBlur']}
-                            >
-                                <Input placeholder='제목을 입력해주세요.' maxLength={20} />
-                            </Form.Item>
-                            <Form.Item name='parentId' label='상위메뉴'>
-                                <TreeSelect
-                                    placeholder='선택된 항목이 없을 시 최상위 메뉴로 등록됩니다.'
-                                    treeData={optionMenus}
-                                    treeDefaultExpandAll
-                                    style={{ width: '100%' }}
-                                    value={targetMenu?.parentId}
-                                    allowClear
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name='order'
-                                label='순서'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "순서는 필수입력 항목입니다."
-                                    },
-                                    {
-                                        pattern: /^[0-9]+$/,
-                                        message: "순서는 자연수만 입력 가능합니다."
-                                    }
-                                ]}
-                                validateTrigger={['onBlur']}
-                            >
-                                <Input
-                                    type="number"
-                                    placeholder='경로를 입력해주세요.'
-                                    maxLength={100}
-                                />
-                            </Form.Item>
-                            <Form.Item name='path' label='경로'>
-                                <Input
-                                    placeholder='경로를 입력해주세요.'
-                                    maxLength={100}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name='isUsed'
-                                label='사용여부'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "사용여부는 필수입력 항목입니다."
-                                    }
-                                ]}
-                                validateTrigger={['onBlur']}
-                            >
-                                <Switch />
-                            </Form.Item>
-                            <Form.Item className={styles.button_container}>
-                                <Button type='primary' onClick={() => setIsSaveModalOpen(true)}>
-                                    저장
-                                </Button>
-                                <Modal
-                                    title='메뉴 저장'
-                                    open={isSaveModalOpen}
-                                    onOk={() => form.submit()}
-                                    onCancel={() => setIsSaveModalOpen(false)}
-                                    okText='확인'
-                                    cancelText='취소'
-                                >
-                                    <Text>메뉴를 저장하시겠습니까?</Text>
-                                </Modal>
-                                <Button danger type='primary' onClick={() => setIsDeleteModalOpen(true)}>
-                                    삭제
-                                </Button>
-                                <Modal
-                                    title='메뉴 삭제'
-                                    open={isDeleteModalOpen}
-                                    onOk={() => targetMenu?.id ? deleteMenu(targetMenu.id) : message.error('삭제할 메뉴를 선택해주세요.')}
-                                    onCancel={() => setIsDeleteModalOpen(false)}
-                                    okText='삭제'
-                                    cancelText='취소'
-                                    okButtonProps={{ danger: true }}
-                                >
-                                    <Text>메뉴를 삭제하시겠습니까?<br/>하위의 메뉴도 함께 삭제됩니다.</Text>
-                                </Modal>
-                            </Form.Item>
-                        </Form>
-                    </div>
-                    <Modal
-                        open={isConfirmModalOpen}
-                        onOk={() => {
-                            handleSelectionChange(selectionKeys);
-                            setIsConfirmModalOpen(false);
-                        }}
-                        onCancel={() => setIsConfirmModalOpen(false)}
-                        okText='확인'
-                        cancelText='취소'
-                    >
-                        <Text>저장되지 않은 변경사항은 지워집니다.</Text>
-                    </Modal>
-                </div>
-            </ManagementLayout>
+            <ManagementLayout
+                isFetching={isFetchingAll}
+                isError={isErrorAll}
+                cardContentType="tree"
+                cardData={getTreeNodeMenus(allMenus)}
+                cardTreeDefaultExpandAll
+                cardTreeSelectedKeys={selectedKey}
+                onTreeSelect={(keys) => {
+                    setSelectedKey(keys);
+                    setMenuId(keys.length ? keys[0].toString() : "");
+                }}
+                isDeletable
+                formInstance={form}
+                formDeleteButtonDisabled={!menuId}
+                formDisabled={!menu || isFetchingMenu || isErrorMenu}
+                formElements={
+                    <>
+                        <Form.Item
+                            name='title'
+                            label='제목'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "제목은 필수입력 항목입니다."
+                                }
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Input placeholder='제목을 입력해주세요.' maxLength={20} />
+                        </Form.Item>
+                        <Form.Item name='parentId' label='상위메뉴'>
+                            <TreeSelect
+                                placeholder='선택된 항목이 없을 시 최상위 메뉴로 등록됩니다.'
+                                treeData={menu && getOptionMenus(allMenus, menu)}
+                                treeDefaultExpandAll
+                                style={{ width: '100%' }}
+                                value={menu?.parentId}
+                                allowClear
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name='order'
+                            label='순서'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "순서는 필수입력 항목입니다."
+                                },
+                                {
+                                    pattern: /^[0-9]+$/,
+                                    message: "순서는 자연수만 입력 가능합니다."
+                                }
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Input
+                                type="number"
+                                placeholder='경로를 입력해주세요.'
+                                maxLength={100}
+                            />
+                        </Form.Item>
+                        <Form.Item name='programId' label='프로그램'>
+                            <Select 
+                                placeholder="프로그램을 선택해주세요."
+                                options={programs && toOption("title", "id", programs?.programs)}
+                                allowClear
+                            />
+                        </Form.Item>
+                        <Form.Item name='isUsed' label='사용여부'>
+                            <Switch />
+                        </Form.Item>
+                    </>
+                }
+                onSave={handleFinish}
+                onDelete={() => deleteMenu(menu!.id)}
+            />
         </>
     )
 }

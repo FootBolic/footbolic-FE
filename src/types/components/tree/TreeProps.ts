@@ -5,6 +5,8 @@ import { DataNode, EventDataNode } from "antd/es/tree";
 export type TreeProps = {
     data: TreeDataNode[];
     showLine?: boolean;
+    defaultExpandAll?: boolean;
+    selectedKeys?: React.Key[];
     onSelect?: (selectedKeys: Key[], info: {
         event: "select";
         selected: boolean;

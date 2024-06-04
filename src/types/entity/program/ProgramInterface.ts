@@ -5,6 +5,7 @@ export interface ProgramInterface {
     id: string;
     title?: string;
     code?: string;
+    path?: string;
     menus?: MenuInterface[];
     createMemberId?: string;
     createdAt?: number[];
