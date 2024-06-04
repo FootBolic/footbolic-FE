@@ -9,7 +9,6 @@
 
         .card {
             height: 60vh;
-            overflow-y: scroll;
             display: flex;
             justify-content: flex-end;
             flex-direction: column;
@@ -36,7 +35,6 @@
         overflow-y: scroll;
 
         .form {
-            overflow-x: scroll;
             min-width: 300px;
 
             .button_container {
