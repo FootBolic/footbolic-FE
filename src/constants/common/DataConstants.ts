@@ -27,7 +27,19 @@ export const TOKEN_RENEWAL_TIME = {
     FETCH_REM_TIME: 20 * 1000
 }
 
+/**
+ * 디폴트 게시판 페이지 별 결과 수
+ */
 export const BOARD_PAGE_SIZE = 20;
+
+/**
+ * 코드명
+ */
+export const CODES = {
+    PROGRAM: {
+        BOARD: "PROGRAM_BOARD",
+    }
+}
 
 /**
  * React Query의 queryKey
@@ -60,4 +72,9 @@ export const API_QUERY_KEYS = {
         GET_ALL_ROLES: 'GET_ALL_ROLES',
         GET_ROLE: 'GET_ROLE',
     },
+    BOARD: {
+        GET_BOARDS: 'GET_BOARDS',
+        GET_BOARD: 'GET_BOARD',
+        GET_ALL_BOARDS: 'GET_ALL_BOARDS',
+    }
 }

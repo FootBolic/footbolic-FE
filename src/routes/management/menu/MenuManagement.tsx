@@ -4,10 +4,11 @@ import { MenuAPI } from "../../../api/menu/MenuAPI";
 import { useEffect, useState } from "react";
 import { Form, Input, TreeSelect, message, Switch, Select } from "antd";
 import { MenuInterface } from "../../../types/entity/menu/MenuInterface";
-import { API_QUERY_KEYS } from "../../../constants/common/DataConstants";
+import { API_QUERY_KEYS, CODES } from "../../../constants/common/DataConstants";
 import ManagementLayout from "../../../components/layout/ManagementLayout";
 import { getOptionMenus, getTreeNodeMenus, toOption } from "../../../util/DataUtil";
 import { ProgramAPI } from "../../../api/program/ProgramAPI";
+import { BoardAPI } from "../../../api/board/BoardAPI";
 
 function MenuManagement () {
     const [form] = Form.useForm();
@@ -17,6 +18,7 @@ function MenuManagement () {
     const [menuId, setMenuId] = useState<string>("");
     const [menu, setMenu] = useState<MenuInterface>();
     const [selectedKey, setSelectedKey] = useState<React.Key[]>([]);
+    const [program, setProgram] = useState<string>("");
 
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
@@ -36,6 +38,12 @@ function MenuManagement () {
     const { data: programs } = useQuery({
         queryKey: [API_QUERY_KEYS.PROGRAM.GET_ALL_PROGRAMS],
         queryFn: () => ProgramAPI.getAllprograms(),
+        onError: (e: string) => message.error(e)
+    })
+
+    const { data: boards } = useQuery({
+        queryKey: [API_QUERY_KEYS.BOARD.GET_ALL_BOARDS],
+        queryFn: () => BoardAPI.getAllboards(),
         onError: (e: string) => message.error(e)
     })
 
@@ -68,13 +76,23 @@ function MenuManagement () {
     }, [menuId])
 
     useEffect(() => {
-        menu ? form.setFieldsValue(menu) : form.resetFields();
+        if (menu) {
+            form.setFieldsValue(menu);
+            setProgram(menu.program?.code || "");
+        } else {
+            form.resetFields();
+            setProgram("");
+        }
     }, [menu])
 
     const handleInsertMenu = () => {
         setMenuId("");
         (menu && !menu.id) ? setMenu(undefined) 
             : setTimeout(() => setMenu({ title: "신규 메뉴" } as MenuInterface), 5);
+    }
+
+    const handleProgramChange = (value: string) => {
+        if (programs) for (let p of programs?.programs) if (p.id === value && p.code) setProgram(p.code);
     }
 
     const handleFinish = () => {
@@ -160,6 +178,14 @@ function MenuManagement () {
                             <Select 
                                 placeholder="프로그램을 선택해주세요."
                                 options={programs && toOption("title", "id", programs?.programs)}
+                                onChange={handleProgramChange}
+                                allowClear
+                            />
+                        </Form.Item>
+                        <Form.Item hidden={program !== CODES.PROGRAM.BOARD} name='detailId' label='게시판'>
+                            <Select 
+                                placeholder="게시판을 선택해주세요."
+                                options={boards && toOption("title", "id", boards?.boards)}
                                 allowClear
                             />
                         </Form.Item>

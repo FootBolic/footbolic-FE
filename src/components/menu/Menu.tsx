@@ -3,7 +3,7 @@ import { UserOutlined, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps as AntMenuProps } from 'antd';
 import { MenuProps } from "../../types/components/menu/MenuProps";
 import { useQuery } from "react-query";
-import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
+import { API_QUERY_KEYS, CODES } from "../../constants/common/DataConstants";
 import { MenuAPI } from "../../api/menu/MenuAPI";
 import { useState } from "react";
 import { MenuInterface } from "../../types/entity/menu/MenuInterface";
@@ -40,12 +40,17 @@ function Menu ({ theme }: MenuProps) {
   const toMenuItem = (menus: MenuInterface[]): MenuItem[] => {
     return [
       ...menus.map(menu => {
+        let path = menu.program?.path || "";
+        if (menu.program) {
+          if (menu.program.code === CODES.PROGRAM.BOARD) path += `?board=${menu.detailId}`
+        }
+        
         return {
           key: menu.program?.path || menu.id,
           icon: <UserOutlined />,
           children: menu.children?.length && toMenuItem(menu.children),
           label: menu.program?.path && !menu.children?.length ? (
-            <Link to={menu.program.path || ""} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+            <Link to={path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
               {menu.title}
             </Link>
           ) : menu.title,
