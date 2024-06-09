@@ -18,7 +18,6 @@ function MenuManagement () {
     const [menuId, setMenuId] = useState<string>("");
     const [menu, setMenu] = useState<MenuInterface>();
     const [selectedKey, setSelectedKey] = useState<React.Key[]>([]);
-    const [program, setProgram] = useState<string>("");
 
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
@@ -28,8 +27,8 @@ function MenuManagement () {
     })
 
     const { isFetching: isFetchingMenu, isError: isErrorMenu, refetch: refetchMenu } = useQuery({
-        queryKey: [API_QUERY_KEYS.MENU.GET_MENU_BY_ID],
-        queryFn: () => MenuAPI.getMenuById(menuId),
+        queryKey: [API_QUERY_KEYS.MENU.GET_MENU],
+        queryFn: () => MenuAPI.getMenu(menuId),
         onSuccess: (result) => setMenu(result.menu),
         onError: (e: string) => message.error(e),
         enabled: false
@@ -78,10 +77,8 @@ function MenuManagement () {
     useEffect(() => {
         if (menu) {
             form.setFieldsValue(menu);
-            setProgram(menu.program?.code || "");
         } else {
             form.resetFields();
-            setProgram("");
         }
     }, [menu])
 
@@ -92,7 +89,14 @@ function MenuManagement () {
     }
 
     const handleProgramChange = (value: string) => {
-        if (programs) for (let p of programs?.programs) if (p.id === value && p.code) setProgram(p.code);
+        if (programs) for (let p of programs?.programs) if (p.id === value && p.code) {
+            setMenu({
+                ...menu,
+                programId: value,
+                detailId: undefined,
+                program: p
+            } as MenuInterface)
+        }
     }
 
     const handleFinish = () => {
@@ -110,9 +114,21 @@ function MenuManagement () {
         queryClient.invalidateQueries([API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH]);
     }
 
+    const checkDuplicacy = async() => {
+        const response = await MenuAPI.isDuplicate(form.getFieldValue("programId"), form.getFieldValue('detailId'), menuId);
+        if (response.isDuplicate) return Promise.reject(new Error("동일한 프로그램 가진 메뉴가 이미 존재합니다."));
+
+        if (programs)
+            for (let p of programs?.programs) 
+                if (p.id === form.getFieldValue("programId") && p.code === CODES.PROGRAM.BOARD && !form.getFieldValue("detailId"))
+                    return Promise.reject(new Error("게시판을 선택해주세요."));
+        
+        return Promise.resolve();
+    }
+
     return (
         <>
-            <Title title="메뉴관리" buttons={[{text: '메뉴추가', onClick: handleInsertMenu}]} />
+            <Title title="메뉴 관리" buttons={[{text: '메뉴추가', onClick: handleInsertMenu}]} />
             <ManagementLayout
                 isFetching={isFetchingAll}
                 isError={isErrorAll}
@@ -142,6 +158,9 @@ function MenuManagement () {
                             validateTrigger={['onBlur']}
                         >
                             <Input placeholder='제목을 입력해주세요.' maxLength={20} />
+                        </Form.Item>
+                        <Form.Item name='path' label='경로'>
+                            <Input placeholder='경로를 입력해주세요.' maxLength={100} />
                         </Form.Item>
                         <Form.Item name='parentId' label='상위메뉴'>
                             <TreeSelect
@@ -174,7 +193,16 @@ function MenuManagement () {
                                 maxLength={100}
                             />
                         </Form.Item>
-                        <Form.Item name='programId' label='프로그램'>
+                        <Form.Item 
+                            name='programId' 
+                            label='프로그램'
+                            rules={[
+                                {
+                                    validator: checkDuplicacy
+                                }
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
                             <Select 
                                 placeholder="프로그램을 선택해주세요."
                                 options={programs && toOption("title", "id", programs?.programs)}
@@ -182,10 +210,15 @@ function MenuManagement () {
                                 allowClear
                             />
                         </Form.Item>
-                        <Form.Item hidden={program !== CODES.PROGRAM.BOARD} name='detailId' label='게시판'>
+                        <Form.Item 
+                            hidden={menu?.program?.code !== CODES.PROGRAM.BOARD} 
+                            name='detailId' 
+                            label='게시판'
+                        >
                             <Select 
                                 placeholder="게시판을 선택해주세요."
                                 options={boards && toOption("title", "id", boards?.boards)}
+                                onChange={() => form.validateFields()}
                                 allowClear
                             />
                         </Form.Item>

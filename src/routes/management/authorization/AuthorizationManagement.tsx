@@ -111,7 +111,7 @@ function AuthorizationManagement() {
 
     return (
         <>
-            <Title title="권한관리" buttons={[{ text: '권한추가', onClick: handleInsertAuth }]} />
+            <Title title="권한 관리" buttons={[{ text: '권한추가', onClick: handleInsertAuth }]} />
             <ManagementLayout 
                 isFetching={isFetchingAll} 
                 isError={isErrorAll} 

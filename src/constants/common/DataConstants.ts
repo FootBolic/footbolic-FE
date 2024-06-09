@@ -50,6 +50,11 @@ export const API_QUERY_KEYS = {
         GET_ALL_AUTHORIZATIONS: 'GET_ALL_AUTHORIZATIONS',
         GET_AUTHORIZATION: 'GET_AUTHORIZATION',
     },
+    BOARD: {
+        GET_BOARDS: 'GET_BOARDS',
+        GET_BOARD: 'GET_BOARD',
+        GET_ALL_BOARDS: 'GET_ALL_BOARDS',
+    },
     MEMBER: {
         GET_MEMBERS: 'GET_MEMBERS',
         GET_MEMBER: 'GET_MEMBER',
@@ -59,7 +64,7 @@ export const API_QUERY_KEYS = {
     MENU: {
         GET_MENUS: 'GET_MENUS',
         GET_MENU: 'GET_MENU',
-        GET_MENU_BY_ID: 'GET_MENU_BY_ID',
+        GET_MENU_PATH: 'GET_MENU_PATH',
         GET_MENUS_BY_AUTH: 'GET_MENUS_BY_AUTH'
     },
     PROGRAM: {
@@ -72,9 +77,8 @@ export const API_QUERY_KEYS = {
         GET_ALL_ROLES: 'GET_ALL_ROLES',
         GET_ROLE: 'GET_ROLE',
     },
-    BOARD: {
-        GET_BOARDS: 'GET_BOARDS',
-        GET_BOARD: 'GET_BOARD',
-        GET_ALL_BOARDS: 'GET_ALL_BOARDS',
+    POST: {
+        GET_POSTS: 'GET_POSTS',
+        GET_POST: 'GET_POST'
     }
 }

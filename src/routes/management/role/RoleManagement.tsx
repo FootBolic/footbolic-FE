@@ -140,7 +140,7 @@ function RoleManagement() {
 
     return (
         <>
-            <Title title="역할 관리" buttons={[{ text: '역할추가', onClick: handleInsertRole }]} />
+            <Title buttons={[{ text: '역할추가', onClick: handleInsertRole }]} />
             <ManagementLayout
                 isFetching={isFetchingAll} 
                 isError={isErrorAll}

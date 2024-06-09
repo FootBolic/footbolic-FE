@@ -54,7 +54,6 @@ function App () {
                     const route: RouteInterface = (ROUTES as any)[key];  
                     return <Route key={idx} path={route.path} element={<route.element /> } 
                     />
-                  
                 })}
               </Routes>
           </div>

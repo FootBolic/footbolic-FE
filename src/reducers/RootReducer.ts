@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import PlatformReducer from './PlatformReducer';
-import MobileMenuReducer from './MobileMenuReducer';
+import MenuReducer from './MenuReducer';
 import CsrfTokenReducer from './CsrfTokenReducer';
 import AccessTokenReducer from './AccessTokenReducer';
 import AuthErrorReducer from './AuthErrorReducer';
@@ -10,7 +10,7 @@ import AuthErrorReducer from './AuthErrorReducer';
  */
 export default combineReducers({
     platform: PlatformReducer,
-    mobileMenu: MobileMenuReducer,
+    menu: MenuReducer,
     csrfToken: CsrfTokenReducer,
     accessToken: AccessTokenReducer,
     authError: AuthErrorReducer,

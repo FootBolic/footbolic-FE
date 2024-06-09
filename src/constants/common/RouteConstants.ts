@@ -1,3 +1,4 @@
+import Board from "../../routes/board/Board";
 import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import BoardManagement from "../../routes/management/board/BoardManagement";
@@ -71,5 +72,9 @@ export const ROUTES = {
     BOARD_MANAGEMENT: {
         path: '/management/board',
         element: BoardManagement
+    },
+    BOARD: {
+        path: '/board/:boardId',
+        element: Board
     }
 }

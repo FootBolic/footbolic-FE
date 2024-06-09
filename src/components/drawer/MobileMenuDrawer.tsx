@@ -1,7 +1,7 @@
 import { Drawer } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStateInterface } from "../../types/reducers/RootStateInterface";
-import { setIsMobileMenuOpen } from "../../reducers/MobileMenuReducer";
+import { setIsMobileMenuOpen } from "../../reducers/MenuReducer";
 import { MOBILE_MENU_DRAWER_WIDTH, MOBILE_MENU_DRAWER_PLACEMENT } from "../../constants/components/DrawerConstants";
 import { CloseOutlined } from "@ant-design/icons";
 import Menu from "../menu/Menu";
@@ -12,7 +12,7 @@ function MobilMenuDrawer () {
 
     const dispatch = useDispatch();
 
-    const isMobileMenuOpen = useSelector((state: RootStateInterface) => state.mobileMenu.isMobileMenuOpen);
+    const isMobileMenuOpen = useSelector((state: RootStateInterface) => state.menu.isMobileMenuOpen);
 
     const onClose = () => {
         dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false }))
