@@ -9,7 +9,7 @@ export interface BoardInterface {
     isCommentable?: boolean;
     isAnnounceable?: boolean;
     isUsed?: boolean;
-    posts: PostInterface[];
+    posts?: PostInterface[];
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;

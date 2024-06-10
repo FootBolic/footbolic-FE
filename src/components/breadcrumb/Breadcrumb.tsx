@@ -43,6 +43,7 @@ function Breadcrumb () {
     const getPath = (menu: MenuInterface) => {
         let path = menu.program?.path || "";
         if (menu.program && menu.program.code === CODES.PROGRAM.BOARD) path += `/${menu.detailId}`;
+        path += `?menuId=${menu.id}`;
 
         return path;
     }

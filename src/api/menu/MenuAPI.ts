@@ -44,31 +44,12 @@ export class MenuAPI {
     }
 
     /**
-     * 프로그램 식별번호와 세부페이지 식별번호로 메뉴 중복 검사
-     * @param {string} programId 조회할 메뉴 프로그램 식별번호
-     * @param {string | undefined} detailId 조회할 세부페이지 식별번호
-     * @param {string | undefined} menuId 중복검사에서 제외할 메뉴 식별번호
-     * @returns {Promise<{ isDuplicate: boolean }>} 메뉴 중복 여부
+     * 메뉴 경로를 조회한다.
+     * @param {string} menuId 메뉴 식별번호
+     * @returns {Promise<{ menu: MenuInterface }>} 메뉴 경로
      */
-    static async isDuplicate(
-        programId: string,
-        detailId: string | undefined,
-        menuId: string | undefined
-    ): Promise<{ isDuplicate: boolean }> {
-        let url = `/menus/${programId}`;
-        if (detailId) url += `?detailId=${detailId}`;
-        if (menuId) url+= (detailId ? '&' : '?') + `menuId=${menuId}`;
-        const response = await api.post(url);
-        return response.data.data;
-    }
-
-    /**
-     * 경로에 해당하는 메뉴를 조회한다.
-     * @param {string} path 메뉴를 조회할 대상 경로
-     * @returns {Promise<{ menu: MenuInterface }>} 경로에 해당하는 메뉴
-     */
-    static async getMenuPath(path: string): Promise<{ menu: MenuInterface }> {
-        const response = await api.get(`/menus/public/path?path=${path}`);
+    static async getMenuPath(menuId: string): Promise<{ menu: MenuInterface }> {
+        const response = await api.get(`/menus/public/path?menuId=${menuId}`);
         return response.data.data
     }
     

@@ -75,7 +75,7 @@ function AuthorizationManagement() {
     useEffect(() => {
         refetchAll();
         setAuthorizationId("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         authorizationId ? refetchAuth() : setAuthorization(undefined);
@@ -84,12 +84,6 @@ function AuthorizationManagement() {
     useEffect(() => {
         authorization ? form.setFieldsValue(authorization) : form.resetFields();
     }, [authorization])
-
-    useEffect(() => {
-        refetchAll();
-        setAuthorizationId("");
-    }, [search])
-
 
     const handleInsertAuth = () => {
         setAuthorizationId("");

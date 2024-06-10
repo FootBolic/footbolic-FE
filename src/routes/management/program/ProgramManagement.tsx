@@ -64,7 +64,7 @@ function ProgramManagement() {
     useEffect(() => {
         refetchAll();
         setProgramId("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         programId ? refetchProgram() : setProgram(undefined);
@@ -73,11 +73,6 @@ function ProgramManagement() {
     useEffect(() => {
         program ? form.setFieldsValue(program) : form.resetFields();
     }, [program])
-
-    useEffect(() => {
-        refetchAll();
-        setProgramId("");
-    }, [search])
 
     const handleInsertProgram = () => {
         setProgramId("");

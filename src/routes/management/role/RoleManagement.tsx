@@ -87,7 +87,7 @@ function RoleManagement() {
         refetchAll();
         setRoleId("");
         setPopOpen("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         roleId ? refetchRole() : setRole(undefined);
@@ -98,12 +98,6 @@ function RoleManagement() {
         role ? form.setFieldsValue(role) : form.resetFields();
         setPopOpen("");
     }, [role])
-
-    useEffect(() => {
-        refetchAll();
-        setRoleId("");
-        setPopOpen("");
-    }, [search])
 
     const handleInsertRole = () => {
         setRoleId("");
@@ -140,7 +134,7 @@ function RoleManagement() {
 
     return (
         <>
-            <Title buttons={[{ text: '역할추가', onClick: handleInsertRole }]} />
+            <Title title="역할 관리" buttons={[{ text: '역할추가', onClick: handleInsertRole }]} />
             <ManagementLayout
                 isFetching={isFetchingAll} 
                 isError={isErrorAll}

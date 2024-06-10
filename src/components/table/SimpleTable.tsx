@@ -1,15 +1,16 @@
 import { List, Avatar } from "antd";
 import { SimpleTableProps } from "../../types/components/table/SimpleTableProps";
+import { toDatetimeString } from "../../util/DateUtil";
+import { Link } from "react-router-dom";
+import useURLParam from "../../hooks/useURLParam";
 
 function SimpleTable({ dataSource, size }: SimpleTableProps) {
+    const { menuId } = useURLParam();
     return (
         <List
             size={size || "default"}
             dataSource={dataSource}
             renderItem={(post: any) => {
-                const year = post.createdAt.getFullYear();
-                const month = post.createdAt.getMonth()+1;
-                const day = post.createdAt.getDate();
                 return (
                     <List.Item>
                         <List.Item.Meta
@@ -22,8 +23,8 @@ function SimpleTable({ dataSource, size }: SimpleTableProps) {
                                     }
                                 />
                             }
-                            title={post.title}
-                            description={`${year}-${month}-${day}`}
+                            title={<Link to={`/post/${post.id}?menuId=${menuId}`}>{post.title}</Link>}
+                            description={`${post.createdBy.nickname} | ${toDatetimeString(post.createdAt)}`}
                         />
                     </List.Item>
                 )

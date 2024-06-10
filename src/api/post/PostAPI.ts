@@ -21,6 +21,8 @@ export class PostAPI {
     ): Promise<{ posts: PostInterface[], size: number }> {
         let url = `/posts?page=${page}&size=${size}`;
         url += search?.title ? `&searchTitle=${search.title}` : '';
+        url += search?.createdBy ? `&searchCreatedBy=${search.createdBy}` : '';
+        url += search?.createdAt ? `&searchCreatedAt=${search.createdAt}` : '';
         url += boardId ? `&boardId=${boardId}` : '';
         const response = await api.get(url);
         return response.data.data;

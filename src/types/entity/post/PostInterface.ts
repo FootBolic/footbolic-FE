@@ -22,4 +22,6 @@ export interface PostInterface {
 
 export interface PostSearchInterface {
     title?: string;
+    createdBy?: string;
+    createdAt?: string | number[] | Date;
 }

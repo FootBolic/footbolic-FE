@@ -1,9 +1,0 @@
-[
-    "/",
-    "/member/create",
-    "/member/me",
-    "/oauth/kakao",
-    "/oauth/naver",
-    "/member/withdraw/kakao",
-    "/member/withdraw/naver"
-]

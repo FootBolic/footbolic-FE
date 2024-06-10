@@ -11,6 +11,7 @@ import MemberInfo from "../../routes/member/MemberInfo";
 import MemberWithdraw from "../../routes/member/MemberWithdraw";
 import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
+import PostRead from "../../routes/post/PostRead";
 
 export const ROUTES = {
     // 메인페이지
@@ -73,8 +74,14 @@ export const ROUTES = {
         path: '/management/board',
         element: BoardManagement
     },
+    // 게시판 페이지
     BOARD: {
         path: '/board/:boardId',
         element: Board
+    },
+    // 게시글 읽기 페이지
+    POST_READ: {
+        path: '/post/:postId',
+        element: PostRead
     }
 }

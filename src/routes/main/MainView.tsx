@@ -1,6 +1,6 @@
 import Banner from "../../components/banner/Banner";
 import styles from "../../styles/routes/main/MainView.module.scss"
-import { Card, List, Tabs } from 'antd';
+import { Card, Divider, List, Tabs } from 'antd';
 import { 
     AndroidOutlined,
     AppleOutlined,
@@ -43,7 +43,10 @@ for (let i=0; i< boards.length; i++) {
     for (let j = 1; j <= 10; j++) {
         tmp.push({
             title: `${boards[i]} Test Data Title ${j}`,
-            createdAt: new Date()
+            createdAt: [2024, 6, 10, 10, 57, 35, 25],
+            createdBy: {
+                nickname: `테스트 작성자 ${i}_${j}`
+            }
         })
     }
     if (i < 2) listData.push(tmp)
@@ -57,6 +60,7 @@ function MainView () {
             <div className={styles.main_el}>
                 <Banner />
             </div>
+            <Divider />
             <div className={styles.main_el}>
                 <Tabs
                     centered
@@ -77,6 +81,7 @@ function MainView () {
                     })}
                 />
             </div>
+            <Divider />
             <div className={styles.main_el}>
                 <List
                     grid={RESPONSIVE_GRID}

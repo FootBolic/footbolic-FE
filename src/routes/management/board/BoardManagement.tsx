@@ -63,7 +63,7 @@ function BoardManagement() {
     useEffect(() => {
         refetchAll();
         setBoardId("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         boardId ? refetchBoard() : setBoard(undefined);
@@ -72,11 +72,6 @@ function BoardManagement() {
     useEffect(() => {
         board ? form.setFieldsValue(board) : form.resetFields();
     }, [board])
-
-    useEffect(() => {
-        refetchAll();
-        setBoardId("");
-    }, [search])
 
     const handleInsertBoard = () => {
         setBoardId("");

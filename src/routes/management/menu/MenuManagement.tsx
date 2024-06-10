@@ -115,9 +115,6 @@ function MenuManagement () {
     }
 
     const checkDuplicacy = async() => {
-        const response = await MenuAPI.isDuplicate(form.getFieldValue("programId"), form.getFieldValue('detailId'), menuId);
-        if (response.isDuplicate) return Promise.reject(new Error("동일한 프로그램 가진 메뉴가 이미 존재합니다."));
-
         if (programs)
             for (let p of programs?.programs) 
                 if (p.id === form.getFieldValue("programId") && p.code === CODES.PROGRAM.BOARD && !form.getFieldValue("detailId"))
@@ -218,7 +215,7 @@ function MenuManagement () {
                             <Select 
                                 placeholder="게시판을 선택해주세요."
                                 options={boards && toOption("title", "id", boards?.boards)}
-                                onChange={() => form.validateFields()}
+                                onChange={() => form.validateFields(["programId"])}
                                 allowClear
                             />
                         </Form.Item>
