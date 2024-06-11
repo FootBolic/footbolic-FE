@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    justify-content: center;
+
+    .textarea {
+        flex-basis: 95%;
+        margin-inline: 10px;
+    }
+
+    .save_button {
+        flex-basis: 5%;
+        margin-inline: 10px;
+    }
+}

@@ -4,23 +4,18 @@ import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
 import { PostAPI } from "../../api/post/PostAPI";
 import { useEffect, useState } from "react";
 import { PostInterface } from "../../types/entity/post/PostInterface";
-import { Card, FloatButton, Skeleton, Space, Typography, message } from "antd";
+import { FloatButton, Skeleton, message } from "antd";
 import Error from "../../components/error/Error";
 import Title from "../../components/title/Title";
 import useURLParam from "../../hooks/useURLParam";
-import { toDatetimeString } from "../../util/DateUtil";
-import styles from "../../styles/routes/post/PostRead.module.scss";
-import { HeartOutlined } from '@ant-design/icons';
 import CommentSection from "../../components/comment/CommentSection";
-
-const { Title: TitleText, Text } = Typography;
+import PostDetails from "../../components/post/PostDetails";
 
 function PostRead() {
     const navigate = useNavigate();
     const { postId } = useParams();
     const { menuId, page, searchTitle, searchCreatedAt, searchCreatedBy } = useURLParam();
     const [post, setPost] = useState<PostInterface>();
-    const [hover, setHover] = useState<boolean>(false);
 
     const { isFetching, isError, refetch } = useQuery({
         queryKey: [`${API_QUERY_KEYS.POST.GET_POST}_${postId}`],
@@ -37,7 +32,7 @@ function PostRead() {
     return (
         <>
             {
-                isFetching ? <Skeleton active /> : <>
+                isFetching || !post ? <Skeleton active /> : <>
                     {
                         isError ? <Error /> : <>
                             <Title
@@ -53,38 +48,9 @@ function PostRead() {
                                     }
                                 ]}
                             />
-                            <Card
-                                title={
-                                    <>
-                                        <div className={styles.post_info}>
-                                            <TitleText className={styles.title} level={3}>{post?.title}</TitleText>
-                                            <Space direction="vertical">
-                                                <Text className={styles.title} type="secondary">
-                                                    {post?.createdBy?.nickname}
-                                                </Text>
-                                                <Text className={styles.title} type="secondary">
-                                                    {post?.createdAt && toDatetimeString(post.createdAt)}
-                                                </Text>
-                                            </Space>
-                                        </div>
-                                    </>
-                                }
-                                bodyStyle={{ minHeight: '40vh' }}
-                            >
-                                {post?.content}
-                            </Card>
+                            <PostDetails post={post} />
                             <CommentSection />
-                            <FloatButton.Group>
-                                <FloatButton 
-                                    onMouseEnter={() => setHover(true)}
-                                    onMouseLeave={() => setHover(false)}
-                                    icon={
-                                        <HeartOutlined className={hover ? styles.heart_hover : styles.heart} />
-                                    } 
-                                    className={hover ? styles.like_button_hover : ''}
-                                />
-                                <FloatButton.BackTop visibilityHeight={1} />
-                            </FloatButton.Group>
+                            <FloatButton.BackTop visibilityHeight={1} />
                         </>
                     }
                 </>

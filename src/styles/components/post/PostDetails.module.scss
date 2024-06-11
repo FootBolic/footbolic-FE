@@ -1,0 +1,26 @@
+.post_info {
+    margin-bottom: 30px;
+}
+
+.post_content {
+    min-height: 20vh;
+}
+
+.post_buttons {
+    display: flex;
+    justify-content: center;
+
+    .like_button_container {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.heart {
+    color: rgb(255, 47, 47);
+}
+
+.heart_hover {
+    color: white;
+}
