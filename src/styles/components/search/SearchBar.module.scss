@@ -23,7 +23,10 @@
         }
 
         .button_container {
-            min-width: 20px;
+            min-width: 145px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
 
             button {
                 margin-inline: 5px;

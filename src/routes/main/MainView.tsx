@@ -1,6 +1,6 @@
 import Banner from "../../components/banner/Banner";
 import styles from "../../styles/routes/main/MainView.module.scss"
-import { Card, Divider, List, Tabs } from 'antd';
+import { Card, Divider, FloatButton, List, Tabs } from 'antd';
 import { 
     AndroidOutlined,
     AppleOutlined,
@@ -95,6 +95,7 @@ function MainView () {
                     )}
                 />
             </div>
+            <FloatButton.BackTop visibilityHeight={1} />
         </>
     )
 }

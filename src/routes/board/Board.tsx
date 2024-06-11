@@ -18,12 +18,16 @@ import useURLParam from "../../hooks/useURLParam";
 
 function Board() {
     const { boardId } = useParams();
-    const { menuId } = useURLParam();
+    const { menuId, page: paramPage, searchTitle, searchCreatedAt, searchCreatedBy  } = useURLParam();
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
 
     const [posts, setPosts] = useState<PostInterface[]>([]);
-    const [search, setSearch] = useState<PostSearchInterface>();
-    const [page, setPage] = useState<number>(1);
+    const [search, setSearch] = useState<PostSearchInterface>({
+        title: searchTitle,
+        createdAt: searchCreatedAt,
+        createdBy: searchCreatedBy
+    });
+    const [page, setPage] = useState<number>(Number(paramPage) || 1);
     const [size, setSize] = useState<number>(0);
 
     const { isFetching, isError, refetch } = useQuery({
@@ -76,7 +80,7 @@ function Board() {
                                 }
                             ]}
                             onSearch={(result) => setSearch(result)}
-                            onReset={() => setSearch(undefined)}
+                            onReset={() => setSearch({})}
                         />
                         {
                             isMobile ? (
@@ -91,14 +95,24 @@ function Board() {
                                             dataIndex: 'title',
                                             key: 'title',
                                             width: 'auto',
-                                            render: (t, r: PostInterface) => <Link to={`/post/${r.id}?menuId=${menuId}`}>{t}</Link>
+                                            ellipsis: true,
+                                            render: (t, r: PostInterface) => 
+                                                <Link 
+                                                    to={`/post/${r.id}?menuId=${menuId}&page=${page}`
+                                                        + (search?.title ? `&searchTitle=${search?.title}` : '')
+                                                        + (search?.createdAt ? `&searchCreatedAt=${search?.createdAt}` : '')
+                                                        + (search?.createdBy ? `&searchCreatedBy=${search?.createdBy}` : '')}
+                                                >
+                                                    {t}
+                                                </Link>
                                         },
                                         {
                                             title: '작성자',
                                             dataIndex: 'createdBy',
                                             key: 'createdBy',
                                             align: 'center',
-                                            width: '15%',
+                                            width: '20%',
+                                            ellipsis: true,
                                             render: (_, r: PostInterface) => r.createdBy!.nickname
                                         },
                                         {
@@ -106,7 +120,8 @@ function Board() {
                                             dataIndex: 'createdAt',
                                             key: 'createdAt',
                                             align: 'center',
-                                            width: '15%',
+                                            width: '20%',
+                                            ellipsis: true,
                                             render: (_, r: PostInterface) => toDatetimeString(r.createdAt!)
                                         }
                                     ]}

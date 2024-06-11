@@ -74,8 +74,10 @@ function SearchBar({ defaultValues, elements, onSearch, onReset} : SearchBarProp
                     </Form>
                 </div>
                 <div className={styles.button_container}>
-                    <Button onClick={() => defaultValues ? onReset() : form.resetFields()}>초기화</Button>
-                    <Button type="primary" onClick={handleSearch}>검색</Button>
+                    <div>
+                        <Button onClick={() => defaultValues ? onReset() : form.resetFields()}>초기화</Button>
+                        <Button type="primary" onClick={handleSearch}>검색</Button>
+                    </div>
                 </div>
             </div>
         </Card>
