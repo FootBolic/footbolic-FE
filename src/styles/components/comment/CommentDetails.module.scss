@@ -1,0 +1,18 @@
+.container {
+    width: 100%;
+    margin: 10px;
+
+    .reply_container {
+        display: flex;
+        justify-content: center;
+
+        .arrow{
+            margin-top: 25px;
+            flex-basis: 20px;
+        }
+
+        .comment {
+            flex-basis: calc(100% - 20px);
+        }
+    }
+}

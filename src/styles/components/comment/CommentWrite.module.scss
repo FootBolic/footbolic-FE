@@ -1,14 +1,33 @@
 .container {
     display: flex;
     justify-content: center;
+    margin-top: 20px;
 
-    .textarea {
+    .form{
         flex-basis: 95%;
-        margin-inline: 10px;
+        margin-inline-end: 10px;
+        width: 100%;
+        padding: 0px;
     }
 
-    .save_button {
+    .buttons_container {
+        padding-inline-start: 10px;
         flex-basis: 5%;
-        margin-inline: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+}
+
+.mobile_container {
+    margin-top: 20px;
+    
+    .form {
+        margin-bottom: 10px;
+    }
+
+    .buttons_container {
+        display: flex;
+        justify-content: flex-end;
     }
 }

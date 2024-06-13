@@ -1,4 +1,5 @@
 import { BoardInterface } from "../board/BoardInterface";
+import { CommentInterface } from "../comment/CommentInterface";
 import { MemberInterface } from "../member/MemberInterface";
 
 export interface PostInterface {
@@ -9,9 +10,10 @@ export interface PostInterface {
     content?: string;
     isSecret?: boolean;
     isAnnouncement?: boolean;
+    isEditable?: boolean;
     announcementStartsAt?: number[];
     announcementEndsAt?: number[];
-    // comments?: CommentInterface[];
+    comments?: CommentInterface[];
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;

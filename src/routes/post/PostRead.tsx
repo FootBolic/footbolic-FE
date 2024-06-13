@@ -40,7 +40,8 @@ function PostRead() {
                                 buttons={[
                                     { 
                                         text: '목록',
-                                        onClick: () => navigate(`/board/${post?.board?.id}?menuId=${menuId}&page=${page}`
+                                        onClick: () => navigate(`/board/${post?.board?.id}?menuId=${menuId}`
+                                        + (page ? `&page=${page}` : '')
                                         + (searchTitle ? `&searchTitle=${searchTitle}` : '')
                                         + (searchCreatedAt ? `&searchCreatedAt=${searchCreatedAt}` : '')
                                         + (searchCreatedBy ? `&searchCreatedBy=${searchCreatedBy}` : '')
@@ -49,7 +50,7 @@ function PostRead() {
                                 ]}
                             />
                             <PostDetails post={post} />
-                            <CommentSection />
+                            <CommentSection comments={post.comments || []} onSaveComment={refetch} />
                             <FloatButton.BackTop visibilityHeight={1} />
                         </>
                     }

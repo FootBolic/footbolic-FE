@@ -27,7 +27,7 @@ function Board() {
         createdAt: searchCreatedAt,
         createdBy: searchCreatedBy
     });
-    const [page, setPage] = useState<number>(Number(paramPage) || 1);
+    const [page, setPage] = useState<number>(paramPage ? Number(paramPage) : 1);
     const [size, setSize] = useState<number>(0);
 
     const { isFetching, isError, refetch } = useQuery({
