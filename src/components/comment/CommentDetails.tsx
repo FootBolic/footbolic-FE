@@ -8,6 +8,7 @@ import CommentWrite from "./CommentWrite";
 import { SpaceSpan } from "../html/HtmlElements";
 import { useMutation } from "react-query";
 import { CommentAPI } from "../../api/comment/CommentAPI";
+import ReplyDetails from "../reply/ReplyDetails";
 
 const { Text } = Typography;
 
@@ -31,9 +32,11 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
         <>
             <Card bodyStyle={{ width: '100%' }}>
                 <Space direction="vertical" className={styles.container}>
-                    <Text className={styles.comment_info} type="secondary">
-                        {comment.createdBy?.nickname}<SpaceSpan />·<SpaceSpan />
-                        {comment.createdAt && toDatetimeString(comment.createdAt)}<SpaceSpan />·<SpaceSpan /> 
+                    <Text type="secondary">
+                        {comment.createdBy?.nickname}
+                        <SpaceSpan />·<SpaceSpan />
+                        {comment.createdAt && toDatetimeString(comment.createdAt)}
+                        <SpaceSpan />·<SpaceSpan /> 
                         <a onClick={() => setIsReplying(!isReplying)}>
                             {isReplying ? <>
                                 답글 취소 <CloseOutlined />
@@ -52,7 +55,8 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
                                     </>}
                                 </a>
                                 <a onClick={() => setIsDeleteModalOpen(true)}>
-                                    <SpaceSpan />·<SpaceSpan />삭제 <DeleteOutlined />
+                                    <SpaceSpan />·<SpaceSpan />
+                                    삭제 <DeleteOutlined />
                                 </a>
                             </>
                         )}
@@ -69,6 +73,9 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
                         />
                     ) : (
                         <Text>{comment.content}</Text>
+                    )}
+                    {comment.replies?.map((reply) => 
+                        <ReplyDetails reply={reply} onSaveReply={onSaveComment} />
                     )}
                     {isReplying && (
                         <div className={styles.reply_container}>
