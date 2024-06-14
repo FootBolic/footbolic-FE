@@ -1,5 +1,5 @@
 import { ReplyLayoutProps } from "../../types/components/layout/ReplyLayoutProps";
-import { CloseOutlined, EditOutlined, DeleteOutlined, RightOutlined } from "@ant-design/icons";
+import { CloseOutlined, EditOutlined, DeleteOutlined, RightOutlined, HeartTwoTone, HeartFilled } from "@ant-design/icons";
 import styles from "../../styles/components/layout/ReplyLayout.module.scss";
 import { Card, Modal, Space, Typography, message } from "antd";
 import { useState } from "react";
@@ -7,11 +7,16 @@ import { SpaceSpan } from "../html/HtmlElements";
 import { toDatetimeString } from "../../util/DateUtil";
 import CommentWrite from "../comment/CommentWrite";
 import { ReplyAPI } from "../../api/reply/ReplyAPI";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import { useSelector } from "react-redux";
+import { RootStateInterface } from "../../types/reducers/RootStateInterface";
+import { RecommendationAPI } from "../../api/recommendation/RecommendationAPI";
+import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
 
 const { Text } = Typography;
 
-function ReplyDetails({ reply, onSaveReply }: ReplyLayoutProps) {
+function ReplyDetails({ reply, onSaveReply, onRecommendationChange }: ReplyLayoutProps) {
+    const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
@@ -23,6 +28,27 @@ function ReplyDetails({ reply, onSaveReply }: ReplyLayoutProps) {
                 message.success('답글이 삭제되었습니다.');
             },
             onError: (e: string) => {message.error(e)}
+        }
+    )
+
+    const { refetch } = useQuery({
+        queryFn: () => RecommendationAPI.getRecommendations("comment", reply.id),
+        queryKey: [API_QUERY_KEYS.RECOMMENDATION.GET_RECOMMENDATIONS + `_${reply.id}`],
+        enabled: false,
+        onSuccess: (result) => onRecommendationChange && onRecommendationChange(reply.id, result.size, result.isRecommended)
+    })
+
+    const { mutate: recommend, isLoading: isLoadingRecommendation } = useMutation(
+        (objectId: string) => RecommendationAPI.recommend("reply", objectId),
+        {
+            onSuccess: () => refetch()
+        }
+    )
+
+    const { mutate: unrecommend, isLoading: isLoadingUnrecommendation } = useMutation(
+        (objectId: string) => RecommendationAPI.unrecommend("reply", objectId),
+        {
+            onSuccess: () => refetch()
         }
     )
 
@@ -41,7 +67,7 @@ function ReplyDetails({ reply, onSaveReply }: ReplyLayoutProps) {
                             {reply.isEditable && (
                                 <>
                                     <a onClick={() => setIsEditing(!isEditing)}>
-                                        <SpaceSpan />·<SpaceSpan />
+                                        {isMobile ? <br/> : <><SpaceSpan />·<SpaceSpan /></>}
                                         {isEditing ? <>
                                             수정 취소 <CloseOutlined />
                                         </> :<>
@@ -54,6 +80,17 @@ function ReplyDetails({ reply, onSaveReply }: ReplyLayoutProps) {
                                     </a>
                                 </>
                             )}
+                            <SpaceSpan />·<SpaceSpan />
+                            <a 
+                                onClick={() => {
+                                    if (isLoadingRecommendation || isLoadingUnrecommendation) return;
+                                    reply.isRecommended ? unrecommend(reply.id) : recommend(reply.id);
+                                }}
+                            >
+                                {reply.isRecommended ? <HeartFilled className={styles.heart} /> : <HeartTwoTone twoToneColor="rgb(255, 47, 47)" />}
+                                <SpaceSpan />
+                                {reply.recommendationsSize}
+                            </a>
                         </Text>
                         {isEditing ? (
                             <CommentWrite

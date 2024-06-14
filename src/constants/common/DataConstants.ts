@@ -72,13 +72,16 @@ export const API_QUERY_KEYS = {
         GET_ALL_PROGRAMS: 'GET_ALL_PROGRAMS',
         GET_PROGRAM: 'GET_PROGRAM'
     },
+    POST: {
+        GET_POSTS: 'GET_POSTS',
+        GET_POST: 'GET_POST'
+    },
     ROLE: {
         GET_ROLES: 'GET_ROLES',
         GET_ALL_ROLES: 'GET_ALL_ROLES',
         GET_ROLE: 'GET_ROLE',
     },
-    POST: {
-        GET_POSTS: 'GET_POSTS',
-        GET_POST: 'GET_POST'
+    RECOMMENDATION: {
+        GET_RECOMMENDATIONS: 'GET_RECOMMENDATIONS' 
     }
 }

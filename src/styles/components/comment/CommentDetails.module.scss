@@ -2,6 +2,10 @@
     width: 100%;
     margin: 10px;
 
+    .heart {
+        color: rgb(255, 47, 47);
+    }
+
     .reply_container {
         display: flex;
         justify-content: center;
@@ -9,6 +13,7 @@
         .arrow{
             margin-top: 25px;
             flex-basis: 20px;
+            color: rgb(180, 180, 180);
         }
 
         .comment {

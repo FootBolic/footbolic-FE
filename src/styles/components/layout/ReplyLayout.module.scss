@@ -2,9 +2,14 @@
     display: flex;
     justify-content: center;
 
+    .heart {
+        color: rgb(255, 47, 47);
+    }
+
     .arrow{
         margin-top: 10px;
         flex-basis: 20px;
+        color: rgb(180, 180, 180);
     }
 
     .comment {

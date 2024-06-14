@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 const { Title } = Typography;
 
-function CommentSection({ comments, onSaveComment }: CommentSectionProps) {
+function CommentSection({ comments, onSaveComment, onCommentRecommendationChange, onReplyRecommendationChange }: CommentSectionProps) {
     const [size, setSize] = useState<number>(0);
 
     useEffect(() => {
@@ -21,7 +21,13 @@ function CommentSection({ comments, onSaveComment }: CommentSectionProps) {
             <Title level={4}>{size}개의 댓글</Title>
             <div>
                 {comments.map((comment, idx) => 
-                    <CommentDetails key={idx} comment={comment} onSaveComment={onSaveComment} />
+                    <CommentDetails 
+                        key={idx}
+                        comment={comment}
+                        onSaveComment={onSaveComment}
+                        onCommentRecommendationChange={onCommentRecommendationChange}
+                        onReplyRecommendationChange={onReplyRecommendationChange}
+                    />
                 )}
             </div>
             <CommentWrite

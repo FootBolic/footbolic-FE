@@ -1,6 +1,7 @@
 import { BoardInterface } from "../board/BoardInterface";
 import { CommentInterface } from "../comment/CommentInterface";
 import { MemberInterface } from "../member/MemberInterface";
+import { PostRecommendationInterface } from "../recommendation/RecommendationInterface";
 
 export interface PostInterface {
     id: string;
@@ -11,6 +12,9 @@ export interface PostInterface {
     isSecret?: boolean;
     isAnnouncement?: boolean;
     isEditable?: boolean;
+    isRecommended?: boolean;
+    recommendationsSize?: number;
+    recommendations?: PostRecommendationInterface[];
     announcementStartsAt?: number[];
     announcementEndsAt?: number[];
     comments?: CommentInterface[];

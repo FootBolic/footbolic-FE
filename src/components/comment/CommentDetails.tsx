@@ -2,17 +2,22 @@ import { Card, Modal, Space, Typography, message } from "antd";
 import { CommentDetailsProps } from "../../types/components/comment/CommentDetailsProps";
 import { toDatetimeString } from "../../util/DateUtil";
 import styles from "../../styles/components/comment/CommentDetails.module.scss";
-import { CloseOutlined, EnterOutlined, EditOutlined, DeleteOutlined, RightOutlined } from "@ant-design/icons";
+import { CloseOutlined, EnterOutlined, EditOutlined, DeleteOutlined, RightOutlined, HeartTwoTone, HeartFilled } from "@ant-design/icons";
 import { useState } from "react";
 import CommentWrite from "./CommentWrite";
 import { SpaceSpan } from "../html/HtmlElements";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { CommentAPI } from "../../api/comment/CommentAPI";
 import ReplyDetails from "../reply/ReplyDetails";
+import { useSelector } from "react-redux";
+import { RootStateInterface } from "../../types/reducers/RootStateInterface";
+import { RecommendationAPI } from "../../api/recommendation/RecommendationAPI";
+import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
 
 const { Text } = Typography;
 
-function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
+function CommentDetails({ comment, onSaveComment, onCommentRecommendationChange, onReplyRecommendationChange }: CommentDetailsProps) {
+    const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
     const [isReplying, setIsReplying] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -28,15 +33,36 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
         }
     )
 
+    const { refetch } = useQuery({
+        queryFn: () => RecommendationAPI.getRecommendations("comment", comment.id),
+        queryKey: [API_QUERY_KEYS.RECOMMENDATION.GET_RECOMMENDATIONS + `_${comment.id}`],
+        enabled: false,
+        onSuccess: (result) => onCommentRecommendationChange && onCommentRecommendationChange(comment.id, result.size, result.isRecommended)
+    })
+
+    const { mutate: recommend, isLoading: isLoadingRecommendation } = useMutation(
+        (objectId: string) => RecommendationAPI.recommend("comment", objectId),
+        {
+            onSuccess: () => refetch()
+        }
+    )
+
+    const { mutate: unrecommend, isLoading: isLoadingUnrecommendation } = useMutation(
+        (objectId: string) => RecommendationAPI.unrecommend("comment", objectId),
+        {
+            onSuccess: () => refetch()
+        }
+    )
+
     return (
         <>
             <Card bodyStyle={{ width: '100%' }}>
                 <Space direction="vertical" className={styles.container}>
                     <Text type="secondary">
                         {comment.createdBy?.nickname}
-                        <SpaceSpan />·<SpaceSpan />
-                        {comment.createdAt && toDatetimeString(comment.createdAt)}
                         <SpaceSpan />·<SpaceSpan /> 
+                        {comment.createdAt && toDatetimeString(comment.createdAt)}
+                        {isMobile ? <br/> : <><SpaceSpan />·<SpaceSpan /></>}
                         <a onClick={() => setIsReplying(!isReplying)}>
                             {isReplying ? <>
                                 답글 취소 <CloseOutlined />
@@ -60,6 +86,17 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
                                 </a>
                             </>
                         )}
+                        <SpaceSpan />·<SpaceSpan />
+                        <a 
+                            onClick={() => {
+                                if (isLoadingRecommendation || isLoadingUnrecommendation) return;
+                                comment.isRecommended ? unrecommend(comment.id) : recommend(comment.id);
+                            }}
+                        >
+                            {comment.isRecommended ? <HeartFilled className={styles.heart} /> : <HeartTwoTone twoToneColor="rgb(255, 47, 47)" />}
+                            <SpaceSpan />
+                            {comment.recommendationsSize}
+                        </a>
                     </Text>
                     {isEditing ? (
                         <CommentWrite
@@ -75,7 +112,7 @@ function CommentDetails({ comment, onSaveComment }: CommentDetailsProps) {
                         <Text>{comment.content}</Text>
                     )}
                     {comment.replies?.map((reply) => 
-                        <ReplyDetails reply={reply} onSaveReply={onSaveComment} />
+                        <ReplyDetails reply={reply} onSaveReply={onSaveComment} onRecommendationChange={onReplyRecommendationChange} />
                     )}
                     {isReplying && (
                         <div className={styles.reply_container}>

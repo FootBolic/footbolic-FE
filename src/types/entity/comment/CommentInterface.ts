@@ -1,5 +1,6 @@
 import { MemberInterface } from "../member/MemberInterface";
 import { PostInterface } from "../post/PostInterface";
+import { CommentRecommendationInterface } from "../recommendation/RecommendationInterface";
 import { ReplyInterface } from "../reply/ReplyInterface";
 
 export interface CommentInterface {
@@ -8,6 +9,9 @@ export interface CommentInterface {
     post?: PostInterface;
     content?: string;
     isEditable?: boolean;
+    isRecommended?: boolean;
+    recommendationsSize?: number;
+    recommendations?: CommentRecommendationInterface[];
     replies?: ReplyInterface[];
     createMemberId?: string;
     createdAt?: number[];

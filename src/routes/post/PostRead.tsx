@@ -4,7 +4,7 @@ import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
 import { PostAPI } from "../../api/post/PostAPI";
 import { useEffect, useState } from "react";
 import { PostInterface } from "../../types/entity/post/PostInterface";
-import { FloatButton, Skeleton, message } from "antd";
+import { Skeleton, message } from "antd";
 import Error from "../../components/error/Error";
 import Title from "../../components/title/Title";
 import useURLParam from "../../hooks/useURLParam";
@@ -49,9 +49,49 @@ function PostRead() {
                                     }
                                 ]}
                             />
-                            <PostDetails post={post} />
-                            <CommentSection comments={post.comments || []} onSaveComment={refetch} />
-                            <FloatButton.BackTop visibilityHeight={1} />
+                            <PostDetails 
+                                post={post} 
+                                onRecommendationChange={(recommendationsSize, isRecommended) => setPost({ ...post, recommendationsSize, isRecommended })}
+                            />
+                            <CommentSection
+                                comments={post.comments || []}
+                                onSaveComment={refetch}
+                                onCommentRecommendationChange={(id, size, isRecommended) => {
+                                    setPost({
+                                        ...post,
+                                        comments: post.comments ? [
+                                            ...post.comments.map((comment) => {
+                                                return comment.id === id ? {
+                                                    ...comment,
+                                                    recommendationsSize: size,
+                                                    isRecommended
+                                                } : comment
+                                            })
+                                        ] : []
+                                    })
+                                }}
+                                onReplyRecommendationChange={(id, size, isRecommended) => {
+                                    setPost({
+                                        ...post,
+                                        comments: post.comments?.length ? [
+                                            ...post.comments.map((comment) => {
+                                                return {
+                                                    ...comment,
+                                                    replies: comment.replies?.length ? [
+                                                        ...comment.replies.map((reply) => {
+                                                            return reply.id === id ? {
+                                                                ...reply,
+                                                                recommendationsSize: size,
+                                                                isRecommended
+                                                            } : reply
+                                                        })
+                                                    ] : []
+                                                }
+                                            })
+                                        ] : []
+                                    })
+                                }}
+                            />
                         </>
                     }
                 </>

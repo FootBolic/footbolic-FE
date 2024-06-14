@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { FloatButton, Layout } from 'antd';
 import styles from './styles/app/App.module.scss'
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
@@ -60,6 +60,7 @@ function App () {
         </Content>
         <Footer />
       </Layout>
+      <FloatButton.BackTop visibilityHeight={1} />
     </Layout>
   );
 };
