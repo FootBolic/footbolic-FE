@@ -7,6 +7,9 @@ import { HeartOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from "react-query";
 import { RecommendationAPI } from "../../api/recommendation/RecommendationAPI";
 import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
+import { Viewer } from "@toast-ui/react-editor";
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
+import Prism from 'prismjs';
 
 const { Text, Title } = Typography;
 
@@ -45,7 +48,7 @@ function PostDetails({ post, onRecommendationChange }: PostDetailsProps) {
                 </div>
                 <Divider />
                 <div className={styles.post_content}>
-                    {post?.content}
+                    <Viewer initialValue={post.content} plugins={[[codeSyntaxHighlight, { highlighter: Prism }]]} />
                 </div>
                 <Divider />
                 <div className={styles.post_buttons}>

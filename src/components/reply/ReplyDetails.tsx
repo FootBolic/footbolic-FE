@@ -1,6 +1,6 @@
 import { ReplyLayoutProps } from "../../types/components/layout/ReplyLayoutProps";
 import { CloseOutlined, EditOutlined, DeleteOutlined, RightOutlined, HeartTwoTone, HeartFilled } from "@ant-design/icons";
-import styles from "../../styles/components/layout/ReplyLayout.module.scss";
+import styles from "../../styles/components/reply/ReplyDetails.module.scss";
 import { Card, Modal, Space, Typography, message } from "antd";
 import { useState } from "react";
 import { SpaceSpan } from "../html/HtmlElements";
@@ -32,7 +32,7 @@ function ReplyDetails({ reply, onSaveReply, onRecommendationChange }: ReplyLayou
     )
 
     const { refetch } = useQuery({
-        queryFn: () => RecommendationAPI.getRecommendations("comment", reply.id),
+        queryFn: () => RecommendationAPI.getRecommendations("reply", reply.id),
         queryKey: [API_QUERY_KEYS.RECOMMENDATION.GET_RECOMMENDATIONS + `_${reply.id}`],
         enabled: false,
         onSuccess: (result) => onRecommendationChange && onRecommendationChange(reply.id, result.size, result.isRecommended)
@@ -62,7 +62,7 @@ function ReplyDetails({ reply, onSaveReply, onRecommendationChange }: ReplyLayou
                     <Space direction="vertical" className={styles.container}>
                         <Text type="secondary">
                             {reply.createdBy?.nickname}
-                            <SpaceSpan />·<SpaceSpan />
+                            {isMobile ? <br /> : <><SpaceSpan />·<SpaceSpan /></>}
                             {reply.createdAt && toDatetimeString(reply.createdAt)}
                             {reply.isEditable && (
                                 <>

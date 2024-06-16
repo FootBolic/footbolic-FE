@@ -11,6 +11,7 @@ import MemberInfo from "../../routes/member/MemberInfo";
 import MemberWithdraw from "../../routes/member/MemberWithdraw";
 import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
+import PostEdit from "../../routes/post/PostEdit";
 import PostRead from "../../routes/post/PostRead";
 
 export const ROUTES = {
@@ -83,5 +84,10 @@ export const ROUTES = {
     POST_READ: {
         path: '/post/:postId',
         element: PostRead
-    }
+    },
+    // 게시글 작성 페이지
+    POST_EDIT: {
+        path: '/post/:postId/edit',
+        element: PostEdit
+    },
 }

@@ -2,6 +2,7 @@ import { Button, Typography } from "antd";
 import { TitleProps } from "../../types/components/title/TitleProps";
 import styles from "../../styles/components/title/Title.module.scss";
 import usePath from "../../hooks/usePath";
+import { Fragment } from "react";
 
 const { Title: AntTitle } = Typography;
 
@@ -17,15 +18,18 @@ function Title ({ title, buttons, centered, Icon }: TitleProps) {
                 {   
                     buttons && !centered && buttons.map((each, index) => {
                         return (
-                            <Button 
-                                key={index}
-                                className={styles.button}
-                                danger={each.danger}
-                                type={each.type ?? 'default'}
-                                onClick={each.onClick}
-                            >
-                                {each.text}
-                            </Button>
+                            <Fragment key={index}>
+                                {each.hidden ? <></> : (
+                                    <Button 
+                                        className={styles.button}
+                                        danger={each.danger}
+                                        type={each.type ?? 'default'}
+                                        onClick={each.onClick}
+                                    >
+                                        {each.text}
+                                    </Button>
+                                )}
+                            </Fragment>
                         )
                     })
                 }

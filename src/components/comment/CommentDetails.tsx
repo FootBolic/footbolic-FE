@@ -56,11 +56,11 @@ function CommentDetails({ comment, onSaveComment, onCommentRecommendationChange,
 
     return (
         <>
-            <Card bodyStyle={{ width: '100%' }}>
+            <Card bodyStyle={{ width: '100%' }} className={styles.card}>
                 <Space direction="vertical" className={styles.container}>
                     <Text type="secondary">
                         {comment.createdBy?.nickname}
-                        <SpaceSpan />·<SpaceSpan /> 
+                        {isMobile ? <br /> : <><SpaceSpan />·<SpaceSpan /></>}
                         {comment.createdAt && toDatetimeString(comment.createdAt)}
                         {isMobile ? <br/> : <><SpaceSpan />·<SpaceSpan /></>}
                         <a onClick={() => setIsReplying(!isReplying)}>
@@ -109,10 +109,17 @@ function CommentDetails({ comment, onSaveComment, onCommentRecommendationChange,
                             }}
                         />
                     ) : (
-                        <Text>{comment.content}</Text>
+                        <div className={styles.comment}>
+                            <Text>{comment.content}</Text>
+                        </div>
                     )}
-                    {comment.replies?.map((reply) => 
-                        <ReplyDetails reply={reply} onSaveReply={onSaveComment} onRecommendationChange={onReplyRecommendationChange} />
+                    {comment.replies?.map((reply, idx) => 
+                        <ReplyDetails 
+                            key={idx}
+                            reply={reply}
+                            onSaveReply={onSaveComment}
+                            onRecommendationChange={onReplyRecommendationChange} 
+                        />
                     )}
                     {isReplying && (
                         <div className={styles.reply_container}>

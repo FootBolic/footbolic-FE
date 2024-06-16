@@ -29,6 +29,14 @@ function PostRead() {
         postId && refetch();
     }, [postId])
 
+    const getParameters = () => {
+        return `?menuId=${menuId}`
+            + (page ? `&page=${page}` : '')
+            + (searchTitle ? `&searchTitle=${searchTitle}` : '')
+            + (searchCreatedAt ? `&searchCreatedAt=${searchCreatedAt}` : '')
+            + (searchCreatedBy ? `&searchCreatedBy=${searchCreatedBy}` : '')
+    }
+
     return (
         <>
             {
@@ -40,12 +48,13 @@ function PostRead() {
                                 buttons={[
                                     { 
                                         text: '목록',
-                                        onClick: () => navigate(`/board/${post?.board?.id}?menuId=${menuId}`
-                                        + (page ? `&page=${page}` : '')
-                                        + (searchTitle ? `&searchTitle=${searchTitle}` : '')
-                                        + (searchCreatedAt ? `&searchCreatedAt=${searchCreatedAt}` : '')
-                                        + (searchCreatedBy ? `&searchCreatedBy=${searchCreatedBy}` : '')
-                                        )
+                                        onClick: () => navigate(`/board/${post?.board?.id}` + getParameters())
+                                    },
+                                    {
+                                        text: '수정',
+                                        onClick: () => navigate(`/post/${post.id}/edit` + getParameters(), { state: { post } }),
+                                        type: "primary",
+                                        hidden: !post.isEditable
                                     }
                                 ]}
                             />

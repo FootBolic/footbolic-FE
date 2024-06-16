@@ -13,6 +13,9 @@ import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import weekYear from 'dayjs/plugin/weekYear'
+import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+import 'prismjs/themes/prism.css';
 
 dayjs.extend(customParseFormat)
 dayjs.extend(advancedFormat)
