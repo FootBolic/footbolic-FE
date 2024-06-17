@@ -13,6 +13,7 @@ import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
 import PostEdit from "../../routes/post/PostEdit";
 import PostRead from "../../routes/post/PostRead";
+import PostWrite from "../../routes/post/PostWrite";
 
 export const ROUTES = {
     // 메인페이지
@@ -89,5 +90,10 @@ export const ROUTES = {
     POST_EDIT: {
         path: '/post/:postId/edit',
         element: PostEdit
+    },
+    // 게시글 작성 페이지
+    POST_WRITE: {
+        path: '/:boardId/post/write',
+        element: PostWrite
     },
 }

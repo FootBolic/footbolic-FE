@@ -1,12 +1,13 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { PostWriteProps } from "../../types/components/post/PostWriteProps";
 import { useEffect, useRef } from "react";
 import { Editor } from '@toast-ui/react-editor';
 import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
 import Prism from 'prismjs';
 import styles from '../../styles/components/post/PostWrite.module.scss'
+import { fileApi } from "../../api/api";
 
-function PostWrite({ post, onSave }: PostWriteProps) {
+function PostWrite({ post, isUpdate, boardId, onSave }: PostWriteProps) {
     const editorRef = useRef<Editor>(null);
     const [form] = Form.useForm();
 
@@ -14,30 +15,43 @@ function PostWrite({ post, onSave }: PostWriteProps) {
         post && form.setFieldsValue(post);
     }, [post])
 
-    const onFinish = (values: any) => {
-        if (onSave) {
-            const updatedPost =  { ...post, ...values, content: editorRef.current?.getInstance().getMarkdown() };
-            onSave(updatedPost);
-        }
-    };
-
     useEffect(() => {
         if (editorRef.current) {
-          // 기존 훅 제거
           editorRef.current.getInstance().removeHook('addImageBlobHook');
-          // 새로운 훅 추가
           editorRef.current.getInstance().addHook('addImageBlobHook', (blob:any, callback: any) => {
             (async () => {
-                console.log(blob)
-                console.log(callback)
+                const file = new FormData();
+                file.append('file', blob);
+
+                const response = await fileApi.post('/files', file);
+
+                if (response.data.isSuccess) {
+                    const createdFile = response.data.data.createdFile;
+                    const fileUrl = `${import.meta.env.VITE_API_URL_DEV}/files/public/images/${createdFile.id}`;
+                    callback(fileUrl, `${createdFile.originalName}.${createdFile.extension}`);
+                }
             })();
-    
             return false;
           });
         }
     
         return () => {};
       }, [editorRef]);
+
+      const onFinish = (values: any) => {
+        const content = editorRef.current?.getInstance().getMarkdown();
+
+        if (!content) {
+            message.error('내용을 입력해주세요.');
+            return;
+        }
+
+        if (onSave) {
+            const written = { ...post, ...values, content };
+            if (isUpdate) written.boardId = boardId
+            onSave(written);
+        }
+      };
 
     return (
         <>
@@ -62,13 +76,6 @@ function PostWrite({ post, onSave }: PostWriteProps) {
                 <Form.Item
                     label='내용'
                     name='content'
-                    rules={[
-                        {
-                            required: true,
-                            message: '내용은 필수입력 항목입니다.'
-                        }
-                    ]}
-                    validateTrigger={['onBlur']}
                 >
                     <Editor
                         initialValue={post?.content}

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/title/Title";
 import { message, Skeleton } from "antd";
 import { useQuery } from "react-query";
@@ -17,6 +17,7 @@ import SearchBar from "../../components/search/SearchBar";
 import useURLParam from "../../hooks/useURLParam";
 
 function Board() {
+    const navigate = useNavigate();
     const { boardId } = useParams();
     const { menuId, page: paramPage, searchTitle, searchCreatedAt, searchCreatedBy  } = useURLParam();
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
@@ -49,9 +50,26 @@ function Board() {
         refetch();
     }, [page, search])
 
+    const getParameters = () => {
+        return `?menuId=${menuId}&page=${page}`
+            + (search?.title ? `&searchTitle=${search?.title}` : '')
+            + (search?.createdAt ? `&searchCreatedAt=${search?.createdAt}` : '')
+            + (search?.createdBy ? `&searchCreatedBy=${search?.createdBy}` : '');
+    }
+
     return (
         <>
-            <Title title="게시판" />
+            <Title 
+                title="게시판" 
+                buttons={[
+                    {
+                        text: '작성',
+                        onClick: () => {
+                            navigate(`/${boardId}/post/write${getParameters()}`)
+                        }
+                    }
+                ]}
+            />
             {isFetching ? <Skeleton active /> : <>
                 {
                     isError ? <Error /> : <>
@@ -98,10 +116,7 @@ function Board() {
                                             ellipsis: true,
                                             render: (t, r: PostInterface) => 
                                                 <Link 
-                                                    to={`/post/${r.id}?menuId=${menuId}&page=${page}`
-                                                        + (search?.title ? `&searchTitle=${search?.title}` : '')
-                                                        + (search?.createdAt ? `&searchCreatedAt=${search?.createdAt}` : '')
-                                                        + (search?.createdBy ? `&searchCreatedBy=${search?.createdBy}` : '')}
+                                                    to={`/post/${r.id}${getParameters()}`}
                                                 >
                                                     {t}
                                                 </Link>

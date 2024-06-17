@@ -41,6 +41,24 @@ api.interceptors.response.use(
 
 export default api;
 
+const fileApi = axios.create({
+    baseURL: import.meta.env.VITE_API_URL_DEV,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'multipart/form-data;'
+    },
+})
+
+fileApi.interceptors.request.use(
+    (config) => {
+        const accessToken = store.getState().accessToken.accessToken;
+        if (accessToken) config.headers['Authorization'] = `Bearer ${accessToken}`;
+        return config;
+    }
+)
+
+export { fileApi };
+
 export const kakaoAuthApi = axios.create({
     baseURL: 'https://kauth.kakao.com',
     headers: {

@@ -62,45 +62,47 @@ function PostRead() {
                                 post={post} 
                                 onRecommendationChange={(recommendationsSize, isRecommended) => setPost({ ...post, recommendationsSize, isRecommended })}
                             />
-                            <CommentSection
-                                comments={post.comments || []}
-                                onSaveComment={refetch}
-                                onCommentRecommendationChange={(id, size, isRecommended) => {
-                                    setPost({
-                                        ...post,
-                                        comments: post.comments ? [
-                                            ...post.comments.map((comment) => {
-                                                return comment.id === id ? {
-                                                    ...comment,
-                                                    recommendationsSize: size,
-                                                    isRecommended
-                                                } : comment
-                                            })
-                                        ] : []
-                                    })
-                                }}
-                                onReplyRecommendationChange={(id, size, isRecommended) => {
-                                    setPost({
-                                        ...post,
-                                        comments: post.comments?.length ? [
-                                            ...post.comments.map((comment) => {
-                                                return {
-                                                    ...comment,
-                                                    replies: comment.replies?.length ? [
-                                                        ...comment.replies.map((reply) => {
-                                                            return reply.id === id ? {
-                                                                ...reply,
-                                                                recommendationsSize: size,
-                                                                isRecommended
-                                                            } : reply
-                                                        })
-                                                    ] : []
-                                                }
-                                            })
-                                        ] : []
-                                    })
-                                }}
-                            />
+                            {post.board?.isCommentable && (
+                                <CommentSection
+                                    comments={post.comments || []}
+                                    onSaveComment={refetch}
+                                    onCommentRecommendationChange={(id, size, isRecommended) => {
+                                        setPost({
+                                            ...post,
+                                            comments: post.comments ? [
+                                                ...post.comments.map((comment) => {
+                                                    return comment.id === id ? {
+                                                        ...comment,
+                                                        recommendationsSize: size,
+                                                        isRecommended
+                                                    } : comment
+                                                })
+                                            ] : []
+                                        })
+                                    }}
+                                    onReplyRecommendationChange={(id, size, isRecommended) => {
+                                        setPost({
+                                            ...post,
+                                            comments: post.comments?.length ? [
+                                                ...post.comments.map((comment) => {
+                                                    return {
+                                                        ...comment,
+                                                        replies: comment.replies?.length ? [
+                                                            ...comment.replies.map((reply) => {
+                                                                return reply.id === id ? {
+                                                                    ...reply,
+                                                                    recommendationsSize: size,
+                                                                    isRecommended
+                                                                } : reply
+                                                            })
+                                                        ] : []
+                                                    }
+                                                })
+                                            ] : []
+                                        })
+                                    }}
+                                />
+                            )}
                         </>
                     }
                 </>

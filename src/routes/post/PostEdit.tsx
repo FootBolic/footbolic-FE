@@ -32,9 +32,11 @@ function PostEdit() {
     const { mutate: updatePost } = useMutation(
         (post: PostInterface) => PostAPI.updatePost(post),
         {
-            onSuccess: () => {message.success('게시글이 수정되었습니다.')},
+            onSuccess: () => {
+                message.success('게시글이 수정되었습니다.');
+                navigate(`/post/${postId}`+getParameters());
+            },
             onError: (e:string) => {message.error(e)},
-            onSettled: () => navigate(`/post/${postId}`+getParameters())
         }
     )
 

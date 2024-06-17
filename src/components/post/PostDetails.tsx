@@ -50,23 +50,27 @@ function PostDetails({ post, onRecommendationChange }: PostDetailsProps) {
                 <div className={styles.post_content}>
                     <Viewer initialValue={post.content} plugins={[[codeSyntaxHighlight, { highlighter: Prism }]]} />
                 </div>
-                <Divider />
-                <div className={styles.post_buttons}>
-                    <div className={styles.like_button_container}>
-                        <Button
-                            disabled={isLoadingRecommendation || isLoadingUnrecommendation}
-                            onMouseEnter={() => setHover(true)}
-                            onMouseLeave={() => setHover(false)}
-                            shape="circle"
-                            size="large"
-                            icon={<HeartOutlined className={(hover || post.isRecommended) ? styles.heart_hover : styles.heart} />}
-                            danger={hover || post.isRecommended}
-                            type={(hover || post.isRecommended) ? 'primary' : 'default'}
-                            onClick={() => post.isRecommended ? unrecommend(post.id) : recommend(post.id)}
-                        />
-                        <Text>{post.recommendationsSize || 0}</Text>
-                    </div>
-                </div>
+                {post.board?.isRecommendable && (
+                    <>
+                        <Divider />
+                        <div className={styles.post_buttons}>
+                            <div className={styles.like_button_container}>
+                                <Button
+                                    disabled={isLoadingRecommendation || isLoadingUnrecommendation}
+                                    onMouseEnter={() => setHover(true)}
+                                    onMouseLeave={() => setHover(false)}
+                                    shape="circle"
+                                    size="large"
+                                    icon={<HeartOutlined className={(hover || post.isRecommended) ? styles.heart_hover : styles.heart} />}
+                                    danger={hover || post.isRecommended}
+                                    type={(hover || post.isRecommended) ? 'primary' : 'default'}
+                                    onClick={() => post.isRecommended ? unrecommend(post.id) : recommend(post.id)}
+                                />
+                                <Text>{post.recommendationsSize || 0}</Text>
+                            </div>
+                        </div>
+                    </>
+                )}
             </Card>
         </>
     )
