@@ -1,4 +1,4 @@
 export type SimpleTableProps = {
-    dataSource: any;
+    dataSource: object[];
     size?: 'small' | 'default' | 'large';
 }

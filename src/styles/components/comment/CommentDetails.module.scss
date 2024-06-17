@@ -1,0 +1,31 @@
+.card {
+    margin-bottom: 10px;
+
+    .container {
+        width: 100%;
+        margin: 10px;
+
+        .comment {
+            margin-bottom: 20px;
+        }
+
+        .heart {
+            color: rgb(255, 47, 47);
+        }
+
+        .reply_container {
+            display: flex;
+            justify-content: center;
+
+            .arrow{
+                margin-top: 25px;
+                flex-basis: 20px;
+                color: rgb(180, 180, 180);
+            }
+
+            .comment {
+                flex-basis: calc(100% - 20px);
+            }
+        }
+    }
+}

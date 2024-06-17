@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { FloatButton, Layout } from 'antd';
 import styles from './styles/app/App.module.scss'
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
@@ -54,13 +54,13 @@ function App () {
                     const route: RouteInterface = (ROUTES as any)[key];  
                     return <Route key={idx} path={route.path} element={<route.element /> } 
                     />
-                  
                 })}
               </Routes>
           </div>
         </Content>
         <Footer />
       </Layout>
+      <FloatButton.BackTop visibilityHeight={1} />
     </Layout>
   );
 };

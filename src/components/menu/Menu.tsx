@@ -8,17 +8,18 @@ import { MenuAPI } from "../../api/menu/MenuAPI";
 import { useState } from "react";
 import { MenuInterface } from "../../types/entity/menu/MenuInterface";
 import Error from "../error/Error";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setIsMobileMenuOpen } from "../../reducers/MobileMenuReducer";
+import { setIsMobileMenuOpen } from "../../reducers/MenuReducer";
 import { ROUTES } from "../../constants/common/RouteConstants";
+import useURLParam from "../../hooks/useURLParam";
 
 type MenuItem = Required<AntMenuProps>['items'][number];
 
 function Menu ({ theme }: MenuProps) {
-  const [menus, setMenus] = useState<MenuInterface[]>([]);
   const dispatch = useDispatch();
-  const location = useLocation();
+  const { menuId } = useURLParam();
+  const [menus, setMenus] = useState<MenuInterface[]>([]);
 
   const { isFetching, isError } = useQuery({
     queryKey: [API_QUERY_KEYS.MENU.GET_MENUS_BY_AUTH],
@@ -28,10 +29,10 @@ function Menu ({ theme }: MenuProps) {
   })
 
   const homeMenu: MenuItem = {
-    key: '/',
+    key: 'main',
     icon: <HomeOutlined />,
     label: (
-      <Link to={ROUTES.MAIN_VIEW.path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+      <Link to={ROUTES.MAIN_VIEW.path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false }))}>
         메인페이지
       </Link>
     )
@@ -41,16 +42,15 @@ function Menu ({ theme }: MenuProps) {
     return [
       ...menus.map(menu => {
         let path = menu.program?.path || "";
-        if (menu.program) {
-          if (menu.program.code === CODES.PROGRAM.BOARD) path += `?board=${menu.detailId}`
-        }
+        if (menu.program && menu.program.code === CODES.PROGRAM.BOARD) path += `/${menu.detailId}`;
+        path += `?menuId=${menu.id}`;
         
         return {
-          key: menu.program?.path || menu.id,
+          key: menu.id,
           icon: <UserOutlined />,
           children: menu.children?.length && toMenuItem(menu.children),
           label: menu.program?.path && !menu.children?.length ? (
-            <Link to={path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false}))}>
+            <Link to={path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false }))}>
               {menu.title}
             </Link>
           ) : menu.title,
@@ -62,7 +62,7 @@ function Menu ({ theme }: MenuProps) {
   return <>
     { isFetching ? <Skeleton active /> : <>
       { isError ? <Error /> : <>
-        <AntMenu theme={theme} mode="inline" selectedKeys={[location.pathname]} items={[homeMenu, ...toMenuItem(menus)]} />
+        <AntMenu theme={theme} mode="inline" selectedKeys={[menuId || 'main']} items={[homeMenu, ...toMenuItem(menus)]} />
       </>}
     </>}
   </>

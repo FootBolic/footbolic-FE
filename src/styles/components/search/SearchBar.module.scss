@@ -15,11 +15,18 @@
                 margin-top: 5px;
                 margin-bottom: 5px;
                 min-width: 180px;
+
+                .date_picker {
+                    width: 200px;
+                }
             }
         }
 
         .button_container {
-            min-width: 20px;
+            min-width: 145px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
 
             button {
                 margin-inline: 5px;
@@ -46,6 +53,10 @@
                 margin-top: 5px;
                 margin-bottom: 5px;
                 width: 100%;
+
+                .date_picker {
+                    width: 100%;
+                }
             }
         }
 

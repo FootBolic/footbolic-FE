@@ -1,3 +1,4 @@
+import Board from "../../routes/board/Board";
 import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import BoardManagement from "../../routes/management/board/BoardManagement";
@@ -10,6 +11,9 @@ import MemberInfo from "../../routes/member/MemberInfo";
 import MemberWithdraw from "../../routes/member/MemberWithdraw";
 import KakaoAuth from "../../routes/oauth/KakaoAuth";
 import NaverAuth from "../../routes/oauth/NaverAuth";
+import PostEdit from "../../routes/post/PostEdit";
+import PostRead from "../../routes/post/PostRead";
+import PostWrite from "../../routes/post/PostWrite";
 
 export const ROUTES = {
     // 메인페이지
@@ -71,5 +75,25 @@ export const ROUTES = {
     BOARD_MANAGEMENT: {
         path: '/management/board',
         element: BoardManagement
-    }
+    },
+    // 게시판 페이지
+    BOARD: {
+        path: '/board/:boardId',
+        element: Board
+    },
+    // 게시글 읽기 페이지
+    POST_READ: {
+        path: '/post/:postId',
+        element: PostRead
+    },
+    // 게시글 작성 페이지
+    POST_EDIT: {
+        path: '/post/:postId/edit',
+        element: PostEdit
+    },
+    // 게시글 작성 페이지
+    POST_WRITE: {
+        path: '/:boardId/post/write',
+        element: PostWrite
+    },
 }

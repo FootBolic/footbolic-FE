@@ -52,25 +52,6 @@ function MemberCreate () {
         navigate(ROUTES.MAIN_VIEW.path);
     }
 
-    const handleSaveButtonClick = () => {
-        const validationResult = validate()
-        !validationResult ? setIsSaveModalOpen(true) : message.error(validationResult);
-    }
-
-    /**
-     * 회원가입 입력 정보를 validate 한다.
-     * @returns 유효하지 않을 경우 에러메세지로 출력할 내용, 유효할 경우 빈 문자열
-     */
-    const validate = () => {
-        if (!form.getFieldValue('nickname')) {
-            return '닉네임은 필수입력 항목입니다.';
-        } else if (form.getFieldValue('nickname').length > 20) {
-            return '닉네임의 길이는 20자 이하로만 허용됩니다.';
-        }
-
-        return '';
-    }
-
     return (
         <>
             <Title title="회원가입" centered />
@@ -79,7 +60,7 @@ function MemberCreate () {
                     form={form}
                     layout="vertical"
                     className={styles.form_container}
-                    onFinish={() => member && createMember({ ...member, nickname: form.getFieldValue('nickname') })}
+                    onFinish={() => setIsSaveModalOpen(true)}
                 >
                     <Form.Item
                         name="nickname"
@@ -88,6 +69,10 @@ function MemberCreate () {
                             {
                                 required: true,
                                 message: "닉네임은 필수입력 항목입니다."
+                            },
+                            {
+                                max: 20,
+                                message: "닉네임의 길이는 20자 이하로만 허용됩니다."
                             }
                         ]}
                         validateTrigger={['onBlur']}
@@ -95,13 +80,13 @@ function MemberCreate () {
                         <Input placeholder="닉네임을 입력해주세요." maxLength={20} />
                     </Form.Item>
                     <Form.Item>
-                        <Button block type='primary' onClick={handleSaveButtonClick}>
+                        <Button block type='primary' onClick={() => form.submit()}>
                             저장
                         </Button>
                         <Modal
                             title='회원가입'
                             open={isSaveModalOpen}
-                            onOk={() => form.submit()}
+                            onOk={() => member && createMember({ ...member, nickname: form.getFieldValue('nickname') })}
                             onCancel={() => setIsSaveModalOpen(false)}
                             okText='확인'
                             cancelText='취소'

@@ -3,7 +3,7 @@ import styles from '../../styles/components/header/Header.module.scss';
 import { UserOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStateInterface } from "../../types/reducers/RootStateInterface";
-import { setIsMobileMenuOpen } from "../../reducers/MobileMenuReducer";
+import { setIsMobileMenuOpen } from "../../reducers/MenuReducer";
 import { useState } from "react";
 import SignInCard from "../sign/SignInCard";
 import SignOutCard from "../sign/SignOutCard";

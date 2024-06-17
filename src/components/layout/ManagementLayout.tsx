@@ -47,7 +47,7 @@ function ManagementLayout({
                                 {searchBar}
                                 <div className={isMobile ? styles.mobile_container : styles.container}>
                                     <div className={styles.card_container}>
-                                        <Card className={styles.card} bodyStyle={{ height: '100%' }}>
+                                        <Card className={styles.card} bodyStyle={{ overflowY: 'auto', height: '100%' }}>
                                             {cardContentType === 'table' ? <>
                                                 <div className={styles.board_container}>
                                                     <Table scroll={{ x: true }} className={styles.board} pagination={false} dataSource={addKey(cardData)}>

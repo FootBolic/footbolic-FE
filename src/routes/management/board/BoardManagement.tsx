@@ -63,7 +63,7 @@ function BoardManagement() {
     useEffect(() => {
         refetchAll();
         setBoardId("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         boardId ? refetchBoard() : setBoard(undefined);
@@ -72,11 +72,6 @@ function BoardManagement() {
     useEffect(() => {
         board ? form.setFieldsValue(board) : form.resetFields();
     }, [board])
-
-    useEffect(() => {
-        refetchAll();
-        setBoardId("");
-    }, [search])
 
     const handleInsertBoard = () => {
         setBoardId("");
@@ -97,7 +92,7 @@ function BoardManagement() {
     
     return (
         <>
-            <Title title="게시판관리" buttons={[{ text: '게시판추가', onClick: handleInsertBoard }]} />
+            <Title title="게시판 관리" buttons={[{ text: '게시판추가', onClick: handleInsertBoard }]} />
             <ManagementLayout
                 isFetching={isFetchingAll}
                 isError={isErrorAll}

@@ -75,7 +75,7 @@ function AuthorizationManagement() {
     useEffect(() => {
         refetchAll();
         setAuthorizationId("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         authorizationId ? refetchAuth() : setAuthorization(undefined);
@@ -84,12 +84,6 @@ function AuthorizationManagement() {
     useEffect(() => {
         authorization ? form.setFieldsValue(authorization) : form.resetFields();
     }, [authorization])
-
-    useEffect(() => {
-        refetchAll();
-        setAuthorizationId("");
-    }, [search])
-
 
     const handleInsertAuth = () => {
         setAuthorizationId("");
@@ -111,7 +105,7 @@ function AuthorizationManagement() {
 
     return (
         <>
-            <Title title="권한관리" buttons={[{ text: '권한추가', onClick: handleInsertAuth }]} />
+            <Title title="권한 관리" buttons={[{ text: '권한추가', onClick: handleInsertAuth }]} />
             <ManagementLayout 
                 isFetching={isFetchingAll} 
                 isError={isErrorAll} 

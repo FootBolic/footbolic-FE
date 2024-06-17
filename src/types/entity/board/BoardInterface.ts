@@ -1,4 +1,5 @@
 import { MemberInterface } from "../member/MemberInterface";
+import { PostInterface } from "../post/PostInterface";
 
 export interface BoardInterface {
     id: string;
@@ -8,7 +9,7 @@ export interface BoardInterface {
     isCommentable?: boolean;
     isAnnounceable?: boolean;
     isUsed?: boolean;
-    // posts: PostInterface[];
+    posts?: PostInterface[];
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;

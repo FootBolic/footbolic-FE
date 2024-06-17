@@ -10,7 +10,7 @@ export type SearchBarProps = {
 export type SearchBarElementProps = {
     label: string;
     name: string;
-    type: 'input' | 'select';
+    type: 'input' | 'select' | 'date';
     options?: DefaultOptionType[];
     maxLength?: number;
     placeholder?: string;

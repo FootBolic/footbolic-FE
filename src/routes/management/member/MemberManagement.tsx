@@ -77,16 +77,13 @@ function MemberManagement() {
     useEffect(() => {
         refetchAll();
         setMemberId("");
-    }, [page]);
+        setPopOpen("");
+    }, [page, search]);
 
     useEffect(() => {
         memberId ? refetchMember() : setMember(undefined);
+        setPopOpen("");
     }, [memberId])
-
-    useEffect(() => {
-        refetchAll();
-        setMemberId("");
-    }, [search])
 
     useEffect(() => {
         if (member) {

@@ -6,7 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ['mobileMenuReducer']
+  blacklist: ['menuReducer']
 };
 
 const reducer = persistReducer(persistConfig, RootReducer);

@@ -1,0 +1,12 @@
+.board_container {
+    margin-bottom: 2vh;
+
+    .board {
+        height: 48vh;
+        overflow-y: scroll;
+    }
+}
+
+.pagination_container {
+    text-align: center;
+}

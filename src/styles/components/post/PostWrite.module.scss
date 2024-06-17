@@ -1,0 +1,9 @@
+.buttons_container {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+
+    button {
+        margin-inline: 5px;
+    }
+}

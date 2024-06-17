@@ -38,9 +38,19 @@ export class MenuAPI {
      * @param {string} id 조회할 메뉴 식별번호
      * @returns {Promise<{ menu: MenuInterface }>} 조회된 메뉴 Promise 객체
      */
-    static async getMenuById(id: string): Promise<{ menu: MenuInterface }> {
+    static async getMenu(id: string): Promise<{ menu: MenuInterface }> {
         const response = await api.get(`/menus/${id}`);
         return response.data.data;
+    }
+
+    /**
+     * 메뉴 경로를 조회한다.
+     * @param {string} menuId 메뉴 식별번호
+     * @returns {Promise<{ menu: MenuInterface }>} 메뉴 경로
+     */
+    static async getMenuPath(menuId: string): Promise<{ menu: MenuInterface }> {
+        const response = await api.get(`/menus/public/path?menuId=${menuId}`);
+        return response.data.data
     }
     
     /**

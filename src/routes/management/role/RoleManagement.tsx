@@ -87,7 +87,7 @@ function RoleManagement() {
         refetchAll();
         setRoleId("");
         setPopOpen("");
-    }, [page])
+    }, [page, search])
 
     useEffect(() => {
         roleId ? refetchRole() : setRole(undefined);
@@ -98,12 +98,6 @@ function RoleManagement() {
         role ? form.setFieldsValue(role) : form.resetFields();
         setPopOpen("");
     }, [role])
-
-    useEffect(() => {
-        refetchAll();
-        setRoleId("");
-        setPopOpen("");
-    }, [search])
 
     const handleInsertRole = () => {
         setRoleId("");
