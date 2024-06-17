@@ -92,6 +92,7 @@ function MenuManagement () {
         if (programs) for (let p of programs?.programs) if (p.id === value && p.code) {
             setMenu({
                 ...menu,
+                ...form.getFieldsValue(),
                 programId: value,
                 detailId: undefined,
                 program: p
@@ -155,9 +156,6 @@ function MenuManagement () {
                             validateTrigger={['onBlur']}
                         >
                             <Input placeholder='제목을 입력해주세요.' maxLength={20} />
-                        </Form.Item>
-                        <Form.Item name='path' label='경로'>
-                            <Input placeholder='경로를 입력해주세요.' maxLength={100} />
                         </Form.Item>
                         <Form.Item name='parentId' label='상위메뉴'>
                             <TreeSelect
