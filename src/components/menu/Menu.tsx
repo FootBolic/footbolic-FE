@@ -1,5 +1,4 @@
 import { Menu as AntMenu, Skeleton, message } from "antd";
-import { UserOutlined, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps as AntMenuProps } from 'antd';
 import { MenuProps } from "../../types/components/menu/MenuProps";
 import { useQuery } from "react-query";
@@ -13,11 +12,13 @@ import { useDispatch } from "react-redux";
 import { setIsMobileMenuOpen } from "../../reducers/MenuReducer";
 import { ROUTES } from "../../constants/common/RouteConstants";
 import useURLParam from "../../hooks/useURLParam";
+import useIcon from "../../hooks/useIcon";
 
 type MenuItem = Required<AntMenuProps>['items'][number];
 
 function Menu ({ theme }: MenuProps) {
   const dispatch = useDispatch();
+  const { getIcon } = useIcon();
   const { menuId } = useURLParam();
   const [menus, setMenus] = useState<MenuInterface[]>([]);
 
@@ -30,7 +31,7 @@ function Menu ({ theme }: MenuProps) {
 
   const homeMenu: MenuItem = {
     key: 'main',
-    icon: <HomeOutlined />,
+    icon: getIcon("ICON_HOME", "", true),
     label: (
       <Link to={ROUTES.MAIN_VIEW.path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false }))}>
         메인페이지
@@ -47,7 +48,7 @@ function Menu ({ theme }: MenuProps) {
         
         return {
           key: menu.id,
-          icon: <UserOutlined />,
+          icon: getIcon(menu.icon?.code, menu.icon?.type, true),
           children: menu.children?.length && toMenuItem(menu.children),
           label: menu.program?.path && !menu.children?.length ? (
             <Link to={path} onClick={() => dispatch(setIsMobileMenuOpen({ isMobileMenuOpen: false }))}>

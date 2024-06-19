@@ -2,18 +2,38 @@ import { Button, Typography } from "antd";
 import { TitleProps } from "../../types/components/title/TitleProps";
 import styles from "../../styles/components/title/Title.module.scss";
 import usePath from "../../hooks/usePath";
-import { Fragment } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
+import useIcon from "../../hooks/useIcon";
 
 const { Title: AntTitle } = Typography;
 
-function Title ({ title, buttons, centered, Icon }: TitleProps) {
+function Title ({ title, buttons, centered }: TitleProps) {
     const { menu } = usePath();
+    const { getIcon } = useIcon();
+    const [Icon, setIcon] = useState<ReactNode | null>();
+
+    useEffect(() => {
+        menu?.icon ? setIcon(getIcon(menu.icon.code!, menu.icon.type!, false)) : setIcon(null);
+    }, [menu])
 
     return (
         <div className={centered ? styles.container_center : styles.container}>
-            <AntTitle level={2}>
-                {Icon} {menu?.title || title}
-            </AntTitle>
+            {Icon ? (
+                <div className={styles.title_container}>
+                    <div className={styles.icon}>
+                        {Icon}
+                    </div>
+                    <div>
+                        <AntTitle level={2}>
+                            {menu?.title || title}
+                        </AntTitle>
+                    </div>
+                </div>
+            ) : (
+                <AntTitle level={2}>
+                    {menu?.title || title}
+                </AntTitle>
+            )}
             <div className={styles.buttons_container}>
                 {   
                     buttons && !centered && buttons.map((each, index) => {

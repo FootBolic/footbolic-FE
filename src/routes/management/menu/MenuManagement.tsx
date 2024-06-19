@@ -9,6 +9,7 @@ import ManagementLayout from "../../../components/layout/ManagementLayout";
 import { getOptionMenus, getTreeNodeMenus, toOption } from "../../../util/DataUtil";
 import { ProgramAPI } from "../../../api/program/ProgramAPI";
 import { BoardAPI } from "../../../api/board/BoardAPI";
+import { IconAPI } from "../../../api/icon/IconAPI";
 
 function MenuManagement () {
     const [form] = Form.useForm();
@@ -43,6 +44,12 @@ function MenuManagement () {
     const { data: boards } = useQuery({
         queryKey: [API_QUERY_KEYS.BOARD.GET_ALL_BOARDS],
         queryFn: () => BoardAPI.getAllboards(),
+        onError: (e: string) => message.error(e)
+    })
+
+    const { data: icons } = useQuery({
+        queryKey: [API_QUERY_KEYS.ICON.GET_ALL_ICONS],
+        queryFn: () => IconAPI.getAllIcons(),
         onError: (e: string) => message.error(e)
     })
 
@@ -186,6 +193,22 @@ function MenuManagement () {
                                 type="number"
                                 placeholder='경로를 입력해주세요.'
                                 maxLength={100}
+                            />
+                        </Form.Item>
+                        <Form.Item 
+                            name='iconId' 
+                            label='아이콘'
+                            rules={[
+                                {
+                                    validator: checkDuplicacy
+                                }
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Select 
+                                placeholder="아이콘을 선택해주세요."
+                                options={icons && toOption("title", "id", icons?.icons)}
+                                allowClear
                             />
                         </Form.Item>
                         <Form.Item 

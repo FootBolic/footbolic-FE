@@ -25,9 +25,9 @@ export class AuthorizationAPI {
     }
     /**
      * 권한 전체 목록 조회 API
-     * @returns {Promise<{ authorizations: AuthorizationInterface[] }>} 권한 목록 및 전체 권한 수 Promise 객체
+     * @returns {Promise<{ authorizations: AuthorizationInterface[], size: number }>} 권한 목록 및 전체 권한 수 Promise 객체
      */
-    static async getAllAuthorizations(): Promise<{ authorizations: AuthorizationInterface[] }> {
+    static async getAllAuthorizations(): Promise<{ authorizations: AuthorizationInterface[], size: number }> {
         const response = await api.get('/authorizations/all');
         return response.data.data;
     }

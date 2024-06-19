@@ -2,6 +2,7 @@ import Board from "../../routes/board/Board";
 import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
 import BoardManagement from "../../routes/management/board/BoardManagement";
+import IconManagement from "../../routes/management/icon/IconManagement";
 import MemberManagement from "../../routes/management/member/MemberManagement";
 import MenuManagement from "../../routes/management/menu/MenuManagement";
 import ProgramManagement from "../../routes/management/program/ProgramManagement";
@@ -75,6 +76,11 @@ export const ROUTES = {
     BOARD_MANAGEMENT: {
         path: '/management/board',
         element: BoardManagement
+    },
+    // 아이콘 관리 페이지
+    ICON_MANAGEMENT: {
+        path: '/management/icon',
+        element: IconManagement
     },
     // 게시판 페이지
     BOARD: {

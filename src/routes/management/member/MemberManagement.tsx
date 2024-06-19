@@ -12,7 +12,6 @@ import SearchBar from "../../../components/search/SearchBar";
 import ConfirmButton from "../../../components/confirm_button/ConfirmButton";
 import { RoleInterface } from "../../../types/entity/role/RoleInterface";
 import { RoleAPI } from "../../../api/role/RoleAPI";
-import { UserOutlined } from '@ant-design/icons';
 import ManagementLayout from "../../../components/layout/ManagementLayout";
 
 function MemberManagement() {
@@ -129,7 +128,7 @@ function MemberManagement() {
 
     return (
         <>
-            <Title title="회원 관리" Icon={<UserOutlined />} />
+            <Title title="회원 관리" />
             <ManagementLayout 
                 isFetching={isFetchingAll}
                 isError={isErrorAll}
