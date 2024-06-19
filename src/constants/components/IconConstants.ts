@@ -3,8 +3,9 @@
  */
 export const ICON_FONT_SIZE = {
     ANT_BASIC: {
-        SMALL: '20px',
-        DEFAULT: '35px'
+        SMALL: '15px',
+        DEFAULT: '35px',
+        LARGET: '50px'
     }
 }
 

@@ -177,17 +177,7 @@ function IconManagement() {
                         >
                             <Input placeholder='코드를 입력해주세요.' maxLength={30} />
                         </Form.Item>
-                        <Form.Item
-                            name='type'
-                            label='타입'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "타입은 필수입력 항목입니다."
-                                }
-                            ]}
-                            validateTrigger={['onBlur']}
-                        >
+                        <Form.Item name='type' label='타입'>
                             <Input placeholder='타입을 입력해주세요.' maxLength={20} />
                         </Form.Item>
                     </>
