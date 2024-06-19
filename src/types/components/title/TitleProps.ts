@@ -2,7 +2,6 @@ export type TitleProps = {
     title: string;
     buttons?: ButtonProps[];
     centered?: true;
-    icon?: string;
 }
 
 export type ButtonProps = {

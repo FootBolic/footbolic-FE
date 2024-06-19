@@ -128,7 +128,7 @@ function MemberManagement() {
 
     return (
         <>
-            <Title title="회원 관리" icon="ICON_USER" />
+            <Title title="회원 관리" />
             <ManagementLayout 
                 isFetching={isFetchingAll}
                 isError={isErrorAll}

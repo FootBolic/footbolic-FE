@@ -1,4 +1,5 @@
 import { BoardInterface } from "../board/BoardInterface";
+import { IconInterface } from "../icon/IconInterface";
 import { MemberInterface } from "../member/MemberInterface";
 import { ProgramInterface } from "../program/ProgramInterface";
 
@@ -13,7 +14,8 @@ export interface MenuInterface {
     program?: ProgramInterface;
     detailId?: string;
     detail?: BoardInterface;
-    iconCodeId?: string;
+    iconId?: string;
+    icon?: IconInterface;
     isUsed?: boolean;
     order? : number;
     createMemberId?: string;

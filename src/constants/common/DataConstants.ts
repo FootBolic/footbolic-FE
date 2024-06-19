@@ -55,6 +55,9 @@ export const API_QUERY_KEYS = {
         GET_BOARD: 'GET_BOARD',
         GET_ALL_BOARDS: 'GET_ALL_BOARDS',
     },
+    ICON: {
+        GET_ALL_ICONS: 'GET_ALL_ICONS',
+    },
     MEMBER: {
         GET_MEMBERS: 'GET_MEMBERS',
         GET_MEMBER: 'GET_MEMBER',

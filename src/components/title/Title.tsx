@@ -7,14 +7,14 @@ import useIcon from "../../hooks/useIcon";
 
 const { Title: AntTitle } = Typography;
 
-function Title ({ title, buttons, centered, icon }: TitleProps) {
+function Title ({ title, buttons, centered }: TitleProps) {
     const { menu } = usePath();
     const { getIcon } = useIcon();
     const [Icon, setIcon] = useState<ReactNode | null>();
 
     useEffect(() => {
-        icon && setIcon(getIcon(icon, false));
-    }, [icon])
+        menu?.icon ? setIcon(getIcon(menu.icon.code!, menu.icon.type!, false)) : setIcon(null);
+    }, [menu])
 
     return (
         <div className={centered ? styles.container_center : styles.container}>

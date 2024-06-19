@@ -26,6 +26,15 @@ export class IconAPI {
     }
 
     /**
+     * 아이콘 전체 목록 조회 API
+     * @returns {Promise<{ Icons: IconInterface[], size: number }>} 아이콘 전체 목록 및 전체 아이콘 수 Promise 객체
+     */
+    static async getAllIcons(): Promise<{ icons: IconInterface[], size: number }> {
+        const response = await api.get(`/icons/all`);
+        return response.data.data;
+    }
+
+    /**
      * 아이콘 식별번호로 아이콘 정보 조회
      * @param {string} id 조회할 아이콘 식별번호
      * @returns {Promise<{ icon: IconInterface }>} 조회한 아이콘 정보
