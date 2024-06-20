@@ -12,6 +12,7 @@ function IconManagement() {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [search, setSearch] = useState<IconSearchInterface>();
@@ -22,7 +23,9 @@ function IconManagement() {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.PROGRAM.GET_PROGRAMS],
         queryFn: () => IconAPI.getIcons(page-1, BOARD_PAGE_SIZE, search),
+        enabled: enabled,
         onSuccess: (result) => {
+            setEnabled(false);
             setAllIcons(result.icons);
             setSize(result.size);
         },

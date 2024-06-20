@@ -15,6 +15,7 @@ function AuthorizationManagement() {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [authorizationId, setAuthorizationId] = useState<string>("");
@@ -26,7 +27,9 @@ function AuthorizationManagement() {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.AUTHORIZATION.GET_AUTHORIZATIONS],
         queryFn: () => AuthorizationAPI.getAuthorizations(page-1, BOARD_PAGE_SIZE, search),
+        enabled: enabled,
         onSuccess: (result) => {
+            setEnabled(false);
             setAllAuthorizations(result.authorizations);
             setSize(result.size);
         },

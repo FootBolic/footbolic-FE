@@ -16,6 +16,7 @@ function RoleManagement() {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [search, setSearch] = useState<RoleSearchInterface>();
@@ -28,7 +29,9 @@ function RoleManagement() {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.ROLE.GET_ROLES],
         queryFn: () => RoleAPI.getRoles(page-1, BOARD_PAGE_SIZE, search),
+        enabled: enabled,
         onSuccess: (result) => {
+            setEnabled(false);
             setAllRoles(result.roles);
             setSize(result.size);
         },
