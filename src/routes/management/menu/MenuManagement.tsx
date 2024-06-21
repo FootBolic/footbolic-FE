@@ -219,11 +219,7 @@ function MenuManagement () {
                         <Form.Item 
                             name='programId' 
                             label='프로그램'
-                            rules={[
-                                {
-                                    validator: checkDuplicacy
-                                }
-                            ]}
+                            rules={[{ validator: checkDuplicacy }]}
                             validateTrigger={['onBlur']}
                         >
                             <Select 

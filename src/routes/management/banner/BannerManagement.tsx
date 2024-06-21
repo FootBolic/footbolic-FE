@@ -1,22 +1,26 @@
-import { Form, message, Input, Upload, Button } from "antd";
+import { Form, message, Input, Upload, Button, Switch, DatePicker, UploadFile } from "antd";
 import { useState, useEffect } from "react";
 import { useQueryClient, useQuery, useMutation } from "react-query";
 import { BannerAPI } from "../../../api/banner/BannerAPI";
 import ManagementLayout from "../../../components/layout/ManagementLayout";
 import SearchBar from "../../../components/search/SearchBar";
-import { API_QUERY_KEYS, BOARD_PAGE_SIZE } from "../../../constants/common/DataConstants";
+import { API_QUERY_KEYS, BOARD_PAGE_SIZE, DATE_FORMAT, UPLOAD_ALLOWED_EXTENSIONS } from "../../../constants/common/DataConstants";
 import { BannerSearchInterface, BannerInterface } from "../../../types/entity/banner/BannerInterface";
 import Title from "../../../components/title/Title";
 import { UploadOutlined } from "@ant-design/icons";
 import { fileApi } from "../../../api/api";
 import { FileAPI } from "../../../api/file/FileAPI";
+import { toDayjsDate } from "../../../util/DateUtil";
+import { FileInterface } from "../../../types/entity/file/FileInterface";
 
 function BannerManagement() {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
     const [enabled, setEnabled] = useState<boolean>(true);
+    const [checked, setChecked] = useState<boolean>(false);
     const [fileId, setFileId] = useState<string>("");
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [search, setSearch] = useState<BannerSearchInterface>();
@@ -40,7 +44,12 @@ function BannerManagement() {
         queryKey: [API_QUERY_KEYS.PROGRAM.GET_PROGRAM],
         queryFn: () => BannerAPI.getBanner(bannerId),
         enabled: false,
-        onSuccess: (result) => setBanner(result.banner),
+        onSuccess: (result) => {
+            setBanner(result.banner);
+            setChecked(result.banner.isTimeLimited || false);
+            if (result.banner.isTimeLimited)
+                form.setFieldValue("times", [toDayjsDate(result.banner.startsAt as number[]), toDayjsDate(result.banner.endsAt as number[])])
+        },
         onError: (e: string) => message.error(e),
     })
 
@@ -73,14 +82,24 @@ function BannerManagement() {
     useEffect(() => {
         refetchAll();
         setBannerId("");
+        setChecked(false);
     }, [page, search])
 
     useEffect(() => {
+        setChecked(false);
         bannerId ? refetchBanner() : setBanner(undefined);
     }, [bannerId])
 
     useEffect(() => {
-        banner ? form.setFieldsValue(banner) : form.resetFields();
+        if (banner) {
+            !banner.isTimeLimited && form.setFieldValue("times", [null, null])
+            form.setFieldsValue(banner);
+            banner.file && setFiles(banner.file);
+        } else {
+            setChecked(false);
+            form.resetFields();
+            setFileList([]);
+        }
     }, [banner])
 
     const handleInsertBanner = () => {
@@ -90,7 +109,16 @@ function BannerManagement() {
     }
 
     const handleFinish = () => {
-        const target: BannerInterface = {  ...banner!, ...form.getFieldsValue() };
+        const target: BannerInterface = {
+            ...banner!,
+            ...form.getFieldsValue(),
+            fileId,
+            startsAt: checked ? form.getFieldValue("times")[0].format(DATE_FORMAT) : null,
+            endsAt: checked ? form.getFieldValue("times")[1].format(DATE_FORMAT) : null,
+            file: null,
+            times: null
+        };
+
         banner!.id ? updateBanner(target) : createBanner(target);
     }
 
@@ -109,11 +137,36 @@ function BannerManagement() {
 
         if (response.data.isSuccess) {
             const createdFile = response.data.data.createdFile;
-            fileId && deleteFile(fileId);
-            setFileId(createdFile.id)
+            fileId && fileId !== banner?.fileId && deleteFile(fileId);
+            setFileId(createdFile.id);
+            setFiles(createdFile);
         } else {
             setFileId("");
+            setFileList([]);
         }
+    }
+
+    const validateImage = () => {
+        const file = form.getFieldValue("image");
+
+        if (!file?.fileList?.length) {
+            return Promise.reject(new Error("이미지는 필수입력 항목입니다."));
+        }
+
+        if (!UPLOAD_ALLOWED_EXTENSIONS.includes(file.fileList[0].type)) {
+            return Promise.reject(new Error("PNG 파일 또는 JPG 파일만 허용됩니다."));
+        }
+
+        return Promise.resolve();
+    }
+
+    const setFiles = (data: FileInterface) => {
+        setFileList([{
+            uid: data.id,
+            status: 'done',
+            name: `${data.originalName}.${data.extension}`,
+            thumbUrl: `${import.meta.env.VITE_API_URL_DEV}/files/public/images/${data.id}`
+        }]);
     }
 
     return (
@@ -175,31 +228,49 @@ function BannerManagement() {
                             <Input placeholder='제목을 입력해주세요.' maxLength={20} />
                         </Form.Item>
                         <Form.Item
-                            name='fileId'
+                            name='image'
                             label='이미지'
-                            valuePropName="fileId"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "이미지는 필수입력 항목입니다."
-                                }
-                            ]}
+                            valuePropName="image"
+                            rules={[{ validator: validateImage }, { required: true, message: '' }]}
                             validateTrigger={['onBlur']}
                         >
                             <Upload
                                 customRequest={handleUploadImage}
                                 listType="picture"
                                 maxCount={1}
-                                defaultFileList={[]}
+                                fileList={fileList}
                                 beforeUpload={(file) => {
-                                    const isImage = ['image/png', 'image/jpeg'].includes(file.type);
+                                    const isImage = UPLOAD_ALLOWED_EXTENSIONS.includes(file.type);
                                     !isImage && message.error(`PNG 파일 또는 JPG 파일만 허용됩니다.`);
-                                    return isImage;
+                                    return isImage || Upload.LIST_IGNORE;
                                 }}
-                                onChange={(info) => info.file.status = 'done'}
+                                // onChange={(info) => info.file.status = 'done'}
+                                onRemove={() => {
+                                    fileId && deleteFile(fileId);
+                                    setFileId("");
+                                    setFileList([]);
+                                }}
                             >
                                 <Button icon={<UploadOutlined />}>Upload</Button>
                             </Upload>
+                        </Form.Item>
+                        <Form.Item name='link' label='링크'>
+                            <Input placeholder='링크를 입력해주세요.' maxLength={200} />
+                        </Form.Item>
+                        <Form.Item name='isMobile' label='모바일 배너 여부'>
+                            <Switch />
+                        </Form.Item>
+                        <Form.Item name='isTimeLimited' label='게시 기간 제한 여부'>
+                            <Switch 
+                                onChange={(val) => {
+                                    setChecked(val);
+                                    if (val && banner?.startsAt && banner?.endsAt)
+                                        form.setFieldValue("times", [toDayjsDate(banner.startsAt as number[]), toDayjsDate(banner.endsAt as number[])])
+                                }} 
+                            />
+                        </Form.Item>
+                        <Form.Item hidden={!checked} name='times' label='게시 기간'>
+                            <DatePicker.RangePicker showTime />
                         </Form.Item>
                     </>
                 }

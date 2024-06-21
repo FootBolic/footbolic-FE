@@ -1,15 +1,16 @@
+import { FileInterface } from "../file/FileInterface";
 import { MemberInterface } from "../member/MemberInterface";
 
 export interface BannerInterface {
     id: string;
     title?: string;
-    imagePath?: string;
+    fileId?: string;
+    file?: FileInterface;
+    link?: string;
     isMobile?: boolean;
     isTimeLimited?: boolean;
     startsAt?: number[] | string | Date;
     endsAt?: number[] | string | Date;
-    isLinked?: boolean;
-    linkAddress?: string;
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;

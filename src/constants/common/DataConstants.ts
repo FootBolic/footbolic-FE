@@ -32,6 +32,8 @@ export const TOKEN_RENEWAL_TIME = {
  */
 export const BOARD_PAGE_SIZE = 20;
 
+export const UPLOAD_ALLOWED_EXTENSIONS = ['image/png', 'image/jpeg'];
+
 /**
  * 코드명
  */
