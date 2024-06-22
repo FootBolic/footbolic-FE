@@ -23,7 +23,7 @@ function Title ({ title, buttons, centered }: TitleProps) {
                     <div className={styles.icon}>
                         {Icon}
                     </div>
-                    <div>
+                    <div className={styles.title}>
                         <AntTitle level={2}>
                             {menu?.title || title}
                         </AntTitle>

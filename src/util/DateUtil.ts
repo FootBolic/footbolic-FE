@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 
 /**
  * number[] 타입의 날짜 정보를 Date 객체로 변환
@@ -11,11 +11,29 @@ export const toDate = (ldt: number[]): Date => {
 }
 
 /**
+ * 현재 날짜를 dayjs로 변환하여 return
+ * @param {number[]} ldt Server에서 LocalDateTime 타입으로 받은 length: 7의 객체
+ * @returns {Dayjs} dayjs 변환된 현재 날짜 값
+ */
+export const toDayjsDate = (ldt: number[]): Dayjs => {
+    while (ldt.length < 7) ldt.push(0);
+    return dayjs(`${ldt[0]}-${ldt[1]}-${ldt[2]}T${ldt[3]}:${ldt[4]}:${ldt[5]}:${ldt[6]}`)
+}
+
+/**
  * 현재시간을 milliseconds로 리턴한다
  * @returns {number} 현재시간 milliseconds
  */
 export const getTime = (): number => {
     return new Date().getTime();
+}
+
+/**
+ * 현재 날짜를 dayjs로 변환하여 return
+ * @returns {Dayjs} dayjs 변환된 현재 날짜 값
+ */
+export const getDayjsDate = (): Dayjs => {
+    return dayjs(new Date());
 }
 
 /**

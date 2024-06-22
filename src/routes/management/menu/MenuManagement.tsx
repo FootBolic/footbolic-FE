@@ -15,6 +15,7 @@ function MenuManagement () {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [allMenus, setAllMenus] = useState<MenuInterface[]>([]);
     const [menuId, setMenuId] = useState<string>("");
     const [menu, setMenu] = useState<MenuInterface>();
@@ -23,7 +24,11 @@ function MenuManagement () {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MENU.GET_MENUS],
         queryFn: () => MenuAPI.getMenus(),
-        onSuccess: (result) => setAllMenus(result.menus),
+        enabled: enabled,
+        onSuccess: (result) => {
+            setEnabled(false);
+            setAllMenus(result.menus)
+        },
         onError: (e: string) => message.error(e)
     })
 
@@ -214,11 +219,7 @@ function MenuManagement () {
                         <Form.Item 
                             name='programId' 
                             label='프로그램'
-                            rules={[
-                                {
-                                    validator: checkDuplicacy
-                                }
-                            ]}
+                            rules={[{ validator: checkDuplicacy }]}
                             validateTrigger={['onBlur']}
                         >
                             <Select 

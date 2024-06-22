@@ -17,6 +17,7 @@ import ManagementLayout from "../../../components/layout/ManagementLayout";
 function MemberManagement() {
     const [form] = Form.useForm();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [member, setMember] = useState<MemberInterface>();
     const [allMembers, setAllMembers] = useState<MemberInterface[]>([]);
     const [memberId, setMemberId] = useState<string>("");
@@ -29,7 +30,9 @@ function MemberManagement() {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.MEMBER.GET_MEMBERS],
         queryFn: () => MemberAPI.getMembers(page-1, BOARD_PAGE_SIZE, search),
+        enabled: enabled,
         onSuccess: (result) => {
+            setEnabled(false);
             setAllMembers(result.members);
             setSize(result.size);
         },

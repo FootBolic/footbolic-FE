@@ -11,6 +11,7 @@ import SearchBar from "../../../components/search/SearchBar";
 
 function BoardManagement() {
     const [form] = Form.useForm();
+    const [enabled, setEnabled] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(0);
     const [search, setSearch] = useState<BoardSearchInterface>();
@@ -21,7 +22,9 @@ function BoardManagement() {
     const { isFetching: isFetchingAll, isError: isErrorAll, refetch: refetchAll } = useQuery({
         queryKey: [API_QUERY_KEYS.PROGRAM.GET_PROGRAMS],
         queryFn: () => BoardAPI.getBoards(page-1, BOARD_PAGE_SIZE, search),
+        enabled: enabled,
         onSuccess: (result) => {
+            setEnabled(false);
             setAllBoards(result.boards);
             setSize(result.size);
         },

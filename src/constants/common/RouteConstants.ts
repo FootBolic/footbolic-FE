@@ -1,6 +1,7 @@
 import Board from "../../routes/board/Board";
 import MainView from "../../routes/main/MainView";
 import AuthorizationManagement from "../../routes/management/authorization/AuthorizationManagement";
+import BannerManagement from "../../routes/management/banner/BannerManagement";
 import BoardManagement from "../../routes/management/board/BoardManagement";
 import IconManagement from "../../routes/management/icon/IconManagement";
 import MemberManagement from "../../routes/management/member/MemberManagement";
@@ -71,6 +72,11 @@ export const ROUTES = {
     PROGRAM_MANAGEMENT: {
         path: '/management/program',
         element: ProgramManagement
+    },
+    // 배너 관리 페이지
+    BANNER_MANAGEMENT: {
+        path: '/management/banner',
+        element: BannerManagement
     },
     // 게시판 관리 페이지
     BOARD_MANAGEMENT: {
