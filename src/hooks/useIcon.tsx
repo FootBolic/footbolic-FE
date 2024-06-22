@@ -3,6 +3,7 @@ import {
     AuditOutlined,
     BookOutlined,
     CheckOutlined,
+    FlagOutlined,
     HomeOutlined,
     MenuOutlined,
     OrderedListOutlined,
@@ -27,6 +28,8 @@ function useIcon() {
                 return <BookOutlined style={style} />
             case "ICON_CHECK":
                 return <CheckOutlined style={style} />
+            case "ICON_FLAG":
+                return <FlagOutlined style={style} />
             case "ICON_HOME":
                 return <HomeOutlined style={style} />
             case "ICON_MENU":

@@ -94,7 +94,11 @@ function BannerManagement() {
         if (banner) {
             !banner.isTimeLimited && form.setFieldValue("times", [null, null])
             form.setFieldsValue(banner);
-            banner.file && setFiles(banner.file);
+
+            if (banner.file) {
+                setFiles(banner.file);
+                setFileId(banner.fileId!);
+            }
         } else {
             setChecked(false);
             form.resetFields();
@@ -108,7 +112,7 @@ function BannerManagement() {
             : setTimeout(() => setBanner({ title: "신규 배너" } as BannerInterface), 5);
     }
 
-    const handleFinish = () => {
+    const handleFinish = () => {console.log(123)
         const target: BannerInterface = {
             ...banner!,
             ...form.getFieldsValue(),
@@ -118,7 +122,7 @@ function BannerManagement() {
             file: null,
             times: null
         };
-
+console.log(456)
         banner!.id ? updateBanner(target) : createBanner(target);
     }
 
@@ -147,15 +151,7 @@ function BannerManagement() {
     }
 
     const validateImage = () => {
-        const file = form.getFieldValue("image");
-
-        if (!file?.fileList?.length) {
-            return Promise.reject(new Error("이미지는 필수입력 항목입니다."));
-        }
-
-        if (!UPLOAD_ALLOWED_EXTENSIONS.includes(file.fileList[0].type)) {
-            return Promise.reject(new Error("PNG 파일 또는 JPG 파일만 허용됩니다."));
-        }
+        if (!fileList?.length) return Promise.reject(new Error("이미지는 필수입력 항목입니다."));
 
         return Promise.resolve();
     }
@@ -185,6 +181,12 @@ function BannerManagement() {
                                 type: 'input', 
                                 maxLength: 20, 
                                 placeholder: '제목을 입력해주세요.' 
+                            },
+                            {
+                                label: '게시일자',
+                                name: 'date',
+                                type: 'date',
+                                placeholder: '게시일자를 선택해주세요.'
                             }
                         ]}
                         onSearch={(result) => setSearch(result)}
@@ -231,7 +233,8 @@ function BannerManagement() {
                             name='image'
                             label='이미지'
                             valuePropName="image"
-                            rules={[{ validator: validateImage }, { required: true, message: '' }]}
+                            required
+                            rules={[{ validator: validateImage }]}
                             validateTrigger={['onBlur']}
                         >
                             <Upload
@@ -244,7 +247,6 @@ function BannerManagement() {
                                     !isImage && message.error(`PNG 파일 또는 JPG 파일만 허용됩니다.`);
                                     return isImage || Upload.LIST_IGNORE;
                                 }}
-                                // onChange={(info) => info.file.status = 'done'}
                                 onRemove={() => {
                                     fileId && deleteFile(fileId);
                                     setFileId("");
@@ -264,8 +266,10 @@ function BannerManagement() {
                             <Switch 
                                 onChange={(val) => {
                                     setChecked(val);
-                                    if (val && banner?.startsAt && banner?.endsAt)
-                                        form.setFieldValue("times", [toDayjsDate(banner.startsAt as number[]), toDayjsDate(banner.endsAt as number[])])
+                                    val && form.setFieldValue("times", [
+                                        banner?.startsAt ? toDayjsDate(banner.startsAt as number[]) : null,
+                                        banner?.endsAt ? toDayjsDate(banner.endsAt as number[]) : null
+                                    ])
                                 }} 
                             />
                         </Form.Item>

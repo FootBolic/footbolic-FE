@@ -11,6 +11,12 @@
         position: absolute;
         left: 50%;
         transform: translate(-50%, 0);
+
+        /* 임시로 사용 */
+        font-size: 26px;
+        font-weight: bold;
+        font-style: italic;
+        color: rgb(55, 55, 55);
     }
 
     .user_info_button_container {
