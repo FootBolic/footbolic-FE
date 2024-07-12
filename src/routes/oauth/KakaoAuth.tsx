@@ -2,12 +2,12 @@ import { Button, Result, message } from "antd";
 import useURLParam from "../../hooks/useURLParam";
 import { useNavigate } from "react-router-dom";
 import { API_QUERY_KEYS, AUTH_PLATFORM } from "../../constants/common/DataConstants";
-import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthAPI";
+import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthApi";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
-import { KakaoTokenInterface } from "../../types/common/KakaoApiInterface";
+import { KakaoTokenInterface, KakaoUserInfoInterface } from "../../types/common/KakaoApiInterface";
 import { SignAPI } from "../../api/sign/SignAPI";
 import { useDispatch } from "react-redux";
 import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
@@ -41,7 +41,7 @@ function KakaoAuth () {
     const { mutate: getToken } = useMutation(
         (code: string) => KakaoAuthAPI.requestToken(code, false), 
         {
-            onSuccess: (data) => {
+            onSuccess: (data: KakaoTokenInterface) => {
                 setTokenInfo(data);
                 getUserInfo(data.access_token);
             },
@@ -52,7 +52,7 @@ function KakaoAuth () {
     const { mutate: getUserInfo } = useMutation(
         (data: string) => KakaoAuthAPI.getUserInfo(data),
         {
-            onSuccess: (data) => {
+            onSuccess: (data: KakaoUserInfoInterface) => {
                 setMember({ ...member, idAtProvider: `${data.id}` } as MemberInterface);
                 setIsFetching(true);
             },

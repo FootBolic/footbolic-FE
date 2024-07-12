@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { MemberInterface } from "../../types/entity/member/MemberInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
 import useCsrfCheck from "../../hooks/useCsrfCheck";
-import { NaverAuthAPI } from "../../api/oauth/NaverAuthAPI";
+import { NaverAuthAPI } from "../../api/oauth/NaverAuthApi";
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
 import { SignAPI } from "../../api/sign/SignAPI";
 import { useDispatch } from "react-redux";

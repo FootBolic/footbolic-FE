@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { Button, Result, Skeleton } from "antd";
 import { ROUTES } from "../../constants/common/RouteConstants";
 import { AUTH_PLATFORM } from "../../constants/common/DataConstants";
-import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthAPI";
+import { KakaoAuthAPI } from "../../api/oauth/KakaoAuthApi";
 import { useMutation } from "react-query";
 import { KakaoTokenInterface } from "../../types/common/KakaoApiInterface";
 import { NaverTokenInterface } from "../../types/common/NaverApiInterface";
 import { MemberAPI } from "../../api/member/MemberAPI";
-import { NaverAuthAPI } from "../../api/oauth/NaverAuthAPI";
+import { NaverAuthAPI } from "../../api/oauth/NaverAuthApi";
 import styles from "../../styles/routes/member/MemberWithdraw.module.scss"
 import { useDispatch } from "react-redux";
 import { resetAccessTokenState } from "../../reducers/AccessTokenReducer";
@@ -30,7 +30,7 @@ function MemberWithdraw() {
     const { mutate: getKakaoToken } = useMutation(
         (code: string) => KakaoAuthAPI.requestToken(code, true),
         {
-            onSuccess: (data) => setTokenInfo(data),
+            onSuccess: (data: KakaoTokenInterface) => setTokenInfo(data),
             onError: () => setIsError(true),
         }
     )
@@ -38,7 +38,7 @@ function MemberWithdraw() {
     const { mutate: getNaverToken } = useMutation(
         (code: string) => NaverAuthAPI.requestToken('authorization_code', code), 
         {
-            onSuccess: (data) => setTokenInfo(data),
+            onSuccess: (data: NaverTokenInterface) => setTokenInfo(data),
             onError: () => getTokenFromServer(code)
         }
     )
