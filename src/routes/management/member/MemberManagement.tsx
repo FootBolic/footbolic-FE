@@ -68,13 +68,13 @@ function MemberManagement() {
         }
     )
 
-    const { mutate: deleteMember } = useMutation(
-        (id: string) => MemberAPI.deleteMember(id),
-        {
-            onSuccess: () => {handleSuccess(false)},
-            onError: (e: string) => {message.error(e)}
-        }
-    )
+    // const { mutate: deleteMember } = useMutation(
+    //     (id: string) => MemberAPI.deleteMember(id),
+    //     {
+    //         onSuccess: () => {handleSuccess(false)},
+    //         onError: (e: string) => {message.error(e)}
+    //     }
+    // )
 
     useEffect(() => {
         refetchAll();
