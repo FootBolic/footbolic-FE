@@ -78,4 +78,4 @@ jobs:
 
     # Amazon S3에 업로드
     - name: Upload to S3
-      run: aws s3 cp ./footbolic-test.zip s3://footbolic-bucket
+      run: aws s3 cp ./footbolic-test.zip s3://footbolic-bucket-web
