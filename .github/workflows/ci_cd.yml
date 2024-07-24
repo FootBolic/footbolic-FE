@@ -26,8 +26,11 @@ jobs:
 
     # Yarn 세팅
     - name: Set up Yarn
-      run: |
-        npm install -g yarn
+      run: npm install -g yarn
+
+    # 라이브러리 설치
+    - name: Install Libraries
+      run: yarn install
 
     # .env 파일 생성
     - name: Generate Environment Variables File for Production
