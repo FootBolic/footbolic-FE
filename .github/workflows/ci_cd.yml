@@ -42,3 +42,40 @@ jobs:
     # build 실행
     - name: execute build
       run: yarn build
+
+    # 디렉토리 생성
+    - name: Make Directory
+      run: mkdir -p deploy
+
+    # Jar 파일 복사
+    - name: Copy dist Directory
+      run: cp -r ./dist/ ./deploy
+
+    # appspec.yml 파일 복사
+    - name: Copy appspec.yml
+      run: cp ./appspec.yml ./deploy
+
+    # deploy.sh 파일 복사
+    - name: Copy deploy.sh
+      run: cp ./scripts/deploy.sh ./deploy
+
+    # healthCheck.sh 파일 복사
+    - name: Copy healthCheck.sh
+      run: cp ./scripts/healthCheck.sh ./deploy
+
+    # zip 파일 생성
+    - name: Make zip file
+      run: zip -r ./footbolic-test.zip ./deploy
+      shell: bash
+
+    # AWS 접근 환경설정
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    # Amazon S3에 업로드
+    - name: Upload to S3
+      run: aws s3 cp ./footbolic-test.zip s3://footbolic-bucket
