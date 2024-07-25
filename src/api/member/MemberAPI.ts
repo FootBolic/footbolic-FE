@@ -58,9 +58,9 @@ export class MemberAPI {
     /**
      * 회원 생성 API
      * @param {MemberInterface} member 회원가입할 회원정보
-     * @returns {Promise<MemberInterface>} 생성된 회원 Promise 객체
+     * @returns {Promise<{ savedMember: MemberInterface }>} 생성된 회원 Promise 객체
      */
-    static async createMember(member: MemberInterface): Promise<MemberInterface> {
+    static async createMember(member: MemberInterface): Promise<{ savedMember: MemberInterface }> {
         const response = await api.post('/members', member);
         return response.data.data;
     }
