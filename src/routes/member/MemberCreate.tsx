@@ -28,7 +28,9 @@ function MemberCreate () {
     }, [state])
 
     const { mutate: createMember }  = useMutation((data: MemberInterface) => MemberAPI.createMember(data), {
-        onSuccess: (data) => signIn(data),
+        onSuccess: (data) => {
+            signIn(data.savedMember)
+        },
         onError: (e: string) => {message.error(e)}
     })
 
@@ -41,6 +43,7 @@ function MemberCreate () {
                     accessTokenExpiresAt: toDate(data.expires_at).getTime(),
                     nickname: data.nickname
                 }))
+                message.success(`${data.nickname}님, 회원가입이 완료되었습니다!`);
                 navigate(ROUTES.MAIN_VIEW.path);
             },
             onError: (e: string) => {message.error(e)}
@@ -86,7 +89,7 @@ function MemberCreate () {
                         <Modal
                             title='회원가입'
                             open={isSaveModalOpen}
-                            onOk={() => member && createMember({ ...member, nickname: form.getFieldValue('nickname') })}
+                            onOk={() =>  member && createMember({ ...member, nickname: form.getFieldValue('nickname') })}
                             onCancel={() => setIsSaveModalOpen(false)}
                             okText='확인'
                             cancelText='취소'
