@@ -91,10 +91,6 @@ function MemberInfo() {
         }
     )
 
-    const handleSaveButtonClick = () => {
-        setIsSaveModalOpen(true);
-    }
-
     const validateDuplicate = async(_: object, nickname: string) => {
         if (nickname && nickname !== memberNickname) {
             try {
@@ -119,6 +115,12 @@ function MemberInfo() {
                         layout="vertical"
                         className={styles.form_container}
                         onFinish={updateMember}
+                        onFinishFailed={(e) => {
+                            e.errorFields.forEach((err) => {
+                                err.errors.forEach((msg) => message.error(msg));
+                            })
+                            setIsSaveModalOpen(false);
+                        }}
                     >
                         <Form.Item
                             name="nickname"
@@ -133,6 +135,10 @@ function MemberInfo() {
                                     message: '닉네임의 길이는 20자 이하로만 허용됩니다.'
                                 },
                                 {
+                                    pattern: /^[가-힣a-zA-Z0-9_&^\-]+$/,
+                                    message: "닉네임에는 한글, 영어, 숫자, 특수문자(_, -, ^, &)만 허용됩니다."
+                                },
+                                {
                                     validator: validateDuplicate,
                                 }
                             ]}
@@ -145,7 +151,7 @@ function MemberInfo() {
                             />
                         </Form.Item>
                         <Form.Item>
-                            <Button block type='primary' onClick={handleSaveButtonClick} disabled={!isUpdatable}>
+                            <Button block type='primary' onClick={() => setIsSaveModalOpen(true)} disabled={!isUpdatable}>
                                 저장
                             </Button>
                             <Modal

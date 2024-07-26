@@ -134,4 +134,14 @@ export class MemberAPI {
         const response = await api.delete(`/members/me?access_token=${accessToken}`);
         return response.data.data;
     }
+
+    /**
+     * 닉네임 중복 검사 API
+     * @param {string} nickname 중복검사할 닉네임
+     * @returns {Promise<{ memberExists: boolean }>} 닉네임 중복 여부
+     */
+    static async existsByNickname(nickname: string): Promise<{ memberExists: boolean }> {
+        const response = await api.get(`/members/public/check?nickname=${nickname}`);
+        return response.data.data;
+    }
 }
