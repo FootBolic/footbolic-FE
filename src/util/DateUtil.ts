@@ -54,3 +54,13 @@ export const toDatetimeString = (date: number[]): string => {
     return `${String(date[0])}-${String(date[1]).padStart(2, '0')}-${String(date[2]).padStart(2, '0')} `
         +`${String(date[3]).padStart(2, '0')}:${String(date[4]).padStart(2, '0')}:${String(date[5]).padStart(2, '0')}`;
 }
+
+/**
+ * Date 타입의 날짜를 'YYYY-MM-DD HH:mm:ss' 형태의 문자열로 변환
+ * @param {number[]} date 변환 대상 날짜
+ * @returns 'YYYY-MM-DD' 형태의 문자열
+ */
+export const dateToDatetimeString = (date: Date): string => {
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} `
+            + `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+}
