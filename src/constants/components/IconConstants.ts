@@ -12,4 +12,4 @@ export const ICON_FONT_SIZE = {
 /**
  * 아이콘 파일 저장경로
  */
-export const ICON_DIRECTORY_PREFIX = "/src/assets/";
+export const ICON_DIRECTORY_PREFIX = import.meta.env.VITE_ICON_DIR_PREFIX;
