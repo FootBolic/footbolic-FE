@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setAccessTokenState } from "../../reducers/AccessTokenReducer";
 import { toDate } from "../../util/DateUtil";
 import { ROUTES } from "../../constants/common/RouteConstants";
+import { useCheckDuplicate } from "../../hooks/useNickname";
 
 const { Text } = Typography;
 
@@ -19,6 +20,7 @@ function MemberCreate () {
     const [form] = Form.useForm();
     const [member, setMember] = useState<MemberInterface>();
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
+    const { mutateAsync: checkDuplicate } = useCheckDuplicate();
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -55,6 +57,20 @@ function MemberCreate () {
         navigate(ROUTES.MAIN_VIEW.path);
     }
 
+    const validateDuplicate = async(_: object, nickname: string) => {
+        if (nickname) {
+            try {
+                const isDuplicate = await checkDuplicate(nickname);
+                if (isDuplicate) {
+                    return Promise.reject(new Error('이미 사용중인 닉네임입니다.'));
+                }
+                return Promise.resolve();
+            } catch (error) {
+                return Promise.reject(new Error('오류가 발생하였습니다.'));
+            }
+        }
+    }
+
     return (
         <>
             <Title title="회원가입" centered />
@@ -76,6 +92,13 @@ function MemberCreate () {
                             {
                                 max: 20,
                                 message: "닉네임의 길이는 20자 이하로만 허용됩니다."
+                            },
+                            {
+                                pattern: /^[가-힣a-zA-Z0-9_&^\-]+$/,
+                                message: "닉네임에는 한글, 영어, 숫자, 특수문자(_, -, ^, &)만 허용됩니다."
+                            },
+                            {
+                                validator: validateDuplicate
                             }
                         ]}
                         validateTrigger={['onBlur']}
