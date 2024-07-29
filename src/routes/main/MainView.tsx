@@ -74,7 +74,6 @@ function MainView () {
             <Divider />
             <div className={styles.main_el}>
                 <Tabs
-                    centered
                     defaultActiveKey={boardId}
                     onTabClick={(key) => setBoardId(key)}
                     items={mainBoards.map((board) => {
