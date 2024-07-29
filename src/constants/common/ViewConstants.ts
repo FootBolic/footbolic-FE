@@ -4,6 +4,11 @@
 export const MOBILE_SIZE = 768;
 
 /**
+ * 메인페이지 테이블에 표시할 항목 수
+ */
+export const MAIN_TABLE_ROWS = 10;
+
+/**
  * Antd 반응형 레이아웃에 사용될 grid
  * {
  * mobile: 1

@@ -52,10 +52,14 @@ export const API_QUERY_KEYS = {
         GET_ALL_AUTHORIZATIONS: 'GET_ALL_AUTHORIZATIONS',
         GET_AUTHORIZATION: 'GET_AUTHORIZATION',
     },
+    BANNER: {
+        GET_PUBLIC_BANNERS: 'GET_PUBLIC_BANNERS',
+    },
     BOARD: {
         GET_BOARDS: 'GET_BOARDS',
         GET_BOARD: 'GET_BOARD',
         GET_ALL_BOARDS: 'GET_ALL_BOARDS',
+        GET_MAIN_BOARDS: 'GET_MAIN_BOARDS',
     },
     ICON: {
         GET_ALL_ICONS: 'GET_ALL_ICONS',
@@ -79,7 +83,10 @@ export const API_QUERY_KEYS = {
     },
     POST: {
         GET_POSTS: 'GET_POSTS',
-        GET_POST: 'GET_POST'
+        GET_POST: 'GET_POST',
+        GET_HOT_POSTS: 'GET_HOT_POSTS',
+        GET_NEW_POSTS: 'GET_NEW_POSTS',
+        GET_NEW_POSTS_BY_BOARD: 'GET_NEW_POSTS_BY_BOARD',
     },
     ROLE: {
         GET_ROLES: 'GET_ROLES',

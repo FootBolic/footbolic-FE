@@ -1,6 +1,7 @@
 import { BoardInterface } from "../board/BoardInterface";
 import { CommentInterface } from "../comment/CommentInterface";
 import { MemberInterface } from "../member/MemberInterface";
+import { MenuInterface } from "../menu/MenuInterface";
 import { PostRecommendationInterface } from "../recommendation/RecommendationInterface";
 
 export interface PostInterface {
@@ -18,6 +19,7 @@ export interface PostInterface {
     announcementStartsAt?: number[];
     announcementEndsAt?: number[];
     comments?: CommentInterface[];
+    menu?: MenuInterface;
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;

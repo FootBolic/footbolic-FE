@@ -2,26 +2,44 @@ import { Carousel } from "antd";
 import styles from '../../styles/components/banner/Banner.module.scss'
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../types/reducers/RootStateInterface";
-
-const urls = [
-    "https://velog.velcdn.com/images/yhko1992/post/01218901-b7bf-4949-92c0-dffa415e20de/image.jpeg",
-    "https://blog.kakaocdn.net/dn/bD9P2Q/btrGuS1ePrj/eAH3hukA6JJmIHVw1kBelK/img.png",
-    "https://velog.velcdn.com/images/dbfrhr20/post/0d034a76-1f08-4a7a-8dd2-60fa63c31d9d/image.jpeg"
-]
+import { useQuery } from "react-query";
+import { API_QUERY_KEYS } from "../../constants/common/DataConstants";
+import { BannerAPI } from "../../api/banner/BannerAPI";
+import { useEffect, useState } from "react";
+import { BannerInterface } from "../../types/entity/banner/BannerInterface";
 
 function Banner() {
 
     const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
+    const [banners, setBanners] = useState<BannerInterface[]>([]);
+    const [isEnabled, setIsEnabled] = useState<boolean>(true);
+
+    const { refetch } = useQuery({
+        queryKey: [API_QUERY_KEYS.BANNER.GET_PUBLIC_BANNERS],
+        queryFn: () => BannerAPI.getPublicBanners(isMobile),
+        enabled: isEnabled,
+        onSuccess: ({ banners }) => setBanners(banners) ,
+        onSettled: () => setIsEnabled(false)
+    })
+
+    useEffect(() => {
+        refetch();
+    }, [isMobile])
 
     return (
         <Carousel autoplay dots={true}>
-            {urls.map((url, index) => {
-                return (
-                    <div key={index} className={isMobile ? styles.img_container_mobile : styles.img_container_web}>
-                        <img className={styles.img} src={url} />
-                    </div>
-                )
-            })}
+            {
+                banners.map((banner, idx) => {
+                    return (
+                        <div key={idx} className={isMobile ? styles.img_container_mobile : styles.img_container_web}>
+                            <img 
+                                className={styles.img}
+                                src={`${import.meta.env.VITE_API_URL_DEV}/files/public/images/${banner.file!.id}`}
+                            />
+                        </div>
+                    )
+                })
+            }
         </Carousel>
     )
 }

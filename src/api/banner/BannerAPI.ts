@@ -26,6 +26,16 @@ export class BannerAPI {
     }
 
     /**
+     * 메인페이지에 공개되는 배너 목록 조회
+     * @param {boolean} isMobile 모바일 여부
+     * @returns {Promise<{ banners: BannerInterface[] }>} 공개된 배너 목록
+     */
+    static async getPublicBanners(isMobile: boolean): Promise<{ banners: BannerInterface[] }> {
+        const response = await api.get(`/banners/public?isMobile=${isMobile}`);
+        return response.data.data;
+    }
+
+    /**
      * 배너 식별번호로 배너 정보 조회
      * @param {string} id 조회할 배너 식별번호
      * @returns {Promise<{ banner: BannerInterface }>} 조회한 배너 정보
