@@ -71,4 +71,13 @@ export class BoardAPI {
         const response = await api.delete(`/boards/${id}`);
         return response.data.data;
     }
+
+    /**
+     * 메인 페이지에 노출되는 게시판 목록 조회 API
+     * @returns {Promise<{ boards: BoardInterface[] }>} 메인 페이지에 노출되는 게시판 목록 Promise 객체
+     */
+    static async getMainBoards(): Promise<{ boards: BoardInterface[] }> {
+        const response = await api.get("/boards/public/main");
+        return response.data.data;
+    }
 }

@@ -4,7 +4,7 @@ import { toDatetimeString } from "../../util/DateUtil";
 import { Link } from "react-router-dom";
 import useURLParam from "../../hooks/useURLParam";
 
-function SimpleTable({ dataSource, size }: SimpleTableProps) {
+function SimpleTable({ dataSource, size, isMain }: SimpleTableProps) {
     const { menuId } = useURLParam();
     return (
         <List
@@ -23,7 +23,7 @@ function SimpleTable({ dataSource, size }: SimpleTableProps) {
                                     }
                                 />
                             }
-                            title={<Link to={`/post/${post.id}?menuId=${menuId}`}>{post.title}</Link>}
+                            title={<Link to={`/post/${post.id}?menuId=${isMain ? post.menu.id : menuId}`}>{post.title}</Link>}
                             description={`${post.createdBy.nickname} | ${toDatetimeString(post.createdAt)}`}
                         />
                     </List.Item>

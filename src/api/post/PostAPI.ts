@@ -29,15 +29,6 @@ export class PostAPI {
     }
 
     /**
-     * 전체 게시글 목록 조회 API
-     * @returns {Promise<{ posts: PostInterface[] }>} 전체 게시글 목록 Promise 객체
-     */
-    static async getAllposts(): Promise<{ posts: PostInterface[] }> {
-        const response = await api.get('/posts/all');
-        return response.data.data;
-    }
-
-    /**
      * 게시글 식별번호로 게시글 정보 조회
      * @param {string} id 조회할 게시글 식별번호
      * @returns {Promise<{ post: PostInterface }>} 조회한 게시글 정보
@@ -74,6 +65,39 @@ export class PostAPI {
      */
     static async deletePost(id: string): Promise<{ id: string}> {
         const response = await api.delete(`/posts/${id}`);
+        return response.data.data;
+    }
+
+    /**
+     * 전체 게시판 인기 게시글 목록 조회 API
+     * @returns {Promise<{ posts: PostInterface[] }>} 전체 게시글 목록 Promise 객체
+     */
+    static async getHotPosts(limit: number): Promise<{ posts: PostInterface[] }> {
+        let url = `/posts/public/hot`;
+        url += (limit && limit > 0) ? `?limit=${limit}` : '';
+        const response = await api.get(url);
+        return response.data.data;
+    }
+
+    /**
+     * 전체 게시판 최신 게시글 목록 조회 API
+     * @returns {Promise<{ posts: PostInterface[] }>} 전체 게시글 목록 Promise 객체
+     */
+    static async getNewPosts(limit: number): Promise<{ posts: PostInterface[] }> {
+        let url = `/posts/public/new`;
+        url += (limit && limit > 0) ? `?limit=${limit}` : '';
+        const response = await api.get(url);
+        return response.data.data;
+    }
+
+    /**
+     * 게시판 별 최신 게시글 목록 조회 API
+     * @returns {Promise<{ posts: PostInterface[] }>} 전체 게시글 목록 Promise 객체
+     */
+    static async getNewPostsByBoard(boardId: string, limit: number): Promise<{ posts: PostInterface[] }> {
+        let url = `/posts/public/new/${boardId}`;
+        url += (limit && limit > 0) ? `?limit=${limit}` : '';
+        const response = await api.get(url);
         return response.data.data;
     }
 }
