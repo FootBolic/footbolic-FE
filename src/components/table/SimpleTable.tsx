@@ -15,13 +15,18 @@ function SimpleTable({ dataSource, size, isMain }: SimpleTableProps) {
                     <List.Item>
                         <List.Item.Meta
                             avatar={
-                                <Avatar 
-                                    shape="square"
-                                    size="large"
-                                    icon={
-                                        <img src="https://velog.velcdn.com/images/yhko1992/post/01218901-b7bf-4949-92c0-dffa415e20de/image.jpeg" />
-                                    }
-                                />
+                                post.thumbnailFileId ? (
+                                    <Avatar 
+                                        style={{ marginLeft: '10px' }}
+                                        shape="square"
+                                        size="large"
+                                        icon={
+                                            <img 
+                                                src={`${import.meta.env.VITE_API_URL_DEV}/files/public/images/${post.thumbnailFileId}`} 
+                                            />
+                                        }
+                                    />
+                                ) : <></>
                             }
                             title={<Link to={`/post/${post.id}?menuId=${isMain ? post.menu.id : menuId}`}>{post.title}</Link>}
                             description={`${post.createdBy.nickname} | ${toDatetimeString(post.createdAt)}`}

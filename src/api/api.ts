@@ -31,7 +31,6 @@ api.interceptors.response.use(
                 store.dispatch(setAuthError({ isError: true }))
                 break;
             case 401:
-                console.log(error);
                 break;
             case 400:
                 return Promise.reject((error.response.data as any).message);
