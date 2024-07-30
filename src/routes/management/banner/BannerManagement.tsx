@@ -112,7 +112,7 @@ function BannerManagement() {
             : setTimeout(() => setBanner({ title: "신규 배너" } as BannerInterface), 5);
     }
 
-    const handleFinish = () => {console.log(123)
+    const handleFinish = () => {
         const target: BannerInterface = {
             ...banner!,
             ...form.getFieldsValue(),
@@ -122,7 +122,7 @@ function BannerManagement() {
             file: null,
             times: null
         };
-console.log(456)
+
         banner!.id ? updateBanner(target) : createBanner(target);
     }
 

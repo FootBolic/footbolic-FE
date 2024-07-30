@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/title/Title";
-import { message, Skeleton } from "antd";
+import { Avatar, message, Skeleton } from "antd";
 import { useQuery } from "react-query";
 import { PostAPI } from "../../api/post/PostAPI";
 import { useEffect, useState } from "react";
@@ -114,12 +114,28 @@ function Board() {
                                             key: 'title',
                                             width: 'auto',
                                             ellipsis: true,
-                                            render: (t, r: PostInterface) => 
-                                                <Link 
-                                                    to={`/post/${r.id}${getParameters()}`}
-                                                >
-                                                    {t}
-                                                </Link>
+                                            render: (t, r: PostInterface) =>
+                                                <>
+                                                    {
+                                                        r.thumbnailFileId ? (
+                                                            <Avatar 
+                                                                style={{ marginRight: '10px' }}
+                                                                shape="square"
+                                                                size="large"
+                                                                icon={
+                                                                    <img 
+                                                                        src={`${import.meta.env.VITE_API_URL_DEV}/files/public/images/${r.thumbnailFileId}`} 
+                                                                    />
+                                                                }
+                                                            />
+                                                        ) : <></>
+                                                    }
+                                                    <Link 
+                                                        to={`/post/${r.id}${getParameters()}`}
+                                                    >
+                                                        {t}
+                                                    </Link>
+                                                </>
                                         },
                                         {
                                             title: '작성자',

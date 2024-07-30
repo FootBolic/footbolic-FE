@@ -1,5 +1,6 @@
 import { BoardInterface } from "../board/BoardInterface";
 import { CommentInterface } from "../comment/CommentInterface";
+import { FileInterface } from "../file/FileInterface";
 import { MemberInterface } from "../member/MemberInterface";
 import { MenuInterface } from "../menu/MenuInterface";
 import { PostRecommendationInterface } from "../recommendation/RecommendationInterface";
@@ -20,6 +21,8 @@ export interface PostInterface {
     announcementEndsAt?: number[];
     comments?: CommentInterface[];
     menu?: MenuInterface;
+    thumbnailFileId?: string;
+    thumbnailFile?: FileInterface;
     createMemberId?: string;
     createdAt?: number[];
     createdBy?: MemberInterface;
