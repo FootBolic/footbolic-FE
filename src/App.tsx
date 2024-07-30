@@ -15,11 +15,11 @@ import { RootStateInterface } from './types/reducers/RootStateInterface';
 import MobilMenuDrawer from './components/drawer/MobileMenuDrawer';
 import useToken from './hooks/useToken';
 import { RouteInterface } from './types/common/RouteInterface';
+import { MessageOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 
 function App () {
-  
   const dispatch = useDispatch();
   const { width: windowWidth } = useDocumentSize();
   const { checkRefreshToken, isCheckRefreshTokenError, checkAccessToken } = useToken();
@@ -60,7 +60,12 @@ function App () {
         </Content>
         <Footer />
       </Layout>
-      <FloatButton.BackTop visibilityHeight={1} />
+      <FloatButton.Group>
+        {
+          accessToken && <FloatButton type='primary' icon={<MessageOutlined />} />
+        }
+        <FloatButton.BackTop visibilityHeight={1} />
+      </FloatButton.Group>
     </Layout>
   );
 };
