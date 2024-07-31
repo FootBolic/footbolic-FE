@@ -6,7 +6,7 @@ import Sider from './components/sider/Sider';
 import Breadcrumb from './components/breadcrumb/Breadcrumb';
 import { Route, Routes } from 'react-router-dom';
 import { ROUTES } from './constants/common/RouteConstants';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useDocumentSize from './hooks/useDocumentSize';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsMobile } from './reducers/PlatformReducer';
@@ -16,12 +16,14 @@ import MobilMenuDrawer from './components/drawer/MobileMenuDrawer';
 import useToken from './hooks/useToken';
 import { RouteInterface } from './types/common/RouteInterface';
 import { MessageOutlined } from "@ant-design/icons";
+import ChatroomDrawer from './components/chat/ChatroomDrawer';
 
 const { Content } = Layout;
 
 function App () {
   const dispatch = useDispatch();
   const { width: windowWidth } = useDocumentSize();
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const { checkRefreshToken, isCheckRefreshTokenError, checkAccessToken } = useToken();
   const isMobile = useSelector((state: RootStateInterface) => state.platform.isMobile);
   const authError = useSelector((state: RootStateInterface) => state.authError.isError);
@@ -43,6 +45,7 @@ function App () {
     <Layout hasSider>
       <Sider />
       <MobilMenuDrawer />
+      <ChatroomDrawer isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
       <Layout className={styles.main_layout}>
         <Header />
         <Content className={isMobile ? styles.mobile_layout : styles.content}>
@@ -62,7 +65,9 @@ function App () {
       </Layout>
       <FloatButton.Group>
         {
-          accessToken && <FloatButton type='primary' icon={<MessageOutlined />} />
+          accessToken && (
+            <FloatButton type='primary' icon={<MessageOutlined />} onClick={() => setIsChatOpen(true)} />
+          )
         }
         <FloatButton.BackTop visibilityHeight={1} />
       </FloatButton.Group>
