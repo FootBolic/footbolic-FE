@@ -3,14 +3,16 @@ import styles from "../../styles/components/chat/Chatroom.module.scss";
 import Dialog from "./Dialog";
 import { useEffect, useRef, useState } from "react";
 import { MessageInterface } from "../../types/entity/message/MessageInterface";
-import { dateToDatetimeString } from "../../util/DateUtil";
-import { Stomp, CompatClient } from "@stomp/stompjs";
+import { dateToTimeString } from "../../util/DateUtil";
+import { Client, IMessage } from "@stomp/stompjs";
+import { useSelector } from "react-redux";
+import { RootStateInterface } from "../../types/reducers/RootStateInterface";
+import { Button, Result, Skeleton } from "antd";
 
 function Chatroom() {
-    // const webSocket = useRef<WebSocket | null>(null);
-    const stompClient = useRef<CompatClient | null>(null);
+    const stompClient = useRef<Client | null>(null);
+    const { accessToken, nickname } = useSelector((state: RootStateInterface) => state.accessToken);
     const [messages, setMessages] = useState<MessageInterface[]>([]);
-    const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [connected, setConnected] = useState<boolean>(false);
 
@@ -18,69 +20,92 @@ function Chatroom() {
         messages.length > 100 && setMessages((cur) => cur.filter((_, i) => i < 100))
     }, [messages])
 
-    // useEffect(() => {
-    //     webSocket.current = new WebSocket('ws://localhost:8080/chat');
-        
-    //     webSocket.current.onopen = () => {
-    //         console.log('WebSocket 연결!');    
-    //     };
-    //     webSocket.current.onclose = (closeEvent) => {
-    //         console.log('close', closeEvent);
-    //         setConnected(false);
-    //     }
-    //     webSocket.current.onerror = (error) => {
-    //         console.error(error);
-    //         setError(true);
-    //     }
-    //     webSocket.current.onmessage = (event: MessageEvent) => {   
-    //         setMessages((prev) => [...prev, event.data]);
-    //     };
-      
-    //     return () => {
-    //       webSocket.current?.close();
-    //     };
-    //   }, []);
-
     useEffect(() => {
         connect();
         return () => disconnect();
     }, []);
 
     const connect = () => {
-        //웹소켓 연결
-        try {
-        const socket = new WebSocket("ws://localhost:8080/ws");
-        stompClient.current = Stomp.over(socket);
-        stompClient.current.connect({}, () => {
-            stompClient.current && stompClient.current.subscribe(`/sub/chat`, (message) => {console.log(message)
-                //누군가 발송했던 메시지를 리스트에 추가
-                const newMessage = JSON.parse(message.body);
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
-            });
-        });
-    } catch(e) {
-console.log('eeeeeeee', e);
-    }
+        const client = new Client({
+            connectHeaders: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            brokerURL: 'ws://localhost:8080/ws',
+            reconnectDelay: 5000,
+            onConnect: () => {
+                client.subscribe('/sub/chat', (msg: IMessage) => {
+                    const message: MessageInterface = JSON.parse(msg.body);
+                    message.isOwn = message.sentFrom === nickname;
+                    setMessages((cur) => [message, ...cur]);
+                });
+                setLoading(false);
+                setConnected(true);
+                stompClient.current?.publish({
+                    destination: '/pub/ws/chat/enter',
+                    body: JSON.stringify({
+                        sentAt: dateToTimeString(new Date)
+                    })
+                })
+            },
+            onDisconnect: () => disconnect(),
+            onStompError: () => disconnect(),
+            onWebSocketError: () => disconnect()
+        })
+        client.activate();
+        stompClient.current = client;
     };
 
     const disconnect = () => {
         if (stompClient.current) {
-            stompClient.current.disconnect();
+            stompClient.current.deactivate();
         }
+        setLoading(false);
+        setConnected(false);
+        stompClient.current?.publish({
+            destination: '/pub/ws/chat/leave',
+            body: JSON.stringify({
+                sentAt: dateToTimeString(new Date)
+            })
+        })
     };
 
     return (
         <div className={styles.container}>
-            <Dialog data={messages} />
-            <MessageInput 
-                onSend={(msg: string) => setMessages((cur) => [
-                    { 
-                        payload: msg,
-                        sentAt: dateToDatetimeString(new Date())
-                    }, 
-                    ...cur
-                ])}
-            />
+            {
+                loading ? (
+                    <Skeleton active />
+                ) : (
+                    <>
+                        {
+                            connected ? (
+                                <>
+                                    <Dialog data={messages} />
+                                    <MessageInput 
+                                        onSend={(msg: string) => {
+                                            stompClient.current?.publish({
+                                                destination: '/pub/ws/chat',
+                                                body: JSON.stringify({
+                                                    payload: msg,
+                                                    sentAt: dateToTimeString(new Date)
+                                                })
+                                            })
+                                        }}
+                                    />
+                                </>
+                            ) : (
+                                <Result
+                                    title="서버와의 연결이 끊어졌습니다."
+                                    extra={
+                                        <Button type="primary" key="console" onClick={connect}>
+                                            다시 연결하기
+                                        </Button>
+                                    }
+                                />
+                            )
+                        }
+                    </>
+                )
+            }
         </div>
     )
 }

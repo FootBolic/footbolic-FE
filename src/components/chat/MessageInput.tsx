@@ -2,7 +2,6 @@ import { Button, Form, Input } from "antd";
 import styles from "../../styles/components/chat/MessageInput.module.scss";
 import { MessageInputProps } from "../../types/components/chat/MessageInputProps";
 import { useForm } from "antd/es/form/Form";
-
 function MessageInput({ onSend }: MessageInputProps) {
     const [form] = useForm();
     
