@@ -30,7 +30,7 @@ function Chatroom() {
             connectHeaders: {
                 Authorization: `Bearer ${accessToken}`
             },
-            brokerURL: 'ws://localhost:8080/ws',
+            brokerURL: import.meta.env.VITE_STOMP_BROKER_URL,
             reconnectDelay: 5000,
             onConnect: () => {
                 client.subscribe('/sub/chat', (msg: IMessage) => {
