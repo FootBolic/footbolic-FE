@@ -1,0 +1,44 @@
+.sent {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.received {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    
+    .message {
+        border-color: rgb(185, 185, 185);
+        margin: 5px 0 5px;
+        min-width: 30px;
+    }
+}
+
+.sent_from {
+    font-size: small;
+}
+
+.sent_at_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-inline: 5px;
+
+    .sent_at {
+        color: lightgray;
+        font-size: small;
+    }
+}
+
+.notice {
+    text-align: center;
+    color: rgb(117, 117, 117);
+}
