@@ -3,7 +3,7 @@ import styles from "../../styles/components/chat/Chatroom.module.scss";
 import Dialog from "./Dialog";
 import { useEffect, useRef, useState } from "react";
 import { MessageInterface } from "../../types/entity/message/MessageInterface";
-import { dateToTimeString } from "../../util/DateUtil";
+import { formatStringToTime } from "../../util/DateUtil";
 import { Client, IMessage } from "@stomp/stompjs";
 import { useSelector } from "react-redux";
 import { RootStateInterface } from "../../types/reducers/RootStateInterface";
@@ -33,18 +33,18 @@ function Chatroom() {
             brokerURL: import.meta.env.VITE_STOMP_BROKER_URL,
             reconnectDelay: 5000,
             onConnect: () => {
-                client.subscribe('/sub/chat', (msg: IMessage) => {
+                client.subscribe('/sub/chat/1', (msg: IMessage) => {
                     const message: MessageInterface = JSON.parse(msg.body);
                     message.isOwn = message.sentFrom === nickname;
+                    message.sentTime = formatStringToTime(message.sentAt || '');
+                    console.log(msg)
                     setMessages((cur) => [message, ...cur]);
                 });
                 setLoading(false);
                 setConnected(true);
                 stompClient.current?.publish({
-                    destination: '/pub/ws/chat/enter',
-                    body: JSON.stringify({
-                        sentAt: dateToTimeString(new Date)
-                    })
+                    destination: '/pub/ws/chat/enter/1',
+                    body: JSON.stringify({})
                 })
             },
             onDisconnect: () => disconnect(),
@@ -62,10 +62,8 @@ function Chatroom() {
         setLoading(false);
         setConnected(false);
         stompClient.current?.publish({
-            destination: '/pub/ws/chat/leave',
-            body: JSON.stringify({
-                sentAt: dateToTimeString(new Date)
-            })
+            destination: '/pub/ws/chat/leave/1',
+            body: JSON.stringify({})
         })
     };
 
@@ -83,11 +81,8 @@ function Chatroom() {
                                     <MessageInput 
                                         onSend={(msg: string) => {
                                             stompClient.current?.publish({
-                                                destination: '/pub/ws/chat',
-                                                body: JSON.stringify({
-                                                    payload: msg,
-                                                    sentAt: dateToTimeString(new Date)
-                                                })
+                                                destination: '/pub/ws/chat/1',
+                                                body: JSON.stringify({ payload: msg })
                                             })
                                         }}
                                     />

@@ -16,7 +16,7 @@ function Message({ message }: MessageProps) {
                             message.isOwn ? (
                                 <div className={styles.sent}>
                                     <div className={styles.sent_at_container}>
-                                        <Text className={styles.sent_at}>{message.sentAt}</Text>
+                                        <Text className={styles.sent_at}>{message.sentTime}</Text>
                                     </div>
                                     <div className={styles.layout}>
                                         <Card className={styles.message} bodyStyle={{ padding: "10px" }}>
@@ -37,7 +37,7 @@ function Message({ message }: MessageProps) {
                                         </Card>
                                     </div>
                                     <div className={styles.sent_at_container}>
-                                        <Text className={styles.sent_at}>{message.sentAt}</Text>
+                                        <Text className={styles.sent_at}>{message.sentTime}</Text>
                                     </div>
                                 </div>
                             )

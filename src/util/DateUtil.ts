@@ -66,10 +66,16 @@ export const dateToDatetimeString = (date: Date): string => {
 }
 
 /**
- * Date 타입의 날짜를 'HH:mm:ss' 형태의 문자열로 변환
- * @param {number[]} date 변환 대상 날짜
- * @returns 'HH:mm:ss' 형태의 문자열
+ * String으로 전달된 Date 타입을 'HH:mm' 형태의 문자열로 변환
+ * @param {string} date_string 변환 대상 날짜 string
+ * @returns 'HH:mm' 형태의 문자열
  */
-export const dateToTimeString = (date: Date): string => {
-    return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+export const formatStringToTime = (date_string: string): string => {
+    let date;
+    try {
+        date = new Date(date_string);
+    } catch {
+        date = new Date();
+    }
+    return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
